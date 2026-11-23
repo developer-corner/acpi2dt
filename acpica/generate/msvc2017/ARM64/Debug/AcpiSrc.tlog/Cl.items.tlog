@@ -1,0 +1,17 @@
+D:\acpi2dt\acpica\source\common\cmfsize.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\cmfsize.obj
+D:\acpi2dt\acpica\source\common\getopt.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\getopt.obj
+D:\acpi2dt\acpica\source\components\utilities\utdebug.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utdebug.obj
+D:\acpi2dt\acpica\source\components\utilities\utexcep.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utexcep.obj
+D:\acpi2dt\acpica\source\components\utilities\utglobal.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utglobal.obj
+D:\acpi2dt\acpica\source\components\utilities\utmath.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utmath.obj
+D:\acpi2dt\acpica\source\components\utilities\utnonansi.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utnonansi.obj
+D:\acpi2dt\acpica\source\components\utilities\utxferror.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\utxferror.obj
+D:\acpi2dt\acpica\source\os_specific\SERVICE_LAYERS\oswindir.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\oswindir.obj
+D:\acpi2dt\acpica\source\os_specific\service_layers\oswinxf.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\oswinxf.obj
+D:\acpi2dt\acpica\source\TOOLS\acpisrc\ascase.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\ascase.obj
+D:\acpi2dt\acpica\source\tools\AcpiSrc\asconvrt.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\asconvrt.obj
+D:\acpi2dt\acpica\source\tools\AcpiSrc\asfile.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\asfile.obj
+D:\acpi2dt\acpica\source\tools\AcpiSrc\asmain.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\asmain.obj
+D:\acpi2dt\acpica\source\TOOLS\acpisrc\asremove.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\asremove.obj
+D:\acpi2dt\acpica\source\tools\acpisrc\astable.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\astable.obj
+D:\acpi2dt\acpica\source\tools\AcpiSrc\asutils.c;D:\acpi2dt\acpica\generate\msvc2017\AcpiSrcDebug\asutils.obj

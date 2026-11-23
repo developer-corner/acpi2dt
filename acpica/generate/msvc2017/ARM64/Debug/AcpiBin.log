@@ -1,0 +1,1237 @@
+﻿  cmfsize.c
+  getopt.c
+  utalloc.c
+  utascii.c
+  utbuffer.c
+  utcache.c
+  utdebug.c
+  utdecode.c
+  utexcep.c
+  utglobal.c
+  utlock.c
+  utmath.c
+  utmisc.c
+  utmutex.c
+  utstate.c
+  utstring.c
+  utxferror.c
+  oswinxf.c
+  abcompare.c
+  abmain.c
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utascii.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/common/cmfsize.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utalloc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdebug.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/Common/getopt.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utdecode.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utbuffer.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utcache.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\components\utilities\utdecode.c(291,20): warning C4312: "Typumwandlung": Konvertierung von "ACPI_SIZE" in größeren Typ "void *"
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utexcep.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utglobal.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/COMPONENTS/utilities/utmath.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utlock.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmisc.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstate.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utmutex.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utstring.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/components/utilities/utxferror.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abcompare.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/os_specific/service_layers/oswinxf.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(187,14): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(230,14): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(259,14): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(293,14): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(355,15): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(362,15): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(409,15): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(410,15): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(428,19): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\tools\AcpiBin\abcompare.c(429,19): warning C4267: "=": Konvertierung von "size_t" nach "UINT32", Datenverlust möglich
+D:\acpi2dt\acpica\source\include\acobject.h(111,5): warning C4121: "acpi_object_string": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(119,5): warning C4121: "acpi_object_buffer": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(130,42): warning C4121: "acpi_object_package": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(148,48): warning C4121: "acpi_object_event": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(173,42): warning C4121: "acpi_object_region": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(232,5): warning C4121: "acpi_object_notify_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(240,5): warning C4121: "acpi_object_device": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(249,5): warning C4121: "acpi_object_power_resource": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(264,5): warning C4121: "acpi_object_processor": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(273,5): warning C4121: "acpi_object_thermal_zone": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(306,47): warning C4121: "acpi_object_field_common": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(319,55): warning C4121: "acpi_object_region_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(328,47): warning C4121: "acpi_object_bank_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(343,46): warning C4121: "acpi_object_index_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(356,47): warning C4121: "acpi_object_buffer_field": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(370,42): warning C4121: "acpi_object_notify_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(384,44): warning C4121: "acpi_object_addr_handler": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(451,48): warning C4121: "acpi_object_extra": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(465,44): warning C4121: "acpi_object_data": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\include\acobject.h(476,42): warning C4121: "acpi_object_cache_list": Ausrichtung eines Elements hängt vom Pragma "pack" ab
+  (Quelldatei „../../source/tools/AcpiBin/abmain.c“ wird kompiliert)
+  
+D:\acpi2dt\acpica\source\os_specific\service_layers\oswinxf.c(577,13): warning C4312: "Typumwandlung": Konvertierung von "ACPI_SIZE" in größeren Typ "void *"
+C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(1423,5): warning MSB8012: TargetPath(D:\acpi2dt\ARM64\Debug\AcpiBin.exe) entspricht nicht dem OutputFile-Eigenschaftswert (D:\acpi2dt\acpica\generate\msvc2017\AcpiBinDebug\AcpiBin.exe) von Linker. Das Projekt wird daher möglicherweise nicht ordnungsgemäß erstellt. Damit dieses Problem behoben werden kann, müssen die Eigenschaftswerte für $(OutDir), $(TargetName) und $(TargetExt) dem in %(Link.OutputFile) angegebenen Wert entsprechen.
+  Checking existence of acpica/libraries directory
+  AcpiBin.vcxproj -> D:\acpi2dt\ARM64\Debug\AcpiBin.exe
+  Copying acpibin to libraries...
+          1 Datei(en) kopiert.

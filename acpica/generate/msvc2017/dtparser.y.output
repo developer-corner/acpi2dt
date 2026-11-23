@@ -1,0 +1,1216 @@
+Grammatik
+
+    0 $accept: Value $end
+
+    1 Value: Expression OP_EXP_NEW_LINE
+    2      | Expression OP_EXP_EOF
+
+    3 Expression: OP_EXP_LOGICAL_NOT Expression
+    4           | OP_EXP_ONES_COMPLIMENT Expression
+    5           | Expression OP_EXP_MULTIPLY Expression
+    6           | Expression OP_EXP_DIVIDE Expression
+    7           | Expression OP_EXP_MODULO Expression
+    8           | Expression OP_EXP_ADD Expression
+    9           | Expression OP_EXP_SUBTRACT Expression
+   10           | Expression OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression OP_EXP_SHIFT_LEFT Expression
+   12           | Expression OP_EXP_GREATER Expression
+   13           | Expression OP_EXP_LESS Expression
+   14           | Expression OP_EXP_GREATER_EQUAL Expression
+   15           | Expression OP_EXP_LESS_EQUAL Expression
+   16           | Expression OP_EXP_EQUAL Expression
+   17           | Expression OP_EXP_NOT_EQUAL Expression
+   18           | Expression OP_EXP_AND Expression
+   19           | Expression OP_EXP_XOR Expression
+   20           | Expression OP_EXP_OR Expression
+   21           | Expression OP_EXP_LOGICAL_AND Expression
+   22           | Expression OP_EXP_LOGICAL_OR Expression
+   23           | OP_EXP_PAREN_OPEN Expression OP_EXP_PAREN_CLOSE
+   24           | OP_EXP_LABEL
+   25           | OP_EXP_NUMBER
+   26           | OP_EXP_HEX_NUMBER
+   27           | OP_EXP_DECIMAL_NUMBER
+
+
+Terminale und die Regeln, in denen sie verwendet werden
+
+$end (0) 0
+error (256)
+OP_EXP_EOF (258) 2
+OP_EXP_NEW_LINE (259) 1
+OP_EXP_NUMBER (260) 25
+OP_EXP_HEX_NUMBER (261) 26
+OP_EXP_DECIMAL_NUMBER (262) 27
+OP_EXP_LABEL (263) 24
+OP_EXP_PAREN_OPEN (264) 23
+OP_EXP_PAREN_CLOSE (265) 23
+OP_EXP_LOGICAL_OR (266) 22
+OP_EXP_LOGICAL_AND (267) 21
+OP_EXP_OR (268) 20
+OP_EXP_XOR (269) 19
+OP_EXP_AND (270) 18
+OP_EXP_NOT_EQUAL (271) 17
+OP_EXP_EQUAL (272) 16
+OP_EXP_LESS_EQUAL (273) 15
+OP_EXP_GREATER_EQUAL (274) 14
+OP_EXP_LESS (275) 13
+OP_EXP_GREATER (276) 12
+OP_EXP_SHIFT_LEFT (277) 11
+OP_EXP_SHIFT_RIGHT (278) 10
+OP_EXP_SUBTRACT (279) 9
+OP_EXP_ADD (280) 8
+OP_EXP_MODULO (281) 7
+OP_EXP_DIVIDE (282) 6
+OP_EXP_MULTIPLY (283) 5
+OP_EXP_LOGICAL_NOT (284) 3
+OP_EXP_ONES_COMPLIMENT (285) 4
+
+
+Nicht-Terminal und die Regeln, in denen sie verwendet werden
+
+$accept (31)
+    auf der linken Seite: 0
+Value (32)
+    auf der linken Seite: 1 2, auf der rechten Seite: 0
+Expression (33)
+    auf der linken Seite: 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
+    19 20 21 22 23 24 25 26 27, auf der rechten Seite: 1 2 3 4 5 6
+    7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+
+
+Zustand 0
+
+    0 $accept: . Value $end
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Value       gehe zu Zustand 8 über
+    Expression  gehe zu Zustand 9 über
+
+
+Zustand 1
+
+   25 Expression: OP_EXP_NUMBER .
+
+    $default  reduziere mit Regel 25 (Expression)
+
+
+Zustand 2
+
+   26 Expression: OP_EXP_HEX_NUMBER .
+
+    $default  reduziere mit Regel 26 (Expression)
+
+
+Zustand 3
+
+   27 Expression: OP_EXP_DECIMAL_NUMBER .
+
+    $default  reduziere mit Regel 27 (Expression)
+
+
+Zustand 4
+
+   24 Expression: OP_EXP_LABEL .
+
+    $default  reduziere mit Regel 24 (Expression)
+
+
+Zustand 5
+
+   23 Expression: OP_EXP_PAREN_OPEN . Expression OP_EXP_PAREN_CLOSE
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 10 über
+
+
+Zustand 6
+
+    3 Expression: OP_EXP_LOGICAL_NOT . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 11 über
+
+
+Zustand 7
+
+    4 Expression: OP_EXP_ONES_COMPLIMENT . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 12 über
+
+
+Zustand 8
+
+    0 $accept: Value . $end
+
+    $end  schiebe und gehe zu Zustand 13 über
+
+
+Zustand 9
+
+    1 Value: Expression . OP_EXP_NEW_LINE
+    2      | Expression . OP_EXP_EOF
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_EOF            schiebe und gehe zu Zustand 14 über
+    OP_EXP_NEW_LINE       schiebe und gehe zu Zustand 15 über
+    OP_EXP_LOGICAL_OR     schiebe und gehe zu Zustand 16 über
+    OP_EXP_LOGICAL_AND    schiebe und gehe zu Zustand 17 über
+    OP_EXP_OR             schiebe und gehe zu Zustand 18 über
+    OP_EXP_XOR            schiebe und gehe zu Zustand 19 über
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+
+Zustand 10
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+   23           | OP_EXP_PAREN_OPEN Expression . OP_EXP_PAREN_CLOSE
+
+    OP_EXP_PAREN_CLOSE    schiebe und gehe zu Zustand 34 über
+    OP_EXP_LOGICAL_OR     schiebe und gehe zu Zustand 16 über
+    OP_EXP_LOGICAL_AND    schiebe und gehe zu Zustand 17 über
+    OP_EXP_OR             schiebe und gehe zu Zustand 18 über
+    OP_EXP_XOR            schiebe und gehe zu Zustand 19 über
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+
+Zustand 11
+
+    3 Expression: OP_EXP_LOGICAL_NOT Expression .
+    5           | Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    $default  reduziere mit Regel 3 (Expression)
+
+
+Zustand 12
+
+    4 Expression: OP_EXP_ONES_COMPLIMENT Expression .
+    5           | Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    $default  reduziere mit Regel 4 (Expression)
+
+
+Zustand 13
+
+    0 $accept: Value $end .
+
+    $default  annehmen
+
+
+Zustand 14
+
+    2 Value: Expression OP_EXP_EOF .
+
+    $default  reduziere mit Regel 2 (Value)
+
+
+Zustand 15
+
+    1 Value: Expression OP_EXP_NEW_LINE .
+
+    $default  reduziere mit Regel 1 (Value)
+
+
+Zustand 16
+
+   22 Expression: Expression OP_EXP_LOGICAL_OR . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 35 über
+
+
+Zustand 17
+
+   21 Expression: Expression OP_EXP_LOGICAL_AND . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 36 über
+
+
+Zustand 18
+
+   20 Expression: Expression OP_EXP_OR . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 37 über
+
+
+Zustand 19
+
+   19 Expression: Expression OP_EXP_XOR . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 38 über
+
+
+Zustand 20
+
+   18 Expression: Expression OP_EXP_AND . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 39 über
+
+
+Zustand 21
+
+   17 Expression: Expression OP_EXP_NOT_EQUAL . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 40 über
+
+
+Zustand 22
+
+   16 Expression: Expression OP_EXP_EQUAL . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 41 über
+
+
+Zustand 23
+
+   15 Expression: Expression OP_EXP_LESS_EQUAL . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 42 über
+
+
+Zustand 24
+
+   14 Expression: Expression OP_EXP_GREATER_EQUAL . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 43 über
+
+
+Zustand 25
+
+   13 Expression: Expression OP_EXP_LESS . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 44 über
+
+
+Zustand 26
+
+   12 Expression: Expression OP_EXP_GREATER . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 45 über
+
+
+Zustand 27
+
+   11 Expression: Expression OP_EXP_SHIFT_LEFT . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 46 über
+
+
+Zustand 28
+
+   10 Expression: Expression OP_EXP_SHIFT_RIGHT . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 47 über
+
+
+Zustand 29
+
+    9 Expression: Expression OP_EXP_SUBTRACT . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 48 über
+
+
+Zustand 30
+
+    8 Expression: Expression OP_EXP_ADD . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 49 über
+
+
+Zustand 31
+
+    7 Expression: Expression OP_EXP_MODULO . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 50 über
+
+
+Zustand 32
+
+    6 Expression: Expression OP_EXP_DIVIDE . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 51 über
+
+
+Zustand 33
+
+    5 Expression: Expression OP_EXP_MULTIPLY . Expression
+
+    OP_EXP_NUMBER           schiebe und gehe zu Zustand 1 über
+    OP_EXP_HEX_NUMBER       schiebe und gehe zu Zustand 2 über
+    OP_EXP_DECIMAL_NUMBER   schiebe und gehe zu Zustand 3 über
+    OP_EXP_LABEL            schiebe und gehe zu Zustand 4 über
+    OP_EXP_PAREN_OPEN       schiebe und gehe zu Zustand 5 über
+    OP_EXP_LOGICAL_NOT      schiebe und gehe zu Zustand 6 über
+    OP_EXP_ONES_COMPLIMENT  schiebe und gehe zu Zustand 7 über
+
+    Expression  gehe zu Zustand 52 über
+
+
+Zustand 34
+
+   23 Expression: OP_EXP_PAREN_OPEN Expression OP_EXP_PAREN_CLOSE .
+
+    $default  reduziere mit Regel 23 (Expression)
+
+
+Zustand 35
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+   22           | Expression OP_EXP_LOGICAL_OR Expression .
+
+    OP_EXP_LOGICAL_AND    schiebe und gehe zu Zustand 17 über
+    OP_EXP_OR             schiebe und gehe zu Zustand 18 über
+    OP_EXP_XOR            schiebe und gehe zu Zustand 19 über
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 22 (Expression)
+
+
+Zustand 36
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   21           | Expression OP_EXP_LOGICAL_AND Expression .
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_OR             schiebe und gehe zu Zustand 18 über
+    OP_EXP_XOR            schiebe und gehe zu Zustand 19 über
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 21 (Expression)
+
+
+Zustand 37
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   20           | Expression OP_EXP_OR Expression .
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_XOR            schiebe und gehe zu Zustand 19 über
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 20 (Expression)
+
+
+Zustand 38
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   19           | Expression OP_EXP_XOR Expression .
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_AND            schiebe und gehe zu Zustand 20 über
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 19 (Expression)
+
+
+Zustand 39
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   18           | Expression OP_EXP_AND Expression .
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_NOT_EQUAL      schiebe und gehe zu Zustand 21 über
+    OP_EXP_EQUAL          schiebe und gehe zu Zustand 22 über
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 18 (Expression)
+
+
+Zustand 40
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   17           | Expression OP_EXP_NOT_EQUAL Expression .
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 17 (Expression)
+
+
+Zustand 41
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   16           | Expression OP_EXP_EQUAL Expression .
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_LESS_EQUAL     schiebe und gehe zu Zustand 23 über
+    OP_EXP_GREATER_EQUAL  schiebe und gehe zu Zustand 24 über
+    OP_EXP_LESS           schiebe und gehe zu Zustand 25 über
+    OP_EXP_GREATER        schiebe und gehe zu Zustand 26 über
+    OP_EXP_SHIFT_LEFT     schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT    schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT       schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD            schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO         schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE         schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY       schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 16 (Expression)
+
+
+Zustand 42
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   15           | Expression OP_EXP_LESS_EQUAL Expression .
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SHIFT_LEFT   schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT  schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT     schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD          schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO       schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE       schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY     schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 15 (Expression)
+
+
+Zustand 43
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   14           | Expression OP_EXP_GREATER_EQUAL Expression .
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SHIFT_LEFT   schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT  schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT     schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD          schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO       schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE       schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY     schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 14 (Expression)
+
+
+Zustand 44
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   13           | Expression OP_EXP_LESS Expression .
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SHIFT_LEFT   schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT  schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT     schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD          schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO       schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE       schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY     schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 13 (Expression)
+
+
+Zustand 45
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   12           | Expression OP_EXP_GREATER Expression .
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SHIFT_LEFT   schiebe und gehe zu Zustand 27 über
+    OP_EXP_SHIFT_RIGHT  schiebe und gehe zu Zustand 28 über
+    OP_EXP_SUBTRACT     schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD          schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO       schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE       schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY     schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 12 (Expression)
+
+
+Zustand 46
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   11           | Expression OP_EXP_SHIFT_LEFT Expression .
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SUBTRACT  schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD       schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO    schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE    schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY  schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 11 (Expression)
+
+
+Zustand 47
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   10           | Expression OP_EXP_SHIFT_RIGHT Expression .
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_SUBTRACT  schiebe und gehe zu Zustand 29 über
+    OP_EXP_ADD       schiebe und gehe zu Zustand 30 über
+    OP_EXP_MODULO    schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE    schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY  schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 10 (Expression)
+
+
+Zustand 48
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+    9           | Expression OP_EXP_SUBTRACT Expression .
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_MODULO    schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE    schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY  schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 9 (Expression)
+
+
+Zustand 49
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    8           | Expression OP_EXP_ADD Expression .
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    OP_EXP_MODULO    schiebe und gehe zu Zustand 31 über
+    OP_EXP_DIVIDE    schiebe und gehe zu Zustand 32 über
+    OP_EXP_MULTIPLY  schiebe und gehe zu Zustand 33 über
+
+    $default  reduziere mit Regel 8 (Expression)
+
+
+Zustand 50
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    7           | Expression OP_EXP_MODULO Expression .
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    $default  reduziere mit Regel 7 (Expression)
+
+
+Zustand 51
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    6           | Expression . OP_EXP_DIVIDE Expression
+    6           | Expression OP_EXP_DIVIDE Expression .
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    $default  reduziere mit Regel 6 (Expression)
+
+
+Zustand 52
+
+    5 Expression: Expression . OP_EXP_MULTIPLY Expression
+    5           | Expression OP_EXP_MULTIPLY Expression .
+    6           | Expression . OP_EXP_DIVIDE Expression
+    7           | Expression . OP_EXP_MODULO Expression
+    8           | Expression . OP_EXP_ADD Expression
+    9           | Expression . OP_EXP_SUBTRACT Expression
+   10           | Expression . OP_EXP_SHIFT_RIGHT Expression
+   11           | Expression . OP_EXP_SHIFT_LEFT Expression
+   12           | Expression . OP_EXP_GREATER Expression
+   13           | Expression . OP_EXP_LESS Expression
+   14           | Expression . OP_EXP_GREATER_EQUAL Expression
+   15           | Expression . OP_EXP_LESS_EQUAL Expression
+   16           | Expression . OP_EXP_EQUAL Expression
+   17           | Expression . OP_EXP_NOT_EQUAL Expression
+   18           | Expression . OP_EXP_AND Expression
+   19           | Expression . OP_EXP_XOR Expression
+   20           | Expression . OP_EXP_OR Expression
+   21           | Expression . OP_EXP_LOGICAL_AND Expression
+   22           | Expression . OP_EXP_LOGICAL_OR Expression
+
+    $default  reduziere mit Regel 5 (Expression)

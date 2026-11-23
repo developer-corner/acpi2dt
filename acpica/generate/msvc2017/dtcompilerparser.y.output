@@ -1,0 +1,215 @@
+Grammatik
+
+    0 $accept: Table $end
+
+    1 Table: FieldList
+
+    2 FieldList: Field FieldList
+    3          | Field
+
+    4 Field: DT_PARSEOP_LABEL ':' Data
+
+    5 Data: MultiLineDataList
+    6     | Datum
+    7     | Datum MultiLineDataList
+
+    8 MultiLineDataList: MultiLineDataList MultiLineData
+    9                  | MultiLineData
+
+   10 MultiLineData: DT_PARSEOP_LINE_CONTINUATION Datum
+
+   11 Datum: DT_PARSEOP_DATA
+   12      | DT_PARSEOP_STRING_DATA
+
+
+Terminale und die Regeln, in denen sie verwendet werden
+
+$end (0) 0
+':' (58) 4
+error (256)
+DT_PARSEOP_DATA (258) 11
+DT_PARSEOP_LABEL (259) 4
+DT_PARSEOP_STRING_DATA (260) 12
+DT_PARSEOP_LINE_CONTINUATION (261) 10
+
+
+Nicht-Terminal und die Regeln, in denen sie verwendet werden
+
+$accept (8)
+    auf der linken Seite: 0
+Table (9)
+    auf der linken Seite: 1, auf der rechten Seite: 0
+FieldList (10)
+    auf der linken Seite: 2 3, auf der rechten Seite: 1 2
+Field (11)
+    auf der linken Seite: 4, auf der rechten Seite: 2 3
+Data (12)
+    auf der linken Seite: 5 6 7, auf der rechten Seite: 4
+MultiLineDataList (13)
+    auf der linken Seite: 8 9, auf der rechten Seite: 5 7 8
+MultiLineData (14)
+    auf der linken Seite: 10, auf der rechten Seite: 8 9
+Datum (15)
+    auf der linken Seite: 11 12, auf der rechten Seite: 6 7 10
+
+
+Zustand 0
+
+    0 $accept: . Table $end
+
+    DT_PARSEOP_LABEL  schiebe und gehe zu Zustand 1 über
+
+    Table      gehe zu Zustand 2 über
+    FieldList  gehe zu Zustand 3 über
+    Field      gehe zu Zustand 4 über
+
+
+Zustand 1
+
+    4 Field: DT_PARSEOP_LABEL . ':' Data
+
+    ':'  schiebe und gehe zu Zustand 5 über
+
+
+Zustand 2
+
+    0 $accept: Table . $end
+
+    $end  schiebe und gehe zu Zustand 6 über
+
+
+Zustand 3
+
+    1 Table: FieldList .
+
+    $default  reduziere mit Regel 1 (Table)
+
+
+Zustand 4
+
+    2 FieldList: Field . FieldList
+    3          | Field .
+
+    DT_PARSEOP_LABEL  schiebe und gehe zu Zustand 1 über
+
+    $default  reduziere mit Regel 3 (FieldList)
+
+    FieldList  gehe zu Zustand 7 über
+    Field      gehe zu Zustand 4 über
+
+
+Zustand 5
+
+    4 Field: DT_PARSEOP_LABEL ':' . Data
+
+    DT_PARSEOP_DATA               schiebe und gehe zu Zustand 8 über
+    DT_PARSEOP_STRING_DATA        schiebe und gehe zu Zustand 9 über
+    DT_PARSEOP_LINE_CONTINUATION  schiebe und gehe zu Zustand 10 über
+
+    Data               gehe zu Zustand 11 über
+    MultiLineDataList  gehe zu Zustand 12 über
+    MultiLineData      gehe zu Zustand 13 über
+    Datum              gehe zu Zustand 14 über
+
+
+Zustand 6
+
+    0 $accept: Table $end .
+
+    $default  annehmen
+
+
+Zustand 7
+
+    2 FieldList: Field FieldList .
+
+    $default  reduziere mit Regel 2 (FieldList)
+
+
+Zustand 8
+
+   11 Datum: DT_PARSEOP_DATA .
+
+    $default  reduziere mit Regel 11 (Datum)
+
+
+Zustand 9
+
+   12 Datum: DT_PARSEOP_STRING_DATA .
+
+    $default  reduziere mit Regel 12 (Datum)
+
+
+Zustand 10
+
+   10 MultiLineData: DT_PARSEOP_LINE_CONTINUATION . Datum
+
+    DT_PARSEOP_DATA         schiebe und gehe zu Zustand 8 über
+    DT_PARSEOP_STRING_DATA  schiebe und gehe zu Zustand 9 über
+
+    Datum  gehe zu Zustand 15 über
+
+
+Zustand 11
+
+    4 Field: DT_PARSEOP_LABEL ':' Data .
+
+    $default  reduziere mit Regel 4 (Field)
+
+
+Zustand 12
+
+    5 Data: MultiLineDataList .
+    8 MultiLineDataList: MultiLineDataList . MultiLineData
+
+    DT_PARSEOP_LINE_CONTINUATION  schiebe und gehe zu Zustand 10 über
+
+    $default  reduziere mit Regel 5 (Data)
+
+    MultiLineData  gehe zu Zustand 16 über
+
+
+Zustand 13
+
+    9 MultiLineDataList: MultiLineData .
+
+    $default  reduziere mit Regel 9 (MultiLineDataList)
+
+
+Zustand 14
+
+    6 Data: Datum .
+    7     | Datum . MultiLineDataList
+
+    DT_PARSEOP_LINE_CONTINUATION  schiebe und gehe zu Zustand 10 über
+
+    $default  reduziere mit Regel 6 (Data)
+
+    MultiLineDataList  gehe zu Zustand 17 über
+    MultiLineData      gehe zu Zustand 13 über
+
+
+Zustand 15
+
+   10 MultiLineData: DT_PARSEOP_LINE_CONTINUATION Datum .
+
+    $default  reduziere mit Regel 10 (MultiLineData)
+
+
+Zustand 16
+
+    8 MultiLineDataList: MultiLineDataList MultiLineData .
+
+    $default  reduziere mit Regel 8 (MultiLineDataList)
+
+
+Zustand 17
+
+    7 Data: Datum MultiLineDataList .
+    8 MultiLineDataList: MultiLineDataList . MultiLineData
+
+    DT_PARSEOP_LINE_CONTINUATION  schiebe und gehe zu Zustand 10 über
+
+    $default  reduziere mit Regel 7 (Data)
+
+    MultiLineData  gehe zu Zustand 16 über

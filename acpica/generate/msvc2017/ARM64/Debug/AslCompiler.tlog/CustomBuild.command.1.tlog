@@ -1,0 +1,18 @@
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\ASLCOMPILER.L
+flex -i -PAslCompiler -oaslcompiler.l.c D:\acpi2dt\acpica\source\compiler\aslcompiler.l
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\ASLPARSER.Y
+m4 -P -ID:\acpi2dt\acpica\source\compiler\ D:\acpi2dt\acpica\source\compiler\aslparser.y > aslcompiler.y
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\DTPARSER.L
+flex -PDtParser -odtparser.l.c D:\acpi2dt\acpica\source\compiler\dtparser.l
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\DTPARSER.Y
+bison -d -l -pDtParser -v D:\acpi2dt\acpica\source\compiler\dtparser.y -vd -odtparser.y.c
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\PRPARSER.L
+flex -PPrParser -oprparser.l.c D:\acpi2dt\acpica\source\compiler\prparser.l
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\PRPARSER.Y
+bison -d -l -pPrParser -v D:\acpi2dt\acpica\source\compiler\prparser.y -vd -oprparser.y.c
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\DTCOMPILERPARSER.L
+flex -i -PDtCompilerParser -odtcompilerparser.l.c D:\acpi2dt\acpica\source\compiler\dtcompilerparser.l
+^D:\ACPI2DT\ACPICA\SOURCE\COMPILER\DTCOMPILERPARSER.Y
+bison -d -l -pDtCompilerParser -v D:\acpi2dt\acpica\source\compiler\dtcompilerparser.y -vd -odtcompilerparser.y.c
+^D:\ACPI2DT\ACPICA\GENERATE\MSVC2017\ASLCOMPILER.Y
+bison -d -l -pAslCompiler -v D:\acpi2dt\acpica\generate\msvc2017\aslcompiler.y -vd -oaslcompiler.y.c
