@@ -1,0 +1,90 @@
+Debug
+Release
+DebugCS
+ReleaseCS
+.metadata
+*.obj
+*.bak
+*.pch
+*.suo
+*.aps
+*.tlog
+*.clw
+*.sbr
+*.idb
+*.pdb
+*.exe
+*.lib
+*.sdf
+*.ncb
+*.VC.db
+DebugDynamic
+ReleaseDynamic
+tmp32
+tmp32d
+out32
+out32d
+tmp32-dr
+tmp32d-dr
+out32-dr
+out32d-dr
+OpenSSLCNG/OpenSSL32
+OpenSSLCNG/OpenSSL64
+OpenSSLCNG/zlib-1.2.8
+*.ipch
+
+#built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin
+gen
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# Eclipse project files
+.classpath
+.settings
+
+# Android Studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build
+
+#NDK
+obj
+
+*.o
+openssl-1.1.1w
+openssl
+.vs
+res/~*.tmp
+~*
+alloids.datafile
+alloids.datafile.*
+zlib-1.2.11
+doxygen/output
+x64
+/DebugStatic/
+/ReleaseStatic/
+oid.db
+all_oids.txt
+oid-master.db
+/3rdparty/build
+/libasn1tk/doxygen
