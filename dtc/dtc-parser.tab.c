@@ -1725,7 +1725,7 @@ yyreduce:
 				 * within the mask to one (i.e. | in the
 				 * mask), all bits are one.
 				 */
-				if (((yyvsp[0].integer) > mask) && (((yyvsp[0].integer) | mask) != -1ULL)) {
+				if (((yyvsp[0].integer) > mask) && (((yyvsp[0].integer) | mask) != 0xFFFFFFFFFFFFFFFFULL)) {
 					char *loc = srcpos_string(&(yylsp[0]));
 					fprintf(stderr,
 						"WARNING: %s: Value 0x%016" PRIx64
@@ -1858,7 +1858,7 @@ yyreduce:
     break;
 
   case 78: /* integer_unary: '-' integer_unary  */
-                            { (yyval.integer) = -(yyvsp[0].integer); }
+                            { (yyval.integer) = ((uint64_t)-(((int64_t)yyvsp[0].integer))); }
     break;
 
   case 79: /* integer_unary: '~' integer_unary  */

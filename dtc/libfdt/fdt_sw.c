@@ -261,7 +261,7 @@ static int fdt_add_string_(void *fdt, const char *s)
 
 	memcpy(strtab - offset, s, len);
 	fdt_set_size_dt_strings(fdt, strtabsize + len);
-	return -offset;
+	return -((int)offset);
 }
 
 /* Must only be used to roll back in case of error */

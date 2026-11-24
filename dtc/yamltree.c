@@ -21,7 +21,7 @@ char *yaml_error_name[] = {
 	[YAML_EMITTER_ERROR] = "emitter error",
 };
 
-#define yaml_emitter_emit_or_die(emitter, event) do {			 \
+#define yaml_emitter_emit_or_die(emitter, event) do  			 \
 {									                                         \
 	if (!yaml_emitter_emit(emitter, event))				           \
 		die("yaml '%s': %s in %s, line %i\n",			             \
@@ -149,7 +149,7 @@ static void yaml_propval(yaml_emitter_t *emitter, struct property *prop)
 		if (m->type < TYPE_UINT8)
 			continue;
 
-		chunk_len = type_marker_length(m) ? : len;
+		chunk_len = type_marker_length(m) ? type_marker_length(m) : len;
 		assert(chunk_len > 0);
 		len -= chunk_len;
 
