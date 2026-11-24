@@ -59,94 +59,34 @@
     <ClCompile Include="dtc.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="dtc-lexer.lex.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="dtc-parser.tab.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="fdtget.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="fdtoverlay.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="fdtput.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="flattree.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="fstree.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="livetree.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="srcpos.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="treesource.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="util.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="yamltree.c">
+    <ClCompile Include="dtc-lexer.lex.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="libfdt\fdt.c">
+    <ClCompile Include="dtc-parser.tab.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="libfdt\fdt_addresses.c">
+    <ClCompile Include="livetree.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="libfdt\fdt_empty_tree.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_overlay.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_ro.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_rw.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_strerror.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_sw.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="libfdt\fdt_wip.c">
+    <ClCompile Include="treesource.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="getopt.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="api.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="dumper.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="emitter.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="loader.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="parser.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="reader.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="scanner.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="writer.c">
+    <ClCompile Include="yamltree.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

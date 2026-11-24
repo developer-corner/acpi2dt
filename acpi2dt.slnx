@@ -1,15 +1,53 @@
 <Solution>
   <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DebugLibYAML" />
+    <BuildType Name="Release" />
+    <BuildType Name="ReleaseLibYAML" />
     <Platform Name="ARM64" />
   </Configurations>
-  <Project Path="acpi2dt/acpi2dt.vcxproj" Id="157546e2-83cb-42e1-b40d-ef6d04912d87" />
-  <Project Path="acpica/generate/msvc2017/AcpiBin.vcxproj" Id="96e09545-ac04-4f1a-91b9-36fc947e1ebb" />
-  <Project Path="acpica/generate/msvc2017/AcpiDump.vcxproj" Id="8ce1c7f6-65d2-4fa7-93a8-2aa826f5a564" />
-  <Project Path="acpica/generate/msvc2017/AcpiExec.vcxproj" Id="1c19430a-8836-4023-ac37-aab1921220e6" />
-  <Project Path="acpica/generate/msvc2017/AcpiHelp.vcxproj" Id="8828ca34-62c1-4a1d-ab26-78cb6b1c46d7" />
-  <Project Path="acpica/generate/msvc2017/AcpiSrc.vcxproj" Id="f582c598-249c-4673-af1f-f1d1884db0b5" />
-  <Project Path="acpica/generate/msvc2017/AcpiSubsystem.vcxproj" Id="768b4ff9-311f-44f1-b0fc-41cc5a9a5053" />
-  <Project Path="acpica/generate/msvc2017/AcpiXtract.vcxproj" Id="2e58bda9-5221-4fcb-95ee-27b290c3f21a" />
-  <Project Path="acpica/generate/msvc2017/AslCompiler.vcxproj" Id="66be33e1-849a-42ab-ae4b-2abbc13cb432" />
-  <Project Path="dtc/dtc.vcxproj" Id="78269c9e-9dcc-4bd1-a05a-e3738af05771" />
+  <Project Path="acpi2dt/acpi2dt.vcxproj" Id="157546e2-83cb-42e1-b40d-ef6d04912d87">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiBin.vcxproj" Id="96e09545-ac04-4f1a-91b9-36fc947e1ebb">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiDump.vcxproj" Id="8ce1c7f6-65d2-4fa7-93a8-2aa826f5a564">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiExec.vcxproj" Id="1c19430a-8836-4023-ac37-aab1921220e6">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiHelp.vcxproj" Id="8828ca34-62c1-4a1d-ab26-78cb6b1c46d7">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiSrc.vcxproj" Id="f582c598-249c-4673-af1f-f1d1884db0b5">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiSubsystem.vcxproj" Id="768b4ff9-311f-44f1-b0fc-41cc5a9a5053">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AcpiXtract.vcxproj" Id="2e58bda9-5221-4fcb-95ee-27b290c3f21a">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="acpica/generate/msvc2017/AslCompiler.vcxproj" Id="66be33e1-849a-42ab-ae4b-2abbc13cb432">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="dtc/dtc.vcxproj" Id="78269c9e-9dcc-4bd1-a05a-e3738af05771">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
+  <Project Path="libyaml/libyaml.vcxproj" Id="91088fe9-e977-424a-ad84-7afe6569571f">
+    <BuildType Solution="DebugLibYAML|*" Project="Debug" />
+    <BuildType Solution="ReleaseLibYAML|*" Project="Release" />
+  </Project>
 </Solution>
