@@ -116,13 +116,30 @@ void FPRINTF(FILE* f, const char* fmt, ...)
   fprintf(f, "%s", buffer);
 }
 
+static void ShowHelp(const char *progname)
+{
+  FPRINTF(stdout, CTRL_YELLOW "usage:" CTRL_RESET " %s <output dts file> <output firmware folder> <input linux kernel dts folder>\n", progname);
+  FPRINTF(stdout, CTRL_YELLOW "------" CTRL_RESET " [<similar DTS file>][<similar DTS file>]...\n\n");
+
+  FPRINTF(stdout, "  - scans Windows device manager, enumerates binary firmwares, reads ACPI tables\n");
+  FPRINTF(stdout, "  - creates a Device Tree proposal (output DTS file)\n");
+  FPRINTF(stdout, "  - creates a binary firmware folder structure (under /lib/firmware in target Linux)\n");
+  FPRINTF(stdout, "  - uses files in <input linux kernel dts folder>\n");
+  FPRINTF(stdout, "  - optionally, you MAY specify one or more existing DTS files of 'similar' notebooks\n");
+  FPRINTF(stdout, "    => the first similar DTS file has the highest priority, next files have lower\n");
+  FPRINTF(stdout, "       priorities. These files are scanned and checked for additional Device Tree components.\n\n");
+}
+
 int main(int argc, char* argv[])
 {
-  int     fd_out          = _fileno(stdout);
-  int     fd_err          = _fileno(stderr);
-  int     rc              = 1;
-  bool    stdout_is_tty   = (fd_out >= 0) && (_isatty(fd_out) != 0);
-  bool    stderr_is_tty   = (fd_err >= 0) && (_isatty(fd_err) != 0);
+  int         fd_out          = _fileno(stdout);
+  int         fd_err          = _fileno(stderr);
+  int         rc              = 1;
+  bool        stdout_is_tty   = (fd_out >= 0) && (_isatty(fd_out) != 0);
+  bool        stderr_is_tty   = (fd_err >= 0) && (_isatty(fd_err) != 0);
+  const char *output_dts_file;
+  const char *output_fw_folder;
+  const char *input_linux_kernel_dts_folder;
 
   // only enable colored text output if stdout/stderr not redirected to file
 
@@ -140,12 +157,28 @@ int main(int argc, char* argv[])
 
   FPRINTF(stdout, CTRL_CYAN "ACPI2DT Device Tree draft tool " CTRL_GREEN VERSION_STRING CTRL_RESET "\n\n");
 
+  if (argc < 4)
+  {
+    ShowHelp(argv[0]);
+    goto DoExit;
+  }
+
+  output_dts_file = argv[1];
+  output_fw_folder = argv[2];
+  input_linux_kernel_dts_folder = argv[3];
+
+  // argv[4], argv[5], ... contain optional DTS files of 'similar' ARM64 notebooks
+
+  // Claude: source code missing here
 
 
+
+
+  // END OF MAIN, set result code to zero (0) now:
 
   rc = 0;
 
-//DoExit:
+DoExit:
 
   if (0 != reset_console)
   {
