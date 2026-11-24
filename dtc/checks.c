@@ -39,6 +39,11 @@ struct check {
 	struct check **prereq;
 };
 
+/*
+ * MSVC rejects an empty initializer list "{ }", so every prerequisite array
+ * starts with a NULL placeholder. The placeholder is skipped by both
+ * num_prereqs (- 1) and prereq (+ 1): run_check() walks prereq[0..n-1].
+ */
 #define CHECK_ENTRY(nm_, fn_, d_, w_, e_, ...)	       \
 	static struct check *nm_##_prereqs[] = { NULL, __VA_ARGS__ }; \
 	static struct check nm_ = { \
@@ -49,7 +54,7 @@ struct check {
 		.error = (e_), \
 		.status = UNCHECKED, \
 		.num_prereqs = ARRAY_SIZE(nm_##_prereqs) - 1, \
-		.prereq = nm_##_prereqs, \
+		.prereq = nm_##_prereqs + 1, \
 	};
 #define WARNING(nm_, fn_, d_, ...) \
 	CHECK_ENTRY(nm_, fn_, d_, true, false, __VA_ARGS__)
