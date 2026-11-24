@@ -1,161 +1,276 @@
+/**
+ * @file   devmgr_explorer.c
+ * @author Ingo A. Kubbilun
+ * @brief  enumerates hardware via the Windows Device Manager (SetupAPI,
+ *         CfgMgr32) and links every device to its ACPI namespace path
+ *         (DEVPKEY_Device_BiosDeviceName) and its DriverStore package
+ *
+ * [MIT license] - see main.c
+ */
+
 #include "devmgr_explorer.h"
+#include "aml_parser.h"
 #include <setupapi.h>
 #include <cfgmgr32.h>
 #include <initguid.h>
 #include <devpkey.h>
 
-static void print_multi_sz_json(FILE* fp, const wchar_t* buf) {
-    fputc('[', fp);
-    if (buf) {
-        const wchar_t* p = buf;
-        bool first = true;
-        while (*p) {
-            char utf8[512];
-            woa_wide_to_utf8(p, utf8, sizeof(utf8));
-            if (!first) fputs(", ", fp);
-            woa_json_escape_fp(fp, utf8);
-            first = false;
-            p += wcslen(p) + 1;
-        }
-    }
-    fputc(']', fp);
+static bool query_prop(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, wchar_t *out, DWORD cap_bytes)
+{
+  DEVPROPTYPE ptype = 0;
+  DWORD       req = 0;
+  ZeroMemory(out, cap_bytes);
+  if (!SetupDiGetDevicePropertyW(devs, info, key, &ptype, (PBYTE)out, cap_bytes - sizeof(wchar_t) * 2, &req, 0))
+    return false;
+  return ptype == DEVPROP_TYPE_STRING || ptype == DEVPROP_TYPE_STRING_LIST;
 }
 
-static bool query_dev_prop_str(HDEVINFO devs, SP_DEVINFO_DATA* info, const DEVPROPKEY* key, wchar_t* out, DWORD cap_bytes) {
-    DEVPROPTYPE ptype = 0;
-    DWORD req = 0;
-    ZeroMemory(out, cap_bytes);
-    return SetupDiGetDevicePropertyW(devs, info, key, &ptype, (PBYTE)out, cap_bytes, &req, 0) != FALSE;
+static void prop_utf8(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, char *out, size_t cap)
+{
+  wchar_t w[1024];
+  out[0] = 0;
+  if (query_prop(devs, info, key, w, sizeof(w)))
+    wide_to_utf8_buf(w, out, cap);
 }
 
-static void emit_cm_resources(FILE* fp, DEVINST dev_inst) {
-    LOG_CONF log_conf = 0;
-    if (CM_Get_First_Log_Conf(&log_conf, dev_inst, ALLOC_LOG_CONF) != CR_SUCCESS) {
-        if (CM_Get_First_Log_Conf(&log_conf, dev_inst, BOOT_LOG_CONF) != CR_SUCCESS) {
-            fputs("\"mmioRanges\": [], \"irqs\": []", fp);
-            return;
-        }
-    }
-
-    char mmio_buf[2048] = "";
-    char irq_buf[512] = "";
-    bool first_mmio = true;
-    bool first_irq = true;
-
-    RES_DES rd = log_conf;
-    RES_DES next_rd = 0;
-    RESOURCEID res_id = 0;
-
-    while (CM_Get_Next_Res_Des(&next_rd, rd, ResType_All, &res_id, 0) == CR_SUCCESS) {
-        if (rd != log_conf) CM_Free_Res_Des_Handle(rd);
-        rd = next_rd;
-
-        ULONG sz = 0;
-        if (CM_Get_Res_Des_Data_Size(&sz, rd, 0) == CR_SUCCESS && sz > 0) {
-            BYTE* data = (BYTE*)malloc(sz);
-            if (data && CM_Get_Res_Des_Data(rd, data, sz, 0) == CR_SUCCESS) {
-                if (res_id == ResType_Mem && sz >= sizeof(MEM_RESOURCE)) {
-                    const MEM_RESOURCE* mem = (const MEM_RESOURCE*)data;
-                    char item[128];
-                    _snprintf(item, sizeof(item), "%s\"0x%llx-0x%llx\"",
-                              first_mmio ? "" : ", ",
-                              (unsigned long long)mem->MEM_Header.MD_Alloc_Base,
-                              (unsigned long long)mem->MEM_Header.MD_Alloc_End);
-                    strncat(mmio_buf, item, sizeof(mmio_buf) - strlen(mmio_buf) - 1);
-                    first_mmio = false;
-                } else if (res_id == ResType_IRQ && sz >= sizeof(IRQ_RESOURCE)) {
-                    const IRQ_RESOURCE* irq = (const IRQ_RESOURCE*)data;
-                    char item[32];
-                    _snprintf(item, sizeof(item), "%s%u",
-                              first_irq ? "" : ", ",
-                              (unsigned)irq->IRQ_Header.IRQD_Alloc_Num);
-                    strncat(irq_buf, item, sizeof(irq_buf) - strlen(irq_buf) - 1);
-                    first_irq = false;
-                }
-            }
-            free(data);
-        }
-    }
-    if (rd != log_conf) CM_Free_Res_Des_Handle(rd);
-    CM_Free_Log_Conf_Handle(log_conf);
-
-    fprintf(fp, "\"mmioRanges\": [%s], \"irqs\": [%s]", mmio_buf, irq_buf);
+static void prop_multi(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, strlist_t *sl)
+{
+  wchar_t w[4096];
+  if (!query_prop(devs, info, key, w, sizeof(w)))
+    return;
+  for (const wchar_t *p = w; *p; p += wcslen(p) + 1)
+  {
+    char *s = wide_to_utf8(p);
+    sl_add_unique(sl, s);
+    free(s);
+  }
 }
 
-int woa_explore_device_manager(const woa_config_t* cfg) {
-    HDEVINFO devs = SetupDiGetClassDevsW(NULL, NULL, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
-    if (devs == INVALID_HANDLE_VALUE) {
-        fprintf(stderr, "[DevMgr] SetupDiGetClassDevsW failed (%lu)\n", GetLastError());
-        return -1;
-    }
+static void collect_resources(dm_dev_t *d, DEVINST inst)
+{
+  LOG_CONF   lc = 0;
+  RES_DES    rd, next;
+  RESOURCEID rid;
 
-    wchar_t out_path[WOA_MAX_PATH];
-    _snwprintf(out_path, WOA_MAX_PATH, L"%s\\hardware_inventory.json", cfg->output_dir);
-    FILE* fp = _wfopen(out_path, L"wb");
-    if (!fp) {
-        SetupDiDestroyDeviceInfoList(devs);
-        return -1;
-    }
+  if (CM_Get_First_Log_Conf(&lc, inst, ALLOC_LOG_CONF) != CR_SUCCESS &&
+      CM_Get_First_Log_Conf(&lc, inst, BOOT_LOG_CONF) != CR_SUCCESS)
+    return;
 
-    fputs("{\n  \"devices\": [\n", fp);
-
-    SP_DEVINFO_DATA info;
-    ZeroMemory(&info, sizeof(info));
-    info.cbSize = sizeof(info);
-
-    DWORD count = 0;
-    for (DWORD i = 0; SetupDiEnumDeviceInfo(devs, i, &info); ++i) {
-        wchar_t w_inst[512] = L"";
-        wchar_t w_name[512] = L"";
-        wchar_t w_cls[256] = L"";
-        wchar_t w_hw[2048] = L"";
-        wchar_t w_compat[2048] = L"";
-        wchar_t w_inf[256] = L"";
-        wchar_t w_ver[128] = L"";
-        wchar_t w_loc[512] = L"";
-        wchar_t w_bios[512] = L"";
-
-        SetupDiGetDeviceInstanceIdW(devs, &info, w_inst, 512, NULL);
-        if (!query_dev_prop_str(devs, &info, &DEVPKEY_Device_FriendlyName, w_name, sizeof(w_name))) {
-            query_dev_prop_str(devs, &info, &DEVPKEY_Device_DeviceDesc, w_name, sizeof(w_name));
+  rd = (RES_DES)lc;
+  while (CM_Get_Next_Res_Des(&next, rd, ResType_All, &rid, 0) == CR_SUCCESS)
+  {
+    ULONG sz = 0;
+    if (rd != (RES_DES)lc)
+      CM_Free_Res_Des_Handle(rd);
+    rd = next;
+    if (CM_Get_Res_Des_Data_Size(&sz, rd, 0) == CR_SUCCESS && sz > 0)
+    {
+      BYTE *data = xmalloc(sz);
+      if (CM_Get_Res_Des_Data(rd, data, sz, 0) == CR_SUCCESS)
+      {
+        if (rid == ResType_Mem && sz >= sizeof(MEM_DES) && d->nmem < 8)
+        {
+          const MEM_DES *m = (const MEM_DES *)data;
+          d->mem_base[d->nmem] = m->MD_Alloc_Base;
+          d->mem_end[d->nmem] = m->MD_Alloc_End;
+          d->nmem++;
         }
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_Class, w_cls, sizeof(w_cls));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_HardwareIds, w_hw, sizeof(w_hw));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_CompatibleIds, w_compat, sizeof(w_compat));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_DriverInfPath, w_inf, sizeof(w_inf));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_DriverVersion, w_ver, sizeof(w_ver));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_LocationInfo, w_loc, sizeof(w_loc));
-        query_dev_prop_str(devs, &info, &DEVPKEY_Device_BiosDeviceName, w_bios, sizeof(w_bios));
-
-        char inst[512], name[512], cls[256], inf[256], ver[128], loc[512], bios[512];
-        woa_wide_to_utf8(w_inst, inst, sizeof(inst));
-        woa_wide_to_utf8(w_name, name, sizeof(name));
-        woa_wide_to_utf8(w_cls, cls, sizeof(cls));
-        woa_wide_to_utf8(w_inf, inf, sizeof(inf));
-        woa_wide_to_utf8(w_ver, ver, sizeof(ver));
-        woa_wide_to_utf8(w_loc, loc, sizeof(loc));
-        woa_wide_to_utf8(w_bios, bios, sizeof(bios));
-
-        if (count > 0) fputs(",\n", fp);
-        fputs("    { ", fp);
-        fputs("\"instanceId\": ", fp); woa_json_escape_fp(fp, inst);
-        fputs(", \"friendlyName\": ", fp); woa_json_escape_fp(fp, name);
-        fputs(", \"className\": ", fp); woa_json_escape_fp(fp, cls);
-        fputs(", \"hardwareIds\": ", fp); print_multi_sz_json(fp, w_hw);
-        fputs(", \"compatibleIds\": ", fp); print_multi_sz_json(fp, w_compat);
-        fputs(", \"driverInf\": ", fp); woa_json_escape_fp(fp, inf);
-        fputs(", \"driverVersion\": ", fp); woa_json_escape_fp(fp, ver);
-        fputs(", \"locationInfo\": ", fp); woa_json_escape_fp(fp, loc);
-        fputs(", \"biosDeviceName\": ", fp); woa_json_escape_fp(fp, bios);
-        fputs(", \"status\": \"OK\", ", fp);
-        emit_cm_resources(fp, info.DevInst);
-        fputs(" }", fp);
-        count++;
+        else if (rid == ResType_MemLarge && sz >= sizeof(MEM_LARGE_DES) && d->nmem < 8)
+        {
+          const MEM_LARGE_DES *m = (const MEM_LARGE_DES *)data;
+          d->mem_base[d->nmem] = m->MLD_Alloc_Base;
+          d->mem_end[d->nmem] = m->MLD_Alloc_End;
+          d->nmem++;
+        }
+        else if (rid == ResType_IRQ && sz >= sizeof(IRQ_DES) && d->nirq < 8)
+        {
+          const IRQ_DES *q = (const IRQ_DES *)data;
+          d->irqs[d->nirq++] = (uint32_t)q->IRQD_Alloc_Num;
+        }
+      }
+      free(data);
     }
+  }
+  if (rd != (RES_DES)lc)
+    CM_Free_Res_Des_Handle(rd);
+  CM_Free_Log_Conf_Handle(lc);
+}
 
-    fputs("\n  ]\n}\n", fp);
-    fclose(fp);
-    SetupDiDestroyDeviceInfoList(devs);
-    printf("[DevMgr] Exported %lu PnP device records to hardware_inventory.json\n", count);
+static void find_driver_store_dir(dm_dev_t *d)
+{
+  wchar_t  inf_path[MAX_PATH], ret[A2D_MAX_PATH];
+  char     tmp[A2D_MAX_PATH], dir[A2D_MAX_PATH];
+  wchar_t *winf;
+  DWORD    req = 0;
+
+  if (!d->inf[0])
+    return;
+  winf = utf8_to_wide(d->inf);
+  GetWindowsDirectoryW(inf_path, MAX_PATH);
+  wcsncat(inf_path, L"\\INF\\", MAX_PATH - wcslen(inf_path) - 1);
+  wcsncat(inf_path, winf, MAX_PATH - wcslen(inf_path) - 1);
+  free(winf);
+  if (SetupGetInfDriverStoreLocationW(inf_path, NULL, NULL, ret, A2D_MAX_PATH, &req))
+  {
+    wide_to_utf8_buf(ret, tmp, sizeof(tmp));
+    path_dirname(tmp, dir, sizeof(dir));
+    str_copy(d->driver_store_dir, sizeof(d->driver_store_dir), dir);
+  }
+}
+
+static void write_json(const a2d_config_t *cfg, const dm_set_t *set)
+{
+  char  path[A2D_MAX_PATH];
+  FILE *fp;
+  wchar_t *wp;
+
+  path_join(path, sizeof(path), cfg->work_dir, "hardware_inventory.json");
+  wp = utf8_to_wide(path);
+  fp = _wfopen(wp, L"wb");
+  free(wp);
+  if (!fp)
+  {
+    log_warn("cannot write %s", path);
+    return;
+  }
+  fputs("{\n  \"devices\": [\n", fp);
+  for (int i = 0; i < set->count; i++)
+  {
+    const dm_dev_t *d = &set->d[i];
+    fputs(i ? ",\n    { " : "    { ", fp);
+    fputs("\"instanceId\": ", fp);        json_escape_fp(fp, d->instance_id);
+    fputs(", \"friendlyName\": ", fp);    json_escape_fp(fp, d->name);
+    fputs(", \"className\": ", fp);       json_escape_fp(fp, d->cls);
+    fputs(", \"hardwareIds\": [", fp);
+    for (int k = 0; k < d->hwids.count; k++) { if (k) fputs(", ", fp); json_escape_fp(fp, d->hwids.v[k]); }
+    fputs("], \"compatibleIds\": [", fp);
+    for (int k = 0; k < d->cids.count; k++) { if (k) fputs(", ", fp); json_escape_fp(fp, d->cids.v[k]); }
+    fputs("], \"driverInf\": ", fp);      json_escape_fp(fp, d->inf);
+    fputs(", \"driverProvider\": ", fp);  json_escape_fp(fp, d->provider);
+    fputs(", \"driverVersion\": ", fp);   json_escape_fp(fp, d->driver_version);
+    fputs(", \"service\": ", fp);         json_escape_fp(fp, d->service);
+    fputs(", \"driverStore\": ", fp);     json_escape_fp(fp, d->driver_store_dir);
+    fputs(", \"locationInfo\": ", fp);    json_escape_fp(fp, d->location);
+    fputs(", \"biosDeviceName\": ", fp);  json_escape_fp(fp, d->bios_name);
+    fprintf(fp, ", \"problem\": %lu, \"status\": ", (unsigned long)d->problem);
+    json_escape_fp(fp, devmgr_status_text(d));
+    fputs(", \"mmioRanges\": [", fp);
+    for (int k = 0; k < d->nmem; k++)
+      fprintf(fp, "%s\"0x%llx-0x%llx\"", k ? ", " : "", (unsigned long long)d->mem_base[k],
+              (unsigned long long)d->mem_end[k]);
+    fputs("], \"irqs\": [", fp);
+    for (int k = 0; k < d->nirq; k++)
+      fprintf(fp, "%s%u", k ? ", " : "", d->irqs[k]);
+    fputs("] }", fp);
+  }
+  fputs("\n  ]\n}\n", fp);
+  fclose(fp);
+}
+
+int devmgr_collect(const a2d_config_t *cfg, dm_set_t *set)
+{
+  HDEVINFO        devs;
+  SP_DEVINFO_DATA info;
+
+  memset(set, 0, sizeof(*set));
+  devs = SetupDiGetClassDevsW(NULL, NULL, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+  if (devs == INVALID_HANDLE_VALUE)
+  {
+    log_err("SetupDiGetClassDevsW failed (%lu)", GetLastError());
     return 0;
+  }
+
+  ZeroMemory(&info, sizeof(info));
+  info.cbSize = sizeof(info);
+  for (DWORD i = 0; SetupDiEnumDeviceInfo(devs, i, &info); ++i)
+  {
+    dm_dev_t d;
+    wchar_t  winst[512];
+    char     bios[256];
+    ULONG    st = 0, pr = 0;
+
+    memset(&d, 0, sizeof(d));
+    if (SetupDiGetDeviceInstanceIdW(devs, &info, winst, 512, NULL))
+      wide_to_utf8_buf(winst, d.instance_id, sizeof(d.instance_id));
+    prop_utf8(devs, &info, &DEVPKEY_Device_FriendlyName, d.name, sizeof(d.name));
+    if (!d.name[0])
+      prop_utf8(devs, &info, &DEVPKEY_Device_DeviceDesc, d.name, sizeof(d.name));
+    prop_utf8(devs, &info, &DEVPKEY_Device_Class, d.cls, sizeof(d.cls));
+    prop_multi(devs, &info, &DEVPKEY_Device_HardwareIds, &d.hwids);
+    prop_multi(devs, &info, &DEVPKEY_Device_CompatibleIds, &d.cids);
+    prop_utf8(devs, &info, &DEVPKEY_Device_DriverInfPath, d.inf, sizeof(d.inf));
+    prop_utf8(devs, &info, &DEVPKEY_Device_DriverInfSection, d.inf_section, sizeof(d.inf_section));
+    prop_utf8(devs, &info, &DEVPKEY_Device_DriverProvider, d.provider, sizeof(d.provider));
+    prop_utf8(devs, &info, &DEVPKEY_Device_DriverVersion, d.driver_version, sizeof(d.driver_version));
+    prop_utf8(devs, &info, &DEVPKEY_Device_Service, d.service, sizeof(d.service));
+    prop_utf8(devs, &info, &DEVPKEY_Device_LocationInfo, d.location, sizeof(d.location));
+    prop_utf8(devs, &info, &DEVPKEY_Device_BiosDeviceName, bios, sizeof(bios));
+    if (bios[0] == '\\')
+      aml_canon_path(bios, d.bios_name, sizeof(d.bios_name));
+    if (CM_Get_DevNode_Status(&st, &pr, info.DevInst, 0) == CR_SUCCESS)
+    {
+      d.status = st;
+      d.problem = (st & DN_HAS_PROBLEM) ? pr : 0;
+    }
+    collect_resources(&d, info.DevInst);
+    if (!cfg->no_drivers)
+      find_driver_store_dir(&d);
+    VEC_PUSH(set->d, set->count, set->cap, d);
+  }
+  SetupDiDestroyDeviceInfoList(devs);
+
+  write_json(cfg, set);
+  return set->count;
+}
+
+void devmgr_free(dm_set_t *set)
+{
+  for (int i = 0; i < set->count; i++)
+  {
+    sl_free(&set->d[i].hwids);
+    sl_free(&set->d[i].cids);
+  }
+  free(set->d);
+  memset(set, 0, sizeof(*set));
+}
+
+const dm_dev_t *devmgr_find_by_acpi_path(const dm_set_t *set, const char *acpi_path)
+{
+  if (!set || !acpi_path || !*acpi_path)
+    return NULL;
+  for (int i = 0; i < set->count; i++)
+    if (set->d[i].bios_name[0] && 0 == _stricmp(set->d[i].bios_name, acpi_path))
+      return &set->d[i];
+  return NULL;
+}
+
+const dm_dev_t *devmgr_find_by_hwid_substr(const dm_set_t *set, const char *substr)
+{
+  if (!set)
+    return NULL;
+  for (int i = 0; i < set->count; i++)
+    for (int k = 0; k < set->d[i].hwids.count; k++)
+      if (str_contains_ci(set->d[i].hwids.v[k], substr))
+        return &set->d[i];
+  return NULL;
+}
+
+const char *devmgr_status_text(const dm_dev_t *d)
+{
+  static char buf[64];
+  if (!d)
+    return "not present";
+  if (0 == d->problem)
+    return (d->status & DN_STARTED) ? "OK" : "present, not started";
+  switch (d->problem)
+  {
+    case CM_PROB_NOT_CONFIGURED:  return "problem 1: not configured";
+    case CM_PROB_FAILED_START:    return "problem 10: failed to start";
+    case CM_PROB_DISABLED:        return "problem 22: disabled";
+    case CM_PROB_FAILED_INSTALL:  return "problem 28: no driver";
+    case CM_PROB_HARDWARE_DISABLED: return "problem 29: disabled by firmware";
+    default:
+      snprintf(buf, sizeof(buf), "problem %lu", (unsigned long)d->problem);
+      return buf;
+  }
 }

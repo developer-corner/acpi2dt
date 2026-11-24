@@ -12,10 +12,10 @@
  *     as primary, secondary, tertiary, etc. device trees for information extraction
  *     of these
  * (d) the ACPI tables available on the host running this tool (main table is DSDT)
- * 
+ *
  * It then 'drafts' a device tree for the current notebook, which has to be manually
  * edited afterwards by a human being, an AI, or both.
- * 
+ *
  * [MIT license]
  *
  * Copyright (c) 2026 Ingo A. Kubbilun
@@ -41,194 +41,278 @@
  * claim: "flat ASN.1 processing was y'day"
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <io.h>
-#include <Windows.h>
-
-#define VERSION_STRING          "v0.1"
-
-#define CTRL_RESET              "\033[0;0;0m"
-#define CTRL_RED                "\033[1;31m"
-#define CTRL_GREEN              "\033[1;32m"
-#define CTRL_YELLOW             "\033[1;33m"
-#define CTRL_BLUE               "\033[1;34m"
-#define CTRL_MAGENTA            "\033[1;35m"
-#define CTRL_CYAN               "\033[1;36m"
-
-static int    reset_console = 0;
-static DWORD  dwMode = 0;
-static HANDLE hConsole = INVALID_HANDLE_VALUE;
-
-BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
-{
-  switch (fdwCtrlType)
-  {
-    case CTRL_C_EVENT:
-    case CTRL_BREAK_EVENT:
-      if (0 != reset_console)
-      {
-        if (INVALID_HANDLE_VALUE != hConsole)
-        {
-          dwMode &= ~ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-          SetConsoleMode(hConsole, dwMode);
-          reset_console = 0;
-        }
-      }
-      break;
-
-    default:
-      break;
-  }
-
-  return FALSE;
-}
-
-void FPRINTF(FILE* f, const char* fmt, ...)
-{
-  va_list         ap;
-  char            buffer[2048];
-  uint32_t        src = 0, dst = 0;
-
-  va_start(ap, fmt);
-  (void)vsnprintf(buffer, sizeof(buffer), fmt, ap);
-  va_end(ap);
-
-  if (0 == reset_console || (stdout != f && stderr != f)) // no colors
-  {
-    while (0 != buffer[src])
-    {
-      if (('\033' != buffer[src]) || ('[' != buffer[src + 1]))
-        buffer[dst++] = buffer[src++];
-      else
-        src += ('0' == buffer[src + 2]) ? 8 : 7;
-    }
-
-    buffer[dst] = 0x00;
-  }
-
-  fprintf(f, "%s", buffer);
-}
+#include "common.h"
+#include "acpi_extractor.h"
+#include "aml_parser.h"
+#include "devmgr_explorer.h"
+#include "inf_firmware_scanner.h"
+#include "dts_merger.h"
 
 static void ShowHelp(const char *progname)
 {
-  FPRINTF(stdout, CTRL_YELLOW "usage:" CTRL_RESET " %s <output dts file> <output firmware folder> <input linux kernel dts folder>\n", progname);
+  FPRINTF(stdout, CTRL_YELLOW "usage:" CTRL_RESET " %s [options] <output dts file> <output firmware folder> <input linux kernel dts folder>\n", progname);
   FPRINTF(stdout, CTRL_YELLOW "------" CTRL_RESET " [<similar DTS file>][<similar DTS file>]...\n\n");
 
   FPRINTF(stdout, "  - scans Windows device manager, enumerates binary firmwares, reads ACPI tables\n");
   FPRINTF(stdout, "  - creates a Device Tree proposal (output DTS file)\n");
   FPRINTF(stdout, "  - creates a binary firmware folder structure (under /lib/firmware in target Linux)\n");
-  FPRINTF(stdout, "  - uses files in <input linux kernel dts folder>\n");
+  FPRINTF(stdout, "  - uses files in <input linux kernel dts folder> (arch/arm64/boot/dts or .../dts/qcom)\n");
   FPRINTF(stdout, "  - optionally, you MAY specify one or more existing DTS files of 'similar' notebooks\n");
   FPRINTF(stdout, "    => the first similar DTS file has the highest priority, next files have lower\n");
   FPRINTF(stdout, "       priorities. These files are scanned and checked for additional Device Tree components.\n\n");
+
+  FPRINTF(stdout, CTRL_YELLOW "options:" CTRL_RESET "\n");
+  FPRINTF(stdout, "  --work-dir <dir>      intermediate files (default: <output dts>.acpi2dt)\n");
+  FPRINTF(stdout, "  --acpi-dir <dir>      read ACPI tables from a dump folder instead of this machine\n");
+  FPRINTF(stdout, "  --iasl <exe>          ACPICA iasl / AslCompiler.exe for .dsl disassembly\n");
+  FPRINTF(stdout, "                        (default: next to acpi2dt.exe or in PATH)\n");
+  FPRINTF(stdout, "  --no-iasl             do not disassemble the ACPI tables\n");
+  FPRINTF(stdout, "  --soc <name>          override SoC detection, e.g. x1p42100, x1e80100\n");
+  FPRINTF(stdout, "  --model <string>      override root 'model'\n");
+  FPRINTF(stdout, "  --compatible <str>    override board compatible, e.g. asus,vivobook-s16-s3607qa\n");
+  FPRINTF(stdout, "  --vendor-dir <name>   firmware vendor directory (e.g. ASUSTeK)\n");
+  FPRINTF(stdout, "  --board-slug <name>   firmware board directory (e.g. vivobook-s16)\n");
+  FPRINTF(stdout, "  --no-devmgr           do not query the Windows Device Manager\n");
+  FPRINTF(stdout, "  --no-drivers          do not scan driver packages / firmware\n");
+  FPRINTF(stdout, "  --no-fw-copy          resolve firmware but do not copy it\n");
+  FPRINTF(stdout, "  --full-driverstore    index the complete DriverStore up front\n");
+  FPRINTF(stdout, "  -v, --verbose         verbose output\n");
+  FPRINTF(stdout, "  -h, --help            this help\n\n");
+
+  FPRINTF(stdout, CTRL_YELLOW "example:" CTRL_RESET "\n");
+  FPRINTF(stdout, "  %s s16-draft.dts fw D:\\linux\\arch\\arm64\\boot\\dts x1e80100-asus-vivobook-s15.dts x1p42100-asus-zenbook-a14.dts\n\n", progname);
 }
 
-int main(int argc, char* argv[])
+static bool parse_args(int argc, char *argv[], a2d_config_t *cfg)
 {
-  int         fd_out          = _fileno(stdout);
-  int         fd_err          = _fileno(stderr);
-  int         rc              = 1;
-  bool        stdout_is_tty   = (fd_out >= 0) && (_isatty(fd_out) != 0);
-  bool        stderr_is_tty   = (fd_err >= 0) && (_isatty(fd_err) != 0);
-  const char *output_dts_file;
-  const char *output_fw_folder;
-  const char *input_linux_kernel_dts_folder;
+  const char **pos = calloc((size_t)argc + 1, sizeof(char *));
+  int          npos = 0;
 
-  // only enable colored text output if stdout/stderr not redirected to file
-
-  if (stdout_is_tty && stderr_is_tty)
+  if (!pos)
+    return false;
+  for (int i = 1; i < argc; i++)
   {
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (GetConsoleMode(hConsole, &dwMode))
-    {
-      dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-      SetConsoleMode(hConsole, dwMode);
-      reset_console = 1;
-    }
-    SetConsoleCtrlHandler(CtrlHandler, TRUE);
+    const char *a = argv[i];
+#define NEEDS_ARG()                                                          \
+  if (i + 1 >= argc)                                                         \
+  {                                                                          \
+    log_err("option %s needs an argument", a);                               \
+    free(pos);                                                               \
+    return false;                                                            \
   }
+    if (!strcmp(a, "-h") || !strcmp(a, "--help"))
+    {
+      free(pos);
+      return false;
+    }
+    else if (!strcmp(a, "-v") || !strcmp(a, "--verbose"))
+      cfg->verbose = true;
+    else if (!strcmp(a, "--work-dir"))       { NEEDS_ARG(); str_copy(cfg->work_dir, sizeof(cfg->work_dir), argv[++i]); }
+    else if (!strcmp(a, "--acpi-dir"))       { NEEDS_ARG(); cfg->acpi_dir = argv[++i]; }
+    else if (!strcmp(a, "--iasl"))           { NEEDS_ARG(); cfg->iasl_exe = argv[++i]; }
+    else if (!strcmp(a, "--no-iasl"))        cfg->no_iasl = true;
+    else if (!strcmp(a, "--soc"))            { NEEDS_ARG(); cfg->soc = argv[++i]; }
+    else if (!strcmp(a, "--model"))          { NEEDS_ARG(); cfg->model = argv[++i]; }
+    else if (!strcmp(a, "--compatible"))     { NEEDS_ARG(); cfg->compatible = argv[++i]; }
+    else if (!strcmp(a, "--vendor-dir"))     { NEEDS_ARG(); cfg->vendor_dir = argv[++i]; }
+    else if (!strcmp(a, "--board-slug"))     { NEEDS_ARG(); cfg->board_slug = argv[++i]; }
+    else if (!strcmp(a, "--no-devmgr"))      cfg->no_devmgr = true;
+    else if (!strcmp(a, "--no-drivers"))     cfg->no_drivers = true;
+    else if (!strcmp(a, "--no-fw-copy"))     cfg->no_fw_copy = true;
+    else if (!strcmp(a, "--full-driverstore")) cfg->full_driverstore = true;
+    else if (a[0] == '-' && a[1] == '-')
+    {
+      log_err("unknown option %s", a);
+      free(pos);
+      return false;
+    }
+    else
+      pos[npos++] = a;
+#undef NEEDS_ARG
+  }
+  if (npos < 3)
+  {
+    free(pos);
+    return false;
+  }
+  cfg->output_dts = pos[0];
+  cfg->output_fw_dir = pos[1];
+  cfg->kernel_dts_dir = pos[2];
+  cfg->similar_dts = pos + 3;      /* argv strings stay valid; array leaks intentionally */
+  cfg->num_similar = npos - 3;
+  if (!cfg->work_dir[0])
+  {
+    char base[A2D_MAX_PATH];
+    char *dot;
+    str_copy(base, sizeof(base), cfg->output_dts);
+    dot = strrchr(base, '.');
+    if (dot && !strpbrk(dot, "\\/"))
+      *dot = 0;
+    snprintf(cfg->work_dir, sizeof(cfg->work_dir), "%s.acpi2dt", base);
+  }
+  return true;
+}
 
-  FPRINTF(stdout, CTRL_CYAN "ACPI2DT Device Tree draft tool " CTRL_GREEN VERSION_STRING CTRL_RESET "\n\n");
+int main(int argc, char *argv[])
+{
+  int               rc = 1;
+  a2d_config_t      cfg;
+  acpi_table_set_t  tables;
+  sysinfo_t         si;
+  acpi_ns_t         ns;
+  dm_set_t          dm;
+  drv_db_t          drv;
+  fw_plan_t         fw;
+  a2d_ctx_t         ctx;
+  dts_stats_t       st;
 
-  if (argc < 4)
+  memset(&cfg, 0, sizeof(cfg));
+  memset(&dm, 0, sizeof(dm));
+  memset(&drv, 0, sizeof(drv));
+  memset(&fw, 0, sizeof(fw));
+  memset(&tables, 0, sizeof(tables));
+  memset(&ns, 0, sizeof(ns));
+
+  console_init();
+
+  FPRINTF(stdout, CTRL_CYAN "ACPI2DT Device Tree draft tool " CTRL_GREEN A2D_VERSION_STRING CTRL_RESET "\n\n");
+
+  if (!parse_args(argc, argv, &cfg))
   {
     ShowHelp(argv[0]);
     goto DoExit;
   }
+  log_set_verbose(cfg.verbose);
 
-  output_dts_file = argv[1];
-  output_fw_folder = argv[2];
-  input_linux_kernel_dts_folder = argv[3];
+  if (!dir_exists(cfg.kernel_dts_dir))
+  {
+    log_err("Linux kernel DTS folder %s does not exist", cfg.kernel_dts_dir);
+    goto DoExit;
+  }
+  for (int i = 0; i < cfg.num_similar; i++)
+    if (!file_exists(cfg.similar_dts[i]))
+    {
+      log_err("similar DTS file %s does not exist", cfg.similar_dts[i]);
+      goto DoExit;
+    }
+  if (!mkdir_p(cfg.work_dir))
+  {
+    log_err("cannot create work folder %s", cfg.work_dir);
+    goto DoExit;
+  }
 
-  // argv[4], argv[5], ... contain optional DTS files of 'similar' ARM64 notebooks
+  /* 1. ACPI */
+  log_step("reading ACPI tables");
+  if (0 == acpi_collect_tables(&cfg, &tables))
+    log_warn("no ACPI tables - the draft will be based on DTS files only");
 
-  // Claude: source code missing here
+  /* 2. machine identity */
+  log_step("identifying the machine (SMBIOS, CPU, MADT)");
+  sysinfo_collect(&cfg, &tables, &si);
+  log_info("machine : %s / %s (board %s, BIOS %s)", si.manufacturer, si.product, si.board_product, si.bios_version);
+  log_info("CPU     : %s, %d/%d cores enabled", si.cpu_name, si.madt_gicc_enabled, si.madt_gicc_total);
+  if (si.soc[0])
+    log_info("SoC     : " CTRL_GREEN "%s" CTRL_RESET " (%s)", si.soc, si.soc_reason);
+  else
+    log_warn("SoC could not be determined - use --soc");
+  log_info("DT      : model \"%s\", compatible \"%s\"", si.model, si.compatible);
+  log_info("firmware: qcom/%s/%s/%s/", si.soc, si.vendor_dir, si.board_slug);
 
+  /* 3. AML namespace */
+  log_step("parsing the ACPI namespace (DSDT/SSDT)");
+  aml_parse_all(&tables, &ns);
+  {
+    int with_hid = 0, with_res = 0;
+    for (int i = 0; i < ns.count; i++)
+    {
+      if (ns.d[i].hids.count)
+        with_hid++;
+      if (ns.d[i].nres)
+        with_res++;
+    }
+    log_info("%d devices (%d with _HID, %d with decoded _CRS resources)", ns.count, with_hid, with_res);
+    if (ns.parse_errors)
+      log_warn("%d AML block(s) could not be parsed completely (use -v)", ns.parse_errors);
+  }
 
+  /* 4. Device Manager */
+  if (!cfg.no_devmgr)
+  {
+    int linked = 0;
+    log_step("enumerating the Windows Device Manager");
+    devmgr_collect(&cfg, &dm);
+    for (int i = 0; i < dm.count; i++)
+      if (dm.d[i].bios_name[0] && aml_find_device(&ns, dm.d[i].bios_name))
+        linked++;
+    log_info("%d present devices, %d linked to ACPI namespace objects", dm.count, linked);
+    if (cfg.acpi_dir)
+      log_warn("ACPI tables come from %s: Device Manager data is from THIS machine", cfg.acpi_dir);
+  }
 
+  /* 5. drivers / firmware */
+  if (!cfg.no_drivers)
+  {
+    log_step("scanning driver packages and firmware (DriverStore)");
+    drivers_scan(&cfg, cfg.no_devmgr ? NULL : &dm, &drv);
+  }
+
+  /* 6. DTS */
+  log_step("drafting the device tree");
+  memset(&ctx, 0, sizeof(ctx));
+  ctx.cfg = &cfg;
+  ctx.tables = &tables;
+  ctx.si = &si;
+  ctx.ns = &ns;
+  ctx.dm = cfg.no_devmgr ? NULL : &dm;
+  ctx.drv = cfg.no_drivers ? NULL : &drv;
+  ctx.fw = &fw;
+  if (0 != dts_generate(&ctx, &st))
+    goto Cleanup;
+
+  /* 7. firmware */
+  log_step("firmware");
+  if (fw.count)
+  {
+    int copied = fw_plan_execute(&cfg, &fw);
+    if (cfg.no_fw_copy)
+      log_info("%d firmware file(s) resolved (not copied, --no-fw-copy)", fw.count);
+    else
+      log_info("%d of %d firmware file(s) copied to %s", copied, fw.count, cfg.output_fw_dir);
+  }
+  else
+    log_info("no firmware resolved");
+
+  /* summary */
+  log_step("summary");
+  log_ok("draft written to " CTRL_GREEN "%s" CTRL_RESET, cfg.output_dts);
+  log_info("confirmed by ACPI        : %d", st.confirmed);
+  if (st.not_in_acpi)
+    log_warn("template devices missing in ACPI : %d (marked WARNING)", st.not_in_acpi);
+  if (st.mismatches)
+    log_warn("GPIO / property mismatches       : %d (marked WARNING)", st.mismatches);
+  if (st.warnings)
+    log_warn("unresolved references            : %d", st.warnings);
+  log_info("added from ACPI          : %d", st.added_acpi);
+  log_info("added from similar DTS   : %d", st.added_similar);
+  log_info("commented suggestions    : %d", st.commented);
+  log_info("firmware-name resolved   : %d", st.firmware);
+  log_info("intermediate files       : %s", cfg.work_dir);
+  FPRINTF(stdout, "\n" CTRL_YELLOW "Review the draft carefully - search for WARNING, CHECK and TODO." CTRL_RESET "\n");
 
   // END OF MAIN, set result code to zero (0) now:
 
   rc = 0;
 
+Cleanup:
+  fw_plan_free(&fw);
+  drivers_free(&drv);
+  devmgr_free(&dm);
+  aml_free(&ns);
+  acpi_free_tables(&tables);
+
 DoExit:
 
-  if (0 != reset_console)
-  {
-    dwMode &= ~ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hConsole, dwMode);
-  }
-
-  SetConsoleCtrlHandler(CtrlHandler, FALSE);
+  console_restore();
 
   return rc;
 }
-
-#if 0
-
-OLD MAIN WAS:
-
-woa_config_t cfg;
-ZeroMemory(&cfg, sizeof(cfg));
-wcscpy(cfg.output_dir, L"C:\\woa-extract");
-wcscpy(cfg.iasl_exe, L"C:\\src\\acpica\\iasl.exe");
-wcscpy(cfg.dtc_exe, L"C:\\src\\dtc\\dtc.exe");
-cfg.scan_driver_store = true;
-cfg.extract_fw_strings = true;
-
-for (int i = 1; i < argc; ++i) {
-  if (wcscmp(argv[i], L"--out") == 0 && i + 1 < argc) {
-    wcsncpy(cfg.output_dir, argv[++i], WOA_MAX_PATH - 1);
-  }
-  else if (wcscmp(argv[i], L"--iasl") == 0 && i + 1 < argc) {
-    wcsncpy(cfg.iasl_exe, argv[++i], WOA_MAX_PATH - 1);
-  }
-  else if (wcscmp(argv[i], L"--dtc") == 0 && i + 1 < argc) {
-    wcsncpy(cfg.dtc_exe, argv[++i], WOA_MAX_PATH - 1);
-  }
-  else if (wcscmp(argv[i], L"--primary") == 0 && i + 1 < argc) {
-    wcsncpy(cfg.primary_dts, argv[++i], WOA_MAX_PATH - 1);
-  }
-  else if (wcscmp(argv[i], L"--secondary") == 0 && i + 1 < argc) {
-    wcsncpy(cfg.secondary_dts, argv[++i], WOA_MAX_PATH - 1);
-  }
-}
-
-woa_extract_acpi_tables(&cfg);
-woa_explore_device_manager(&cfg);
-woa_scan_drivers_and_firmware(&cfg);
-woa_merge_and_validate_dts(&cfg);
-
-wprintf(L"\n[Done] Artifacts written to: %s\n", cfg.output_dir);
-
-#endif
-
-
-

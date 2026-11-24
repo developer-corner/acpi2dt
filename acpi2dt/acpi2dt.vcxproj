@@ -12,16 +12,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpi_extractor.c" />
+    <ClCompile Include="src\aml_parser.c" />
     <ClCompile Include="src\devmgr_explorer.c" />
     <ClCompile Include="src\dts_merger.c" />
+    <ClCompile Include="src\dts_parser.c" />
     <ClCompile Include="src\inf_firmware_scanner.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\util.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\acpi_extractor.h" />
+    <ClInclude Include="inc\aml_parser.h" />
     <ClInclude Include="inc\common.h" />
     <ClInclude Include="inc\devmgr_explorer.h" />
     <ClInclude Include="inc\dts_merger.h" />
+    <ClInclude Include="inc\dts_parser.h" />
     <ClInclude Include="inc\inf_firmware_scanner.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -64,6 +69,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>.;inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -85,6 +91,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>.;inc</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
