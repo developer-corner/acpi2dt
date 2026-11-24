@@ -88,3 +88,4 @@ all_oids.txt
 oid-master.db
 /3rdparty/build
 /libasn1tk/doxygen
+/linux-7.4-rc4/
