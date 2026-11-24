@@ -13,6 +13,7 @@ name the source of the information and the result of cross-checks.
 | `[DevMgr]` | Windows Device Manager (SetupAPI/CfgMgr32), linked to ACPI by `BiosDeviceName` |
 | `[INF]` / `[FW]` | driver packages in the DriverStore; firmware is resolved, copied into a `/lib/firmware` layout and listed with SHA-256 in `FIRMWARE-MANIFEST.txt` |
 | `[SMBIOS]` | `model` / `compatible`, firmware vendor and board directory |
+| `[EDID]` | EDID of the monitors known to Windows (also non-present ones): the internal eDP panel |
 | `[KERNEL]` | SoC and PMIC `.dtsi` of the Linux kernel DTS folder; SoC-specific `/delete-node/` statements are learned from the kernel's other boards of the same SoC |
 | `[TEMPLATE]` / `[SIMILARn]` | optional DTS files of similar notebooks (first = template) |
 
@@ -21,6 +22,7 @@ What the tool does with them:
 * matches ACPI devices to SoC DT nodes by MMIO address (`\_SB.I2C1 @ 0xb80000` ↔ `i2c0: i2c@b80000`)
 * decodes Qualcomm virtual GPIO numbers (GIO0 interrupt list → `qcom,pdc-ranges` → PDC wake map → TLMM pin)
 * re-emits the template node by node and checks I2C/SPI/UART children, interrupt and GPIO pins and `hid-descr-addr` against ACPI (`OK` / `CHECK` / `WARNING`)
+* checks `pciVVVV,DDDD` compatibles against the present PCI devices, Qualcomm `qcom,wcnNNNN-*` compatibles against the Wi-Fi/BT chip actually fitted, and panel compatibles against the internal panel's EDID
 * replaces the SoC include if the template is for another SoC, inlines board `.dtsi` files of the template
 * rewrites `firmware-name` to `qcom/<soc>/<vendor>/<board>/…` and prefers SoC-specific blobs (e.g. `qcdxkmsucpurwa.mbn` on X1P42100)
 * takes over nodes from secondary similar DTS files when ACPI confirms them, otherwise adds them as commented-out suggestions

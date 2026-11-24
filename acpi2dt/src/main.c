@@ -245,6 +245,14 @@ int main(int argc, char *argv[])
       if (dm.d[i].bios_name[0] && aml_find_device(&ns, dm.d[i].bios_name))
         linked++;
     log_info("%d present devices, %d linked to ACPI namespace objects", dm.count, linked);
+    {
+      const dm_monitor_t *p = devmgr_internal_panel(&dm);
+      if (p)
+        log_info("internal panel (EDID): %s 0x%04x \"%s\" %.1f\"%s", p->pnp_id, p->product,
+                 p->name[0] ? p->name : p->text[0], p->diagonal_in, p->present ? "" : " (currently not active)");
+      else
+        log_info("internal panel: not found among %d known monitors", dm.nmon);
+    }
     if (cfg.acpi_dir)
       log_warn("ACPI tables come from %s: Device Manager data is from THIS machine", cfg.acpi_dir);
   }

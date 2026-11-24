@@ -14,6 +14,8 @@
 #include <cfgmgr32.h>
 #include <initguid.h>
 #include <devpkey.h>
+#include <devguid.h>
+#include <math.h>
 
 static bool query_prop(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, wchar_t *out, DWORD cap_bytes)
 {
@@ -118,6 +120,134 @@ static void find_driver_store_dir(dm_dev_t *d)
   }
 }
 
+/* ======================================================================== */
+/* monitors / EDID                                                          */
+/* ======================================================================== */
+
+/* text of an EDID display descriptor; empty if it holds binary data (some vendors do) */
+static void edid_text(const uint8_t *d, char *out, size_t cap)
+{
+  size_t n = 0;
+  for (int i = 5; i < 18 && n < cap - 1; i++)
+  {
+    if (d[i] == 0x0A || d[i] == 0)
+      break;
+    if (d[i] < 0x20 || d[i] >= 0x7F)
+    {
+      n = 0;
+      break;
+    }
+    out[n++] = (char)d[i];
+  }
+  while (n && out[n - 1] == ' ')
+    n--;
+  out[n] = 0;
+}
+
+static bool decode_edid(const uint8_t *e, size_t len, dm_monitor_t *m)
+{
+  static const uint8_t hdr[8] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
+  static const char   *panel_makers[] = { "BOE", "SDC", "AUO", "LGD", "CMN", "IVO", "CSO", "SHP", "TMA",
+                                          "NCP", "STA", "MNC", "TL0", "MSF", "ATN", "CSW", "KDB", "HKC" };
+  uint16_t             v;
+  int                  ntext = 0;
+
+  if (len < 128 || memcmp(e, hdr, 8))
+    return false;
+  v = (uint16_t)((e[8] << 8) | e[9]);
+  m->pnp_id[0] = (char)('@' + ((v >> 10) & 0x1F));
+  m->pnp_id[1] = (char)('@' + ((v >> 5) & 0x1F));
+  m->pnp_id[2] = (char)('@' + (v & 0x1F));
+  m->pnp_id[3] = 0;
+  m->product = (uint16_t)(e[10] | (e[11] << 8));
+  m->digital = (e[20] & 0x80) != 0;
+  m->interface_type = e[20] & 0x0F;
+  m->width_cm = e[21];
+  m->height_cm = e[22];
+  m->diagonal_in = (m->width_cm && m->height_cm)
+                     ? sqrt((double)(m->width_cm * m->width_cm + m->height_cm * m->height_cm)) / 2.54
+                     : 0.0;
+  for (int d = 54; d + 18 <= 126; d += 18)
+  {
+    const uint8_t *p = e + d;
+    if (p[0] || p[1])
+      continue; /* detailed timing */
+    if (p[3] == 0xFC)
+      edid_text(p, m->name, sizeof(m->name));
+    else if (p[3] == 0xFE && ntext < 2)
+      edid_text(p, m->text[ntext++], sizeof(m->text[0]));
+  }
+  m->internal = m->digital && m->interface_type == 5 && m->diagonal_in > 0.0 && m->diagonal_in < 20.0;
+  if (!m->internal && m->diagonal_in > 0.0 && m->diagonal_in < 20.0)
+    for (size_t i = 0; i < sizeof(panel_makers) / sizeof(panel_makers[0]); i++)
+      if (!strcmp(m->pnp_id, panel_makers[i]))
+        m->internal = true;
+  return true;
+}
+
+static void collect_monitors(dm_set_t *set)
+{
+  HDEVINFO        devs = SetupDiGetClassDevsW(&GUID_DEVCLASS_MONITOR, NULL, NULL, 0); /* also non-present */
+  SP_DEVINFO_DATA info;
+
+  if (devs == INVALID_HANDLE_VALUE)
+    return;
+  ZeroMemory(&info, sizeof(info));
+  info.cbSize = sizeof(info);
+  for (DWORD i = 0; SetupDiEnumDeviceInfo(devs, i, &info); ++i)
+  {
+    dm_monitor_t m;
+    wchar_t      winst[512];
+    HKEY         key;
+    ULONG        st = 0, pr = 0;
+
+    memset(&m, 0, sizeof(m));
+    if (SetupDiGetDeviceInstanceIdW(devs, &info, winst, 512, NULL))
+      wide_to_utf8_buf(winst, m.instance_id, sizeof(m.instance_id));
+    m.present = CM_Get_DevNode_Status(&st, &pr, info.DevInst, 0) == CR_SUCCESS;
+    key = SetupDiOpenDevRegKey(devs, &info, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+    if (key != INVALID_HANDLE_VALUE)
+    {
+      uint8_t edid[512];
+      DWORD   len = sizeof(edid), type = 0;
+      if (ERROR_SUCCESS == RegQueryValueExW(key, L"EDID", NULL, &type, edid, &len) && type == REG_BINARY &&
+          decode_edid(edid, len, &m))
+        VEC_PUSH(set->mon, set->nmon, set->capmon, m);
+      RegCloseKey(key);
+    }
+  }
+  SetupDiDestroyDeviceInfoList(devs);
+}
+
+const dm_monitor_t *devmgr_internal_panel(const dm_set_t *set)
+{
+  const dm_monitor_t *best = NULL;
+  if (!set)
+    return NULL;
+  for (int i = 0; i < set->nmon; i++)
+  {
+    const dm_monitor_t *m = &set->mon[i];
+    if (!m->internal)
+      continue;
+    /* prefer eDP, then a present one */
+    if (!best || (m->interface_type == 5 && best->interface_type != 5) || (m->present && !best->present))
+      best = m;
+  }
+  return best;
+}
+
+const dm_dev_t *devmgr_find_pci(const dm_set_t *set, uint16_t ven, uint16_t dev)
+{
+  char id[32];
+  if (!set)
+    return NULL;
+  snprintf(id, sizeof(id), "PCI\\VEN_%04X&DEV_%04X", ven, dev);
+  for (int i = 0; i < set->count; i++)
+    if (str_starts_with_ci(set->d[i].instance_id, id))
+      return &set->d[i];
+  return NULL;
+}
+
 static void write_json(const a2d_config_t *cfg, const dm_set_t *set)
 {
   char  path[A2D_MAX_PATH];
@@ -162,6 +292,21 @@ static void write_json(const a2d_config_t *cfg, const dm_set_t *set)
     for (int k = 0; k < d->nirq; k++)
       fprintf(fp, "%s%u", k ? ", " : "", d->irqs[k]);
     fputs("] }", fp);
+  }
+  fputs("\n  ],\n  \"monitors\": [\n", fp);
+  for (int i = 0; i < set->nmon; i++)
+  {
+    const dm_monitor_t *m = &set->mon[i];
+    fputs(i ? ",\n    { " : "    { ", fp);
+    fputs("\"instanceId\": ", fp); json_escape_fp(fp, m->instance_id);
+    fputs(", \"edidVendor\": ", fp); json_escape_fp(fp, m->pnp_id);
+    fprintf(fp, ", \"edidProduct\": \"0x%04x\", \"name\": ", m->product);
+    json_escape_fp(fp, m->name);
+    fputs(", \"text\": [", fp); json_escape_fp(fp, m->text[0]); fputs(", ", fp); json_escape_fp(fp, m->text[1]);
+    fprintf(fp, "], \"sizeCm\": [%d, %d], \"diagonalInch\": %.1f, \"displayPort\": %s, \"present\": %s, "
+                "\"internal\": %s }",
+            m->width_cm, m->height_cm, m->diagonal_in, m->interface_type == 5 ? "true" : "false",
+            m->present ? "true" : "false", m->internal ? "true" : "false");
   }
   fputs("\n  ]\n}\n", fp);
   fclose(fp);
@@ -219,6 +364,7 @@ int devmgr_collect(const a2d_config_t *cfg, dm_set_t *set)
   }
   SetupDiDestroyDeviceInfoList(devs);
 
+  collect_monitors(set);
   write_json(cfg, set);
   return set->count;
 }
@@ -231,6 +377,7 @@ void devmgr_free(dm_set_t *set)
     sl_free(&set->d[i].cids);
   }
   free(set->d);
+  free(set->mon);
   memset(set, 0, sizeof(*set));
 }
 

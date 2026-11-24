@@ -1624,6 +1624,160 @@ static void emit_secondary_extras(gen_t *g, strbuf_t *sb, const dt_node_t *n, in
   sl_free(&done);
 }
 
+/* ======================================================================== */
+/* compatible cross-checks: PCI IDs, Qualcomm WCN chips, panel vs. EDID     */
+/* ======================================================================== */
+
+typedef struct {
+  uint16_t    dev;
+  const char *chip;
+} wcn_pci_t;
+
+static const wcn_pci_t g_wcn_pci[] = {
+  { 0x1101, "qca6390" },
+  { 0x1103, "wcn6855" },
+  { 0x1107, "wcn7850" },
+};
+
+static void alnum_lower(const char *in, char *out, size_t cap)
+{
+  size_t n = 0;
+  for (; *in && n < cap - 1; in++)
+  {
+    char c = *in;
+    if (c >= 'A' && c <= 'Z')
+      c = (char)(c + 32);
+    if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
+      out[n++] = c;
+  }
+  out[n] = 0;
+}
+
+static const char *present_wcn(gen_t *g, const dm_dev_t **dev_out)
+{
+  for (size_t i = 0; i < sizeof(g_wcn_pci) / sizeof(g_wcn_pci[0]); i++)
+  {
+    const dm_dev_t *d = devmgr_find_pci(g->x->dm, 0x17CB, g_wcn_pci[i].dev);
+    if (d)
+    {
+      if (dev_out)
+        *dev_out = d;
+      return g_wcn_pci[i].chip;
+    }
+  }
+  return NULL;
+}
+
+static void check_compatible(gen_t *g, const dt_node_t *n, const char *value, strlist_t *lines)
+{
+  strlist_t compats;
+  bool      is_panel = false, generic_panel = false, panel_ok = false;
+
+  if (!g->x->dm || !g->x->dm->count)
+    return;
+  memset(&compats, 0, sizeof(compats));
+  dt_value_strings(value, &compats);
+
+  for (int i = 0; i < compats.count; i++)
+  {
+    const char  *c = compats.v[i];
+    unsigned int ven, dev;
+
+    /* PCI devices: "pci17cb,1107" */
+    if (2 == sscanf(c, "pci%4x,%4x", &ven, &dev))
+    {
+      const dm_dev_t *d = devmgr_find_pci(g->x->dm, (uint16_t)ven, (uint16_t)dev);
+      if (d)
+        addf(lines, "OK: PCI %04x:%04x present: \"%s\"", ven, dev, d->name);
+      else
+      {
+        strbuf_t sb;
+        char     pfx[24];
+        int      nalt = 0;
+        sb_init(&sb);
+        snprintf(pfx, sizeof(pfx), "PCI\\VEN_%04X&DEV_", ven);
+        for (int k = 0; k < g->x->dm->count; k++)
+        {
+          const dm_dev_t *o = &g->x->dm->d[k];
+          if (str_starts_with_ci(o->instance_id, pfx) && _stricmp(o->cls, "System"))
+          {
+            sb_printf(&sb, "%s pci%04x,%.4s (\"%s\")", nalt ? ";" : "", ven, o->instance_id + strlen(pfx), o->name);
+            nalt++;
+          }
+        }
+        addf(lines, "WARNING: PCI %04x:%04x (%s) is not present on this machine%s%s", ven, dev, c,
+             nalt ? "; present from this vendor:" : "", nalt ? sb.buf : "");
+        sb_free(&sb);
+        g->st->mismatches++;
+      }
+    }
+
+    /* Qualcomm connectivity chips: "qcom,wcn7850-bt", "qcom,wcn6855-pmu", ... */
+    if (str_starts_with(c, "qcom,wcn") || str_starts_with(c, "qcom,qca6390"))
+    {
+      const dm_dev_t *wd = NULL;
+      const char     *chip = present_wcn(g, &wd);
+      if (chip)
+      {
+        if (str_contains_ci(c, chip))
+          addf(lines, "OK: %s matches the Wi-Fi/BT chip of this machine (\"%s\")", c, wd->name);
+        else
+        {
+          addf(lines, "WARNING: %s does not match this machine: %s (\"%s\") - use the qcom,%s-* bindings", c,
+               chip, wd->name, chip);
+          g->st->mismatches++;
+        }
+      }
+    }
+
+    if (!strcmp(c, "edp-panel"))
+      is_panel = generic_panel = true;
+  }
+
+  /* panels: node "panel" (usually below aux-bus) or generic edp-panel */
+  if (n->name && str_starts_with(n->name, "panel"))
+    is_panel = true;
+  if (is_panel)
+  {
+    const dm_monitor_t *m = devmgr_internal_panel(g->x->dm);
+    if (!m)
+      sl_add(lines, "[EDID] no internal panel found in the Windows monitor list");
+    else
+    {
+      char ids[3][24];
+      addf(lines, "[EDID] internal panel %s 0x%04x \"%s\"%s%s%s, %.1f\" (%dx%d cm)%s", m->pnp_id, m->product, m->name,
+           m->text[0][0] ? " / \"" : "", m->text[0], m->text[0][0] ? "\"" : "", m->diagonal_in, m->width_cm,
+           m->height_cm, m->interface_type == 5 ? ", eDP" : "");
+      alnum_lower(m->name, ids[0], sizeof(ids[0]));
+      alnum_lower(m->text[0], ids[1], sizeof(ids[1]));
+      alnum_lower(m->text[1], ids[2], sizeof(ids[2]));
+      for (int i = 0; i < compats.count && !generic_panel; i++)
+      {
+        const char *model = strchr(compats.v[i], ',');
+        char        nm[64];
+        if (!model)
+          continue;
+        alnum_lower(model + 1, nm, sizeof(nm));
+        for (int k = 0; k < 3; k++)
+          if (nm[0] && ids[k][0] && (strstr(ids[k], nm) || strstr(nm, ids[k])))
+            panel_ok = true;
+      }
+      if (generic_panel)
+        sl_add(lines, "OK: generic \"edp-panel\" identifies the panel by its EDID at runtime");
+      else if (panel_ok)
+        sl_add(lines, "OK: panel compatible matches the EDID of this machine");
+      else
+      {
+        addf(lines, "WARNING: panel compatible does not match this machine's panel (%s %s) - consider "
+                    "compatible = \"edp-panel\" plus backlight; OLED vs. LCD changes backlight handling",
+             m->pnp_id, m->name[0] ? m->name : m->text[0]);
+        g->st->mismatches++;
+      }
+    }
+  }
+  sl_free(&compats);
+}
+
 static void emit_prop(gen_t *g, strbuf_t *sb, const dt_node_t *n, const dt_prop_t *p, int depth, ectx_t *ec)
 {
   strlist_t lines;
@@ -1660,6 +1814,8 @@ static void emit_prop(gen_t *g, strbuf_t *sb, const dt_node_t *n, const dt_prop_
   }
   else if (!strcmp(p->name, "firmware-name") && p->value)
     newval = rewrite_firmware(g, n, p->value, depth, &lines);
+  else if (!strcmp(p->name, "compatible") && p->value)
+    check_compatible(g, n, p->value, &lines);
   else if (!ec->bus_child && !ec->in_tlmm && p->value &&
            (!strcmp(p->name, "gpios") || str_ends_with_ci(p->name, "-gpios") ||
             !strcmp(p->name, "interrupts-extended")))
@@ -1914,6 +2070,21 @@ static void emit_appendix(gen_t *g)
         continue;
       sb_printf(&body, "%-60s %s [%s] %s\n", d->instance_id, d->name, devmgr_status_text(d), d->inf);
     }
+    if (g->x->dm->nmon)
+    {
+      const dm_monitor_t *ip = devmgr_internal_panel(g->x->dm);
+      sb_puts(&body, "\nMonitors known to Windows (EDID):\n");
+      for (int i = 0; i < g->x->dm->nmon; i++)
+      {
+        const dm_monitor_t *m = &g->x->dm->mon[i];
+        sb_printf(&body, "%s %s 0x%04x \"%s\" \"%s\" %.1f\" %dx%d cm%s%s - %s\n", m == ip ? "*" : " ", m->pnp_id,
+                  m->product, m->name, m->text[0], m->diagonal_in, m->width_cm, m->height_cm,
+                  m->interface_type == 5 ? " DisplayPort/eDP" : "", m->present ? " present" : "",
+                  m->instance_id);
+      }
+      if (ip)
+        sb_puts(&body, "  (* = taken as the internal panel)\n");
+    }
   }
 
   if (g->x->fw && g->x->fw->count)
@@ -1981,11 +2152,16 @@ static void emit_template(gen_t *g)
   int       last_pre = -1;
 
   memset(&deletes, 0, sizeof(deletes));
+  /* delete-nodes anywhere in the template (incl. inlined board files) must not be repeated */
   for (int i = 0; i < g->tflat.count; i++)
   {
     const flat_t *e = &g->tflat.v[i];
     if (!e->marker && e->t->kind == TOP_DELETE_NODE && e->t->ref)
       sl_add_unique(&deletes, e->t->ref);
+  }
+  for (int i = 0; i < g->tflat.count; i++)
+  {
+    const flat_t *e = &g->tflat.v[i];
     if (!e->marker && e->t->kind != TOP_NODE)
       last_pre = i;
     if (!e->marker && e->t->kind == TOP_NODE)
