@@ -98,6 +98,34 @@ static void collect_resources(dm_dev_t *d, DEVINST inst)
   CM_Free_Log_Conf_Handle(lc);
 }
 
+/* Device Parameters\Resources: BinaryPath / ScfgBinaryPath (Qualcomm drivers) */
+static void read_resource_binaries(HDEVINFO devs, SP_DEVINFO_DATA *info, dm_dev_t *d)
+{
+  HKEY key = SetupDiOpenDevRegKey(devs, info, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+  HKEY res;
+
+  if (key == INVALID_HANDLE_VALUE)
+    return;
+  if (ERROR_SUCCESS == RegOpenKeyExW(key, L"Resources", 0, KEY_READ, &res))
+  {
+    static const wchar_t *names[2] = { L"BinaryPath", L"ScfgBinaryPath" };
+    char                 *outs[2] = { d->res_bin, d->scfg_bin };
+    for (int i = 0; i < 2; i++)
+    {
+      wchar_t buf[A2D_MAX_PATH];
+      DWORD   len = sizeof(buf) - sizeof(wchar_t), type = 0;
+      if (ERROR_SUCCESS == RegQueryValueExW(res, names[i], NULL, &type, (LPBYTE)buf, &len) &&
+          (type == REG_SZ || type == REG_EXPAND_SZ))
+      {
+        buf[len / sizeof(wchar_t)] = 0;
+        wide_to_utf8_buf(buf, outs[i], A2D_MAX_PATH);
+      }
+    }
+    RegCloseKey(res);
+  }
+  RegCloseKey(key);
+}
+
 static void find_driver_store_dir(dm_dev_t *d)
 {
   wchar_t  inf_path[MAX_PATH], ret[A2D_MAX_PATH];
@@ -282,6 +310,11 @@ static void write_json(const a2d_config_t *cfg, const dm_set_t *set)
     fputs(", \"driverStore\": ", fp);     json_escape_fp(fp, d->driver_store_dir);
     fputs(", \"locationInfo\": ", fp);    json_escape_fp(fp, d->location);
     fputs(", \"biosDeviceName\": ", fp);  json_escape_fp(fp, d->bios_name);
+    if (d->res_bin[0] || d->scfg_bin[0])
+    {
+      fputs(", \"resourceBinary\": ", fp);  json_escape_fp(fp, d->res_bin);
+      fputs(", \"scfgBinary\": ", fp);      json_escape_fp(fp, d->scfg_bin);
+    }
     fprintf(fp, ", \"problem\": %lu, \"status\": ", (unsigned long)d->problem);
     json_escape_fp(fp, devmgr_status_text(d));
     fputs(", \"mmioRanges\": [", fp);
@@ -358,6 +391,7 @@ int devmgr_collect(const a2d_config_t *cfg, dm_set_t *set)
       d.problem = (st & DN_HAS_PROBLEM) ? pr : 0;
     }
     collect_resources(&d, info.DevInst);
+    read_resource_binaries(devs, &info, &d);
     if (!cfg->no_drivers)
       find_driver_store_dir(&d);
     VEC_PUSH(set->d, set->count, set->cap, d);

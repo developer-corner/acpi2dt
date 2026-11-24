@@ -32,6 +32,10 @@ typedef struct {
   int        nmem;
   uint32_t   irqs[8];
   int        nirq;
+  /* Qualcomm PEP / camera drivers: applied resource binaries
+     (Device Parameters\Resources\BinaryPath, ScfgBinaryPath) */
+  char       res_bin[A2D_MAX_PATH];
+  char       scfg_bin[A2D_MAX_PATH];
 } dm_dev_t;
 
 /* monitors known to Windows (present or not), decoded from their EDID */

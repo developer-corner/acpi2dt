@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\acpi_extractor.c" />
     <ClCompile Include="src\aml_parser.c" />
+    <ClCompile Include="src\camera.c" />
     <ClCompile Include="src\devmgr_explorer.c" />
     <ClCompile Include="src\dts_merger.c" />
     <ClCompile Include="src\dts_parser.c" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="inc\acpi_extractor.h" />
     <ClInclude Include="inc\aml_parser.h" />
+    <ClInclude Include="inc\camera.h" />
     <ClInclude Include="inc\common.h" />
     <ClInclude Include="inc\devmgr_explorer.h" />
     <ClInclude Include="inc\dts_merger.h" />

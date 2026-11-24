@@ -38,6 +38,7 @@
 
 #include "dts_merger.h"
 #include "dts_parser.h"
+#include "camera.h"
 #include <time.h>
 
 /* ======================================================================== */
@@ -2778,6 +2779,277 @@ static void emit_backlight_suggestion(gen_t *g)
 }
 
 /* ======================================================================== */
+/* camera sensors (Windows camera driver configuration)                     */
+/* ======================================================================== */
+
+/* kernel source root above the DTS folder (contains drivers/media/i2c) */
+static bool kernel_root(gen_t *g, char *out, size_t cap)
+{
+  char cur[A2D_MAX_PATH], probe[A2D_MAX_PATH];
+  str_copy(cur, sizeof(cur), g->x->cfg->kernel_dts_dir);
+  for (int i = 0; i < 7; i++)
+  {
+    path_join(probe, sizeof(probe), cur, "drivers\\media\\i2c");
+    if (dir_exists(probe))
+    {
+      str_copy(out, cap, cur);
+      return true;
+    }
+    {
+      char up[A2D_MAX_PATH];
+      path_dirname(cur, up, sizeof(up));
+      if (!strcmp(up, cur))
+        break;
+      str_copy(cur, sizeof(cur), up);
+    }
+  }
+  return false;
+}
+
+/* pinctrl driver source of the TLMM (e.g. pinctrl-x1e80100.c), NULL if unavailable */
+static char *load_pinctrl_source(gen_t *g, const char *root)
+{
+  dt_node_t *tlmm = dt_tree_label(&g->base, "tlmm");
+  strlist_t  comp;
+  char      *src = NULL;
+
+  memset(&comp, 0, sizeof(comp));
+  if (!tlmm || !root)
+    return NULL;
+  dt_value_strings(dt_prop_value(tlmm, "compatible"), &comp);
+  for (int i = 0; i < comp.count && !src; i++)
+  {
+    char        name[96], p[A2D_MAX_PATH];
+    const char *c = strchr(comp.v[i], ',');
+    if (!c || !str_ends_with_ci(c, "-tlmm"))
+      continue;
+    snprintf(name, sizeof(name), "drivers\\pinctrl\\qcom\\pinctrl-%.*s.c", (int)(strlen(c + 1) - 5), c + 1);
+    path_join(p, sizeof(p), root, name);
+    src = (char *)read_file(p, NULL);
+  }
+  sl_free(&comp);
+  return src;
+}
+
+/* name of function <idx> (1-based, 0 = gpio) of TLMM pin <pin> */
+static bool pin_function(const char *src, int pin, int idx, char *out, size_t cap)
+{
+  char        key[48];
+  const char *p;
+  if (!src || idx <= 0)
+    return false;
+  snprintf(key, sizeof(key), "PINGROUP(%d,", pin);
+  if (!(p = strstr(src, key)))
+    return false;
+  p += strlen(key);
+  for (int i = 1; i <= idx; i++)
+  {
+    const char *e;
+    while (*p == ' ')
+      p++;
+    e = p;
+    while (*e && *e != ',' && *e != ')')
+      e++;
+    if (i == idx)
+    {
+      size_t n = (size_t)(e - p);
+      if (n >= cap)
+        n = cap - 1;
+      memcpy(out, p, n);
+      out[n] = 0;
+      return strcmp(out, "_") != 0;
+    }
+    if (*e != ',')
+      return false;
+    p = e + 1;
+  }
+  return false;
+}
+
+/* TLMM pin carrying camera MCLK <n>: cam_mclk_groups[n], beyond that the "cam_aon" pin */
+static int mclk_pin(const char *src, int n, char *func, size_t cap)
+{
+  const char *p;
+  int         k = 0;
+  if (!src)
+    return -1;
+  if ((p = strstr(src, "cam_mclk_groups[] = {")) != NULL)
+  {
+    const char *e = strchr(p, '}');
+    for (p = strstr(p, "\"gpio"); p && p < e; p = strstr(p + 1, "\"gpio"))
+    {
+      if (k++ == n)
+      {
+        str_copy(func, cap, "cam_mclk");
+        return atoi(p + 5);
+      }
+    }
+  }
+  if ((p = strstr(src, "cam_aon_groups[] = {")) != NULL && (p = strstr(p, "\"gpio")) != NULL)
+  {
+    str_copy(func, cap, "cam_aon");
+    return atoi(p + 5);
+  }
+  return -1;
+}
+
+static void find_vreg_label(gen_t *g, const cam_vreg_t *v, char *out, size_t cap)
+{
+  char prefix[32];
+  snprintf(prefix, sizeof(prefix), "vreg_l%d%c_", v->ldo, v->pmic);
+  for (size_t i = 0; i < g->full.labels.cap; i++)
+    if (g->full.labels.keys[i] && str_starts_with(g->full.labels.keys[i], prefix) &&
+        dt_tree_label(&g->full, g->full.labels.keys[i]))
+    {
+      snprintf(out, cap, "&%s", g->full.labels.keys[i]);
+      return;
+    }
+  snprintf(out, cap, "&%sTODO", prefix);
+}
+
+static bool tree_has_compat_suffix(const dt_node_t *n, const char *suffix)
+{
+  const char *c = dt_prop_value(n, "compatible");
+  if (c && strstr(c, suffix))
+    return true;
+  for (const dt_node_t *ch = n->children; ch; ch = ch->next)
+    if (tree_has_compat_suffix(ch, suffix))
+      return true;
+  return false;
+}
+
+static void emit_cameras(gen_t *g)
+{
+  cam_set_t cams;
+  char      root[A2D_MAX_PATH];
+  bool      have_root;
+  char     *pinsrc;
+  bool      soc_camss, soc_cci;
+
+  if (!g->x->dm || camera_collect(g->x->dm, &cams) == 0)
+    return;
+  have_root = kernel_root(g, root, sizeof(root));
+  pinsrc = load_pinctrl_source(g, have_root ? root : NULL);
+  soc_camss = tree_has_compat_suffix(g->base.root, "-camss");
+  soc_cci = tree_has_compat_suffix(g->base.root, "-cci");
+
+  sb_puts(&g->out, "\n/* ================================================================== */\n");
+  sb_puts(&g->out, "/* camera sensors (Windows camera driver configuration)                  */\n");
+  sb_puts(&g->out, "/* ================================================================== */\n");
+
+  for (int c = 0; c < cams.count; c++)
+  {
+    cam_sensor_t *s = &cams.s[c];
+    strlist_t     lines;
+    strbuf_t      node;
+    const char   *vendor = camera_vendor_prefix(s->sensor);
+    char          drv[A2D_MAX_PATH] = "", mfunc[32] = "";
+    bool          have_drv = false;
+    int           mclk_idx = -1, mpin = -1;
+    const char   *mp;
+
+    memset(&lines, 0, sizeof(lines));
+    addf(&lines, "[CAMERA] %s \"%s\"", s->acpi_path, s->dev_name);
+    if (s->has_scfg)
+    {
+      addf(&lines, "[CAMERA] sensor %s (module %s, tuning %s)", s->sensor, s->module, s->tuning);
+      addf(&lines, "[CAMERA] I2C address 0x%02x (8-bit 0x%02x), chip ID 0x%04x at register 0x%04x, CCI info 0x%04x",
+           s->slave8 >> 1, s->slave8, s->chip_id, s->chip_id_reg, s->cci_info);
+    }
+    if (s->has_res)
+    {
+      strbuf_t sb;
+      sb_init(&sb);
+      for (int i = 0; i < s->steps.count; i++)
+        sb_printf(&sb, "%s%s", i ? "; " : "", s->steps.v[i]);
+      addf(&lines, "[CAMERA] power-on: %s", sb.buf ? sb.buf : "-");
+      sb_free(&sb);
+      if (s->reset_pin >= 0)
+        addf(&lines, "[CAMERA] reset: TLMM %d, %s (toggled after MCLK and supplies)", s->reset_pin,
+             s->reset_active_low ? "active low" : "active high");
+      for (int i = 0; i < s->ngpio; i++)
+      {
+        char fn[48];
+        if (s->gpio[i].pin == s->reset_pin || s->gpio[i].v[0] <= 0)
+          continue;
+        if (pin_function(pinsrc, s->gpio[i].pin, s->gpio[i].v[0], fn, sizeof(fn)))
+          addf(&lines, "[CAMERA] TLMM %d: function %d = \"%s\"%s", s->gpio[i].pin, s->gpio[i].v[0], fn,
+               strstr(fn, "cci") ? " (CCI I2C pin of the sensor bus)" : "");
+      }
+    }
+    if (s->mclk[0] && (mp = strstr(s->mclk, "mclk")) != NULL)
+    {
+      mclk_idx = atoi(mp + 4);
+      mpin = mclk_pin(pinsrc, mclk_idx, mfunc, sizeof(mfunc));
+      if (mpin >= 0)
+        addf(&lines, "[CAMERA] MCLK%d is TLMM %d (function %s)", mclk_idx, mpin, mfunc);
+    }
+    if (have_root && s->sensor[0])
+    {
+      char rel[96];
+      snprintf(rel, sizeof(rel), "drivers\\media\\i2c\\%s.c", s->sensor);
+      path_join(drv, sizeof(drv), root, rel);
+      have_drv = file_exists(drv);
+      addf(&lines, "[KERNEL] sensor driver %s: %s", rel, have_drv ? "present" : "NOT present in this kernel tree");
+    }
+    addf(&lines, "[KERNEL] %s: CAMSS nodes %s, CCI nodes %s%s", g->soc_dtsi, soc_camss ? "present" : "MISSING",
+         soc_cci ? "present" : "MISSING",
+         (!soc_camss || !soc_cci) ? " - needs SoC camera support (out-of-tree patches / newer kernel)" : "");
+    sl_add(&lines, "TODO: CSI PHY port and lane count are not part of these Windows files; the image is raw "
+                   "Bayer (libcamera software ISP)");
+    addf(&lines, "[FILES] %s | %s", s->scfg_file, s->res_file);
+
+    /* suggestion */
+    sb_init(&node);
+    sb_puts(&node, "&cci_TODO {\t/* TODO: CCI controller of the sensor bus */\n");
+    sb_puts(&node, "\tstatus = \"okay\";\n\n\ti2c-bus@TODO {\n");
+    sb_printf(&node, "\t\tcamera@%x {\n", s->slave8 >> 1);
+    sb_printf(&node, "\t\t\tcompatible = \"%s,%s\";\n", vendor ? vendor : "TODO", s->sensor[0] ? s->sensor : "TODO");
+    sb_printf(&node, "\t\t\treg = <0x%02x>;\n\n", s->slave8 >> 1);
+    if (mclk_idx >= 0)
+    {
+      char macro[48];
+      snprintf(macro, sizeof(macro), "CAM_CC_MCLK%d_CLK", mclk_idx);
+      sb_printf(&node, "\t\t\tclocks = <&camcc %s>;\n", macro);
+      sb_printf(&node, "\t\t\tassigned-clocks = <&camcc %s>;\n", macro);
+      sb_printf(&node, "\t\t\tassigned-clock-rates = <%u>;\n\n", s->mclk_hz);
+    }
+    if (s->reset_pin >= 0)
+      sb_printf(&node, "\t\t\treset-gpios = <&tlmm %d %s>;\n\n", s->reset_pin,
+                s->reset_active_low ? "GPIO_ACTIVE_LOW" : "GPIO_ACTIVE_HIGH");
+    for (int i = 0; i < s->nvreg; i++)
+    {
+      char        lbl[64];
+      const char *sup = s->vreg[i].uv >= 2500000 ? "avdd" : s->vreg[i].uv >= 1700000 ? "dovdd" : "dvdd";
+      const char *ldo = strstr(s->vreg[i].name, "LDO");
+      find_vreg_label(g, &s->vreg[i], lbl, sizeof(lbl));
+      sb_printf(&node, "\t\t\t%s-supply = <%s>;\t/* %s %.3f V */\n", sup, lbl, ldo ? ldo : s->vreg[i].name,
+                s->vreg[i].uv / 1000000.0);
+    }
+    if (mpin >= 0)
+      sb_printf(&node, "\n\t\t\tpinctrl-0 = <&cam_TODO_default>;\t/* MCLK TLMM %d (%s) */\n"
+                       "\t\t\tpinctrl-names = \"default\";\n", mpin, mfunc);
+    sb_puts(&node, "\n\t\t\tport {\n\t\t\t\tendpoint {\n");
+    sb_puts(&node, "\t\t\t\t\tdata-lanes = <1 2>;\t/* TODO: verify lane count */\n");
+    sb_puts(&node, "\t\t\t\t\tlink-frequencies = /bits/ 64 <TODO>;\n");
+    sb_puts(&node, "\t\t\t\t\tremote-endpoint = <&TODO_csiphy_ep>;\n\t\t\t\t};\n\t\t\t};\n\t\t};\n\t};\n};\n");
+
+    sb_putc(&g->out, '\n');
+    emit_lines_comment(&g->out, 0, &lines);
+    comment_out(&g->out, node.buf, 0);
+    g->st->commented++;
+    log_info("camera: %s %s at I2C 0x%02x, MCLK%d %.1f MHz, reset TLMM %d (%s%s)", s->acpi_path,
+             s->sensor[0] ? s->sensor : "?", s->slave8 >> 1, mclk_idx, s->mclk_hz / 1e6, s->reset_pin,
+             have_drv ? "Linux driver present" : "no Linux driver",
+             (soc_camss && soc_cci) ? "" : ", SoC CAMSS/CCI nodes missing");
+    sl_free(&lines);
+    sb_free(&node);
+  }
+  free(pinsrc);
+  camera_free(&cams);
+}
+
+/* ======================================================================== */
 /* Wi-Fi board file and other extras                                        */
 /* ======================================================================== */
 
@@ -2922,6 +3194,7 @@ int dts_generate(a2d_ctx_t *x, dts_stats_t *stats)
     emit_skeleton(&g);
   emit_backlight_suggestion(&g);
   emit_acpi_buses(&g);
+  emit_cameras(&g);
   plan_extra_firmware(&g);
   emit_appendix(&g);
 

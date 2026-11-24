@@ -14,6 +14,7 @@ name the source of the information and the result of cross-checks.
 | `[INF]` / `[FW]` | driver packages in the DriverStore; firmware is resolved, copied into a `/lib/firmware` layout and listed with SHA-256 in `FIRMWARE-MANIFEST.txt` |
 | `[SMBIOS]` | `model` / `compatible`, firmware vendor and board directory |
 | `[EDID]` | EDID of the monitors known to Windows (also non-present ones): the internal eDP panel |
+| `[CAMERA]` | Qualcomm camera driver configuration applied per device (`Device Parameters\Resources`): sensor model, I2C address and chip ID (`SCFG_*.bin`), power-on sequence with regulators, MCLK and reset GPIO (`CAM*_RES_*.bin`, "AeoB" format) |
 | `[KERNEL]` | SoC and PMIC `.dtsi` of the Linux kernel DTS folder; SoC-specific `/delete-node/` statements are learned from the kernel's other boards of the same SoC |
 | `[TEMPLATE]` / `[SIMILARn]` | optional DTS files of similar notebooks (first = template) |
 
