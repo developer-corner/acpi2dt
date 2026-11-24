@@ -126,9 +126,25 @@ typedef struct {
   dt_node_t *node;
 } unit_t;
 
+/* panel configuration of the Qualcomm GPU (_ROM XML), selected by EDID */
+typedef struct {
+  bool        found;
+  bool        is_default;      /* panel ID not listed: default branch       */
+  uint32_t    panel_id;
+  char        buf[5];          /* AML buffer name, e.g. "PCE5"              */
+  const char *dev;             /* ACPI GPU device path                      */
+  char       *xml;             /* NUL-terminated copy                       */
+  int         bl_type;         /* BacklightType: 1 = PMIC PWM, 5 = eDP AUX  */
+  int         pmic_ctrl, pmic_id, pwm_bits, pwm_hz;
+  int         dpcd_rev, link_rate_code, lanes;
+  int         psr;
+  char        pwm_ref[64];     /* "&pmk8550_pwm"                            */
+} panel_cfg_t;
+
 typedef struct {
   a2d_ctx_t   *x;
   dts_stats_t *st;
+  panel_cfg_t  panel;
   const char  *soc;
   char         dirbuf[3][A2D_MAX_PATH];
   const char  *dirs[3];
@@ -1625,6 +1641,149 @@ static void emit_secondary_extras(gen_t *g, strbuf_t *sb, const dt_node_t *n, in
 }
 
 /* ======================================================================== */
+/* panel configuration from the GPU's _ROM (Qualcomm)                       */
+/* ======================================================================== */
+
+static bool xml_tag(const char *xml, const char *tag, char *out, size_t cap)
+{
+  char        open[64];
+  const char *p, *e;
+  size_t      n;
+
+  snprintf(open, sizeof(open), "<%s>", tag);
+  p = strstr(xml, open);
+  if (!p)
+    return false;
+  p += strlen(open);
+  e = strchr(p, '<');
+  if (!e)
+    return false;
+  n = (size_t)(e - p);
+  if (n >= cap)
+    n = cap - 1;
+  memcpy(out, p, n);
+  out[n] = 0;
+  str_copy(out, cap, str_trim(out));
+  return true;
+}
+
+static int xml_int(const char *xml, const char *tag, int def)
+{
+  char v[64];
+  if (!xml_tag(xml, tag, v, sizeof(v)) || !v[0])
+    return def;
+  return (int)strtol(v, NULL, 0);
+}
+
+/* PWM node of PMIC <sid>: a "...-pwm" compatible below "pmic@<sid>" */
+static dt_node_t *find_pmic_pwm(dt_node_t *n, int sid)
+{
+  for (dt_node_t *c = n->children; c; c = c->next)
+  {
+    uint64_t    a;
+    const char *comp = dt_prop_value(c, "compatible");
+    if (comp && str_contains_ci(comp, "-pwm") && c->parent && str_starts_with(c->parent->name, "pmic@") &&
+        dt_unit_address(c->parent, &a) && (int)a == sid && c->labels.count)
+      return c;
+    {
+      dt_node_t *r = find_pmic_pwm(c, sid);
+      if (r)
+        return r;
+    }
+  }
+  return NULL;
+}
+
+static void setup_panel(gen_t *g)
+{
+  const dm_monitor_t *m = devmgr_internal_panel(g->x->dm);
+  panel_cfg_t        *pc = &g->panel;
+  acpi_ns_t          *ns = g->x->ns;
+
+  if (!m)
+    return;
+  {
+    uint16_t v = (uint16_t)(((m->pnp_id[0] - '@') << 10) | ((m->pnp_id[1] - '@') << 5) | (m->pnp_id[2] - '@'));
+    pc->panel_id = ((uint32_t)(((v & 0xFF) << 8) | (v >> 8)) << 16) | m->product;
+  }
+  for (int i = 0; i < ns->count && !pc->found; i++)
+  {
+    const char *xml;
+    uint32_t    len;
+    if (!ns->d[i].rom_body)
+      continue;
+    if (aml_rom_panel_xml(&ns->d[i], pc->panel_id, pc->buf, &xml, &len, &pc->is_default) &&
+        len > 5 && !strncmp(xml, "<?xml", 5))
+    {
+      pc->found = true;
+      pc->dev = ns->d[i].path;
+      pc->xml = xstrndup(xml, len);
+    }
+  }
+  if (!pc->found)
+    return;
+
+  pc->bl_type = xml_int(pc->xml, "BacklightType", -1);
+  pc->pmic_ctrl = xml_int(pc->xml, "BacklightPmicControlType", -1);
+  pc->pmic_id = xml_int(pc->xml, "BacklightPmicId", -1);
+  pc->pwm_bits = xml_int(pc->xml, "BacklightPmicPWMSizeinBits", -1);
+  pc->pwm_hz = xml_int(pc->xml, "BacklightPMICPWMFrequency", -1);
+  pc->psr = xml_int(pc->xml, "EDPMaxPsrVersion", -1);
+  {
+    char caps[256];
+    if (xml_tag(pc->xml, "EDPOverrideDPCDCaps", caps, sizeof(caps)))
+    {
+      unsigned b0 = 0, b1 = 0, b2 = 0;
+      if (3 == sscanf(caps, "%x %x %x", &b0, &b1, &b2))
+      {
+        pc->dpcd_rev = (int)b0;
+        pc->link_rate_code = (int)b1;
+        pc->lanes = (int)(b2 & 0x1F);
+      }
+    }
+  }
+  if (pc->bl_type == 1 && pc->pmic_id >= 0)
+  {
+    dt_node_t *pwm = find_pmic_pwm(g->base.root, pc->pmic_id);
+    if (pwm)
+      snprintf(pc->pwm_ref, sizeof(pc->pwm_ref), "&%s", pwm->labels.v[0]);
+  }
+
+  /* keep the XML for the reviewer */
+  {
+    char p[A2D_MAX_PATH], f[32];
+    snprintf(f, sizeof(f), "panel_%s.xml", pc->buf);
+    path_join(p, sizeof(p), g->x->cfg->work_dir, f);
+    write_file(p, pc->xml, strlen(pc->xml));
+  }
+  log_info("panel config: %s._ROM, panel ID 0x%08X -> %s%s, backlight type %d%s", pc->dev, pc->panel_id, pc->buf,
+           pc->is_default ? " (DEFAULT - ID not listed)" : "", pc->bl_type,
+           pc->bl_type == 1 ? " (PMIC PWM)" : pc->bl_type == 5 ? " (eDP AUX)" : "");
+}
+
+static double link_rate_gbps(int code)
+{
+  return code * 0.27; /* DPCD MAX_LINK_RATE in units of 0.27 Gbit/s */
+}
+
+static void panel_lines(gen_t *g, strlist_t *lines)
+{
+  const panel_cfg_t *pc = &g->panel;
+  if (!pc->found)
+    return;
+  addf(lines, "[ACPI-PANEL] %s._ROM: panel ID 0x%08X -> %s%s", pc->dev, pc->panel_id, pc->buf,
+       pc->is_default ? " (DEFAULT entry, ID not listed - less reliable)" : "");
+  if (pc->bl_type == 1)
+    addf(lines, "[ACPI-PANEL] backlight: PMIC %d PWM, %d bit, %d Hz -> pwm-backlight pwms = <%s 0 %d>", pc->pmic_id,
+         pc->pwm_bits, pc->pwm_hz, pc->pwm_ref[0] ? pc->pwm_ref : "&TODO_pwm",
+         pc->pwm_hz > 0 ? (int)(1000000000.0 / pc->pwm_hz + 0.5) : 0);
+  else if (pc->bl_type == 5)
+    sl_add(lines, "[ACPI-PANEL] backlight: eDP AUX (DPCD) - no pwm-backlight needed (typical for OLED)");
+  else if (pc->bl_type >= 0)
+    addf(lines, "[ACPI-PANEL] backlight type %d (unknown mapping)", pc->bl_type);
+}
+
+/* ======================================================================== */
 /* compatible cross-checks: PCI IDs, Qualcomm WCN chips, panel vs. EDID     */
 /* ======================================================================== */
 
@@ -1732,6 +1891,38 @@ static void check_compatible(gen_t *g, const dt_node_t *n, const char *value, st
 
     if (!strcmp(c, "edp-panel"))
       is_panel = generic_panel = true;
+
+    /* pwm-backlight vs. the GPU panel configuration */
+    if (!strcmp(c, "pwm-backlight") && g->panel.found)
+    {
+      const panel_cfg_t *pc = &g->panel;
+      panel_lines(g, lines);
+      if (pc->bl_type == 1 && pc->pwm_hz > 0)
+      {
+        strlist_t cells;
+        int       want = (int)(1000000000.0 / pc->pwm_hz + 0.5);
+        memset(&cells, 0, sizeof(cells));
+        if (dt_value_cells(dt_prop_value(n, "pwms"), &cells) >= 3)
+        {
+          long have = strtol(cells.v[2], NULL, 0);
+          bool same_pwm = !pc->pwm_ref[0] || !strcmp(cells.v[0], pc->pwm_ref);
+          if (same_pwm && labs(have - want) <= want / 100)
+            addf(lines, "OK: pwms %s period %ld ns matches %d Hz", cells.v[0], have, pc->pwm_hz);
+          else
+          {
+            addf(lines, "WARNING: pwms = <%s ... %ld> but ACPI panel config says %s, %d Hz (%d ns)", cells.v[0], have,
+                 pc->pwm_ref[0] ? pc->pwm_ref : "?", pc->pwm_hz, want);
+            g->st->mismatches++;
+          }
+        }
+        sl_free(&cells);
+      }
+      else if (pc->bl_type == 5)
+      {
+        sl_add(lines, "WARNING: ACPI panel config uses eDP AUX backlight - this pwm-backlight is probably not needed");
+        g->st->mismatches++;
+      }
+    }
   }
 
   /* panels: node "panel" (usually below aux-bus) or generic edp-panel */
@@ -1762,6 +1953,15 @@ static void check_compatible(gen_t *g, const dt_node_t *n, const char *value, st
           if (nm[0] && ids[k][0] && (strstr(ids[k], nm) || strstr(nm, ids[k])))
             panel_ok = true;
       }
+      panel_lines(g, lines);
+      if (g->panel.found && g->panel.bl_type == 1 && !dt_prop(n, "backlight"))
+      {
+        sl_add(lines, "WARNING: ACPI panel config uses a PMIC PWM backlight - add backlight = <&backlight> "
+                      "(pwm-backlight node)");
+        g->st->mismatches++;
+      }
+      else if (g->panel.found && g->panel.bl_type == 5 && dt_prop(n, "backlight"))
+        sl_add(lines, "CHECK: panel has a backlight phandle, ACPI panel config uses eDP AUX backlight");
       if (generic_panel)
         sl_add(lines, "OK: generic \"edp-panel\" identifies the panel by its EDID at runtime");
       else if (panel_ok)
@@ -1816,6 +2016,19 @@ static void emit_prop(gen_t *g, strbuf_t *sb, const dt_node_t *n, const dt_prop_
     newval = rewrite_firmware(g, n, p->value, depth, &lines);
   else if (!strcmp(p->name, "compatible") && p->value)
     check_compatible(g, n, p->value, &lines);
+  else if (!strcmp(p->name, "data-lanes") && n->ref && strstr(n->ref, "dp3_out") && g->panel.found &&
+           g->panel.lanes)
+  {
+    strlist_t cells;
+    memset(&cells, 0, sizeof(cells));
+    dt_value_cells(p->value, &cells);
+    addf(&lines, "[ACPI-PANEL] Windows overrides the eDP sink DPCD: rev %d.%d, %d lane(s), max %.2f Gbit/s per lane",
+         g->panel.dpcd_rev >> 4, g->panel.dpcd_rev & 0xF, g->panel.lanes, link_rate_gbps(g->panel.link_rate_code));
+    if (cells.count > g->panel.lanes)
+      addf(&lines, "NOTE: %d lanes configured; Linux trains with what the panel's DPCD offers - reduce if link "
+                   "training fails", cells.count);
+    sl_free(&cells);
+  }
   else if (!ec->bus_child && !ec->in_tlmm && p->value &&
            (!strcmp(p->name, "gpios") || str_ends_with_ci(p->name, "-gpios") ||
             !strcmp(p->name, "interrupts-extended")))
@@ -2095,6 +2308,29 @@ static void emit_appendix(gen_t *g)
     for (int i = 0; i < g->x->fw->count; i++)
       sb_printf(&body, "/lib/firmware/%s\n    <- %s\n    (%s)\n", g->x->fw->c[i].target_rel, g->x->fw->c[i].source,
                 g->x->fw->c[i].reason);
+  }
+
+  if (g->panel.found)
+  {
+    const panel_cfg_t *pc = &g->panel;
+    char               v[128];
+    strlist_t          pl;
+    memset(&pl, 0, sizeof(pl));
+    sb_puts(&body, "\n==================================================================\n");
+    sb_puts(&body, "APPENDIX F: panel configuration of the GPU driver (ACPI _ROM XML)\n");
+    sb_puts(&body, "==================================================================\n");
+    panel_lines(g, &pl);
+    for (int i = 0; i < pl.count; i++)
+      sb_printf(&body, "%s\n", pl.v[i]);
+    if (xml_tag(pc->xml, "PanelName", v, sizeof(v)))
+      sb_printf(&body, "PanelName %s (often a generic template name)\n", v);
+    if (pc->lanes)
+      sb_printf(&body, "eDP override DPCD: rev %d.%d, %d lane(s), max %.2f Gbit/s per lane\n", pc->dpcd_rev >> 4,
+                pc->dpcd_rev & 0xF, pc->lanes, link_rate_gbps(pc->link_rate_code));
+    if (pc->psr >= 0)
+      sb_printf(&body, "eDP PSR version: %d\n", pc->psr);
+    sb_printf(&body, "full XML: %s\\panel_%s.xml\n", g->x->cfg->work_dir, pc->buf);
+    sl_free(&pl);
   }
 
   if (g->notes.count)
@@ -2495,6 +2731,52 @@ static void emit_skeleton(gen_t *g)
   }
 }
 
+static bool subtree_has_compat(const dt_node_t *n, const char *compat)
+{
+  const char *c = dt_prop_value(n, "compatible");
+  if (c && strstr(c, compat))
+    return true;
+  for (const dt_node_t *ch = n->children; ch; ch = ch->next)
+    if (subtree_has_compat(ch, compat))
+      return true;
+  return false;
+}
+
+/* PMIC PWM backlight from the GPU panel config, if the draft has none */
+static void emit_backlight_suggestion(gen_t *g)
+{
+  const panel_cfg_t *pc = &g->panel;
+  strbuf_t           node;
+  strlist_t          lines;
+
+  if (!pc->found || pc->bl_type != 1 || pc->pwm_hz <= 0)
+    return;
+  for (int i = 0; g->tmpl && i < g->tflat.count; i++)
+    if (!g->tflat.v[i].marker && g->tflat.v[i].t->kind == TOP_NODE &&
+        subtree_has_compat(g->tflat.v[i].t->node, "pwm-backlight"))
+      return;
+
+  memset(&lines, 0, sizeof(lines));
+  sl_add(&lines, "[ACPI-PANEL] suggestion (commented out): the panel uses a PMIC PWM backlight, the draft has none");
+  panel_lines(g, &lines);
+  sl_add(&lines, "TODO: enable-gpios and power-supply are not part of the ACPI panel config; reference the");
+  sl_add(&lines, "      backlight from the panel node (backlight = <&backlight>) and add pinctrl for the PWM pin");
+  sb_init(&node);
+  sb_puts(&node, "/ {\n\tbacklight: backlight {\n\t\tcompatible = \"pwm-backlight\";\n");
+  sb_printf(&node, "\t\tpwms = <%s 0 %d>;\n", pc->pwm_ref[0] ? pc->pwm_ref : "&TODO_pwm",
+            (int)(1000000000.0 / pc->pwm_hz + 0.5));
+  sb_puts(&node, "\t\tenable-gpios = <TODO>;\n\t\tpower-supply = <TODO>;\n\t};\n};\n");
+  if (pc->pwm_ref[0])
+    sb_printf(&node, "\n%s {\n\tstatus = \"okay\";\n};\n", pc->pwm_ref);
+
+  sb_putc(&g->out, '\n');
+  emit_lines_comment(&g->out, 0, &lines);
+  comment_out(&g->out, node.buf, 0);
+  g->st->commented++;
+  sb_free(&node);
+  sl_free(&lines);
+}
+
 /* ======================================================================== */
 /* Wi-Fi board file and other extras                                        */
 /* ======================================================================== */
@@ -2610,6 +2892,7 @@ int dts_generate(a2d_ctx_t *x, dts_stats_t *stats)
   match_acpi(&g);
   setup_gpio(&g);
   build_tlmm_users(&g);
+  setup_panel(&g);
   {
     int matched = 0;
     for (int i = 0; i < x->ns->count; i++)
@@ -2637,6 +2920,7 @@ int dts_generate(a2d_ctx_t *x, dts_stats_t *stats)
   }
   else
     emit_skeleton(&g);
+  emit_backlight_suggestion(&g);
   emit_acpi_buses(&g);
   plan_extra_firmware(&g);
   emit_appendix(&g);

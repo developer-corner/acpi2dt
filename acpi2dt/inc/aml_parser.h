@@ -82,6 +82,8 @@ typedef struct acpi_dev {
   strlist_t    deps;             /* _DEP                                       */
   bool         has_dsd;
   int          parent;           /* index of enclosing device, -1 if none      */
+  const uint8_t *rom_body;       /* _ROM method body (Qualcomm GPU: panel XML) */
+  uint32_t     rom_len;
 } acpi_dev_t;
 
 typedef struct {
@@ -100,6 +102,13 @@ acpi_dev_t *aml_find_device(const acpi_ns_t *ns, const char *path);
 acpi_dev_t *aml_find_by_mmio(const acpi_ns_t *ns, uint64_t addr, bool exact_only);
 bool        aml_dev_has_id(const acpi_dev_t *d, const char *id);   /* HID or CID */
 const char *aml_dev_primary_hid(const acpi_dev_t *d);
+
+/* Qualcomm GPU _ROM: selects the panel configuration (XML) for a panel ID
+   (EDID manufacturer word byte-swapped << 16 | product code). Falls back to
+   the default branch if the ID is not listed (*is_default = true).
+   xml points into the ACPI table (not NUL-terminated beyond xml_len). */
+bool        aml_rom_panel_xml(const acpi_dev_t *d, uint32_t panel_id, char bufname[5], const char **xml,
+                              uint32_t *xml_len, bool *is_default);
 
 /* canonical ACPI path: upper case, "\_SB_.I2C1" -> "\_SB.I2C1" */
 void        aml_canon_path(const char *in, char *out, size_t cap);

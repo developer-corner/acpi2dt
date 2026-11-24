@@ -22,6 +22,7 @@ What the tool does with them:
 * matches ACPI devices to SoC DT nodes by MMIO address (`\_SB.I2C1 @ 0xb80000` ↔ `i2c0: i2c@b80000`)
 * decodes Qualcomm virtual GPIO numbers (GIO0 interrupt list → `qcom,pdc-ranges` → PDC wake map → TLMM pin)
 * re-emits the template node by node and checks I2C/SPI/UART children, interrupt and GPIO pins and `hid-descr-addr` against ACPI (`OK` / `CHECK` / `WARNING`)
+* reads the panel configuration of the Qualcomm GPU driver from ACPI (`\_SB.GPU0._ROM` XML, selected by the panel ID derived from the EDID): backlight type, PMIC PWM frequency → `pwm-backlight` `pwms`, eDP DPCD override; checks panel / `pwm-backlight` nodes and suggests a backlight node if the draft lacks one
 * checks `pciVVVV,DDDD` compatibles against the present PCI devices, Qualcomm `qcom,wcnNNNN-*` compatibles against the Wi-Fi/BT chip actually fitted, and panel compatibles against the internal panel's EDID
 * replaces the SoC include if the template is for another SoC, inlines board `.dtsi` files of the template
 * rewrites `firmware-name` to `qcom/<soc>/<vendor>/<board>/…` and prefers SoC-specific blobs (e.g. `qcdxkmsucpurwa.mbn` on X1P42100)

@@ -1073,6 +1073,11 @@ static void handle_method(pctx_t *c, acpi_dev_t *d, const char *seg, const uint8
   }
   else if (!strcmp(seg, "_AEI"))
     scan_buffers(c, d, body, end, RES_ORIGIN_AEI);
+  else if (!strcmp(seg, "_ROM"))
+  {
+    d->rom_body = body;
+    d->rom_len = (uint32_t)(end - body);
+  }
   else if (!strcmp(seg, "_STA"))
   {
     uint64_t v;
@@ -1333,6 +1338,88 @@ void aml_free(acpi_ns_t *ns)
   }
   free(ns->d);
   memset(ns, 0, sizeof(*ns));
+}
+
+/* ======================================================================== */
+/* Qualcomm GPU _ROM panel configuration                                    */
+/* ======================================================================== */
+
+/* "Store (<seg>, Local2)" = 0x70 NameSeg 0x62 */
+static bool store_to_local2(const uint8_t *p, const uint8_t *end, char seg[5])
+{
+  const uint8_t *q = p + 1;
+  if (p + 6 > end || p[0] != 0x70 || !parse_nameseg(&q, end, seg))
+    return false;
+  return q < end && *q == 0x62;
+}
+
+bool aml_rom_panel_xml(const acpi_dev_t *d, uint32_t panel_id, char bufname[5], const char **xml, uint32_t *xml_len,
+                       bool *is_default)
+{
+  const uint8_t *body = d->rom_body, *end;
+  bool           found = false;
+  pctx_t         c;
+
+  if (!body || d->rom_len < 16)
+    return false;
+  end = body + d->rom_len;
+  memset(&c, 0, sizeof(c));
+  if (!g_ops_init)
+    init_ops();
+  *is_default = false;
+
+  /* 1. the panel ID compared as a constant, followed by Store (PCxx, Local2) */
+  for (const uint8_t *p = body; p + 5 <= end && !found; p++)
+  {
+    bool hit = (p[0] == 0x0C && rd32(p + 1) == panel_id) ||
+               (panel_id <= 0xFFFF && p[0] == 0x0B && rd16(p + 1) == panel_id);
+    if (!hit)
+      continue;
+    for (const uint8_t *q = p + 3; q < p + 32 && q < end; q++)
+      if (store_to_local2(q, end, bufname))
+      {
+        found = true;
+        break;
+      }
+  }
+  /* 2. default: the last Store (xxxx, Local2) in the method (Else branch) */
+  if (!found)
+  {
+    for (const uint8_t *p = body; p < end; p++)
+    {
+      char seg[5];
+      if (store_to_local2(p, end, seg))
+      {
+        memcpy(bufname, seg, 5);
+        found = true;
+      }
+    }
+    if (!found)
+      return false;
+    *is_default = true;
+  }
+
+  /* 3. Name (<bufname>, Buffer (n) {...}) inside the method */
+  for (const uint8_t *p = body; p + 6 < end; p++)
+  {
+    const uint8_t *q, *pend;
+    char           seg[5];
+    aml_val_t      sz;
+    if (p[0] != 0x08)
+      continue;
+    q = p + 1;
+    if (!parse_nameseg(&q, end, seg) || strcmp(seg, bufname) || q >= end || *q != 0x11)
+      continue;
+    q++;
+    if (!parse_pkglen(&q, end, &pend) || !eval_const(&c, &q, pend, &sz))
+      return false;
+    *xml = (const char *)q;
+    *xml_len = (uint32_t)(pend - q);
+    while (*xml_len && (*xml)[*xml_len - 1] == 0)
+      (*xml_len)--;
+    return true;
+  }
+  return false;
 }
 
 /* ======================================================================== */
