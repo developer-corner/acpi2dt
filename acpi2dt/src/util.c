@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   util.c
  * @author Ingo A. Kubbilun
@@ -14,11 +15,21 @@
 /* console                                                                  */
 /* ======================================================================== */
 
+/** ANSI colors enabled */
 static int    g_colors      = 0;
+/** original console mode */
 static DWORD  g_con_mode    = 0;
+/** console output handle */
 static HANDLE g_con         = INVALID_HANDLE_VALUE;
+/** verbose output enabled */
 static bool   g_verbose     = false;
 
+/**
+ * @brief Console control handler: restores the console mode on Ctrl-C / Ctrl-Break.
+ *
+ * @param type  control event type
+ * @return FALSE (let the default handler terminate the process)
+ */
 static BOOL WINAPI ctrl_handler(DWORD type)
 {
   if (CTRL_C_EVENT == type || CTRL_BREAK_EVENT == type)
@@ -54,6 +65,13 @@ void console_restore(void)
   }
 }
 
+/**
+ * @brief Formats a message and writes it, stripping ANSI sequences when colors are off.
+ *
+ * @param f    output stream
+ * @param fmt  printf format
+ * @param ap   argument list
+ */
 static void vfprintf_colored(FILE *f, const char *fmt, va_list ap)
 {
   char      stackbuf[2048];
@@ -107,6 +125,7 @@ void FPRINTF(FILE *f, const char *fmt, ...)
 
 void log_set_verbose(bool v) { g_verbose = v; }
 
+/** body of the log_*() functions: prefix, formatted message, newline */
 #define LOG_IMPL(stream, prefix)               \
   va_list ap;                                  \
   FPRINTF(stream, "%s", prefix);               \
@@ -133,6 +152,9 @@ void log_verbose(const char *fmt, ...)
 /* memory                                                                   */
 /* ======================================================================== */
 
+/**
+ * @brief Reports out-of-memory and terminates acpi2dt.
+ */
 static void oom(void)
 {
   fputs("acpi2dt: out of memory\n", stderr);
@@ -160,6 +182,12 @@ void sb_init(strbuf_t *sb) { sb->buf = NULL; sb->len = 0; sb->cap = 0; }
 void sb_free(strbuf_t *sb) { free(sb->buf); sb_init(sb); }
 void sb_clear(strbuf_t *sb) { sb->len = 0; if (sb->buf) sb->buf[0] = 0; }
 
+/**
+ * @brief Makes sure a string buffer has room for more bytes.
+ *
+ * @param sb     string buffer
+ * @param extra  number of additional bytes
+ */
 static void sb_grow(strbuf_t *sb, size_t extra)
 {
   if (sb->len + extra + 1 > sb->cap)
@@ -271,6 +299,12 @@ void sl_free(strlist_t *sl)
 /* hash map                                                                 */
 /* ======================================================================== */
 
+/**
+ * @brief FNV-1a hash of a string.
+ *
+ * @param s  string
+ * @return 64-bit hash
+ */
 static uint64_t fnv1a(const char *s)
 {
   uint64_t h = 1469598103934665603ULL;
@@ -282,6 +316,12 @@ static uint64_t fnv1a(const char *s)
   return h;
 }
 
+/**
+ * @brief Rebuilds the hash table of a string map with a new capacity.
+ *
+ * @param m     map
+ * @param ncap  new capacity (power of two)
+ */
 static void sm_rehash(strmap_t *m, size_t ncap)
 {
   char  **ok = m->keys;
@@ -516,6 +556,12 @@ void path_normalize_slashes(char *p)
       *p = '\\';
 }
 
+/**
+ * @brief GetFileAttributesW() for a UTF-8 path.
+ *
+ * @param path  UTF-8 path
+ * @return file attributes or INVALID_FILE_ATTRIBUTES
+ */
 static DWORD get_attr(const char *path)
 {
   wchar_t *w = utf8_to_wide(path);
@@ -570,6 +616,13 @@ bool mkdir_p(const char *path)
   return true;
 }
 
+/**
+ * @brief _wfopen() for UTF-8 path and mode.
+ *
+ * @param path  UTF-8 path
+ * @param mode  fopen mode
+ * @return FILE pointer or NULL
+ */
 static FILE *fopen_utf8(const char *path, const char *mode)
 {
   wchar_t *wp = utf8_to_wide(path);
@@ -724,6 +777,15 @@ int run_process(const char *cmdline, const char *cwd, DWORD timeout_ms)
   return (int)code;
 }
 
+/**
+ * @brief Recursive worker of walk_dir().
+ *
+ * @param dir        directory
+ * @param recursive  descend into subdirectories
+ * @param cb         callback
+ * @param ctx        user context
+ * @return false if the callback stopped the walk
+ */
 static bool walk_dir_impl(const char *dir, bool recursive, walk_cb_t cb, void *ctx)
 {
   char             pattern[A2D_MAX_PATH];

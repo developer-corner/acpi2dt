@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   aml_parser.c
  * @author Ingo A. Kubbilun
@@ -24,32 +25,55 @@
 
 #include "aml_parser.h"
 
+/** maximum AML term nesting */
 #define MAX_DEPTH 200
 
+/** @brief a decoded AML NameString */
 typedef struct {
-  bool root;
-  int  up;
-  int  nseg;
-  char seg[32][5];
+  bool root;  /**< absolute name (leading '\\') */
+  int  up;  /**< number of parent prefixes ('^') */
+  int  nseg;  /**< number of segments */
+  char seg[32][5];  /**< name segments (NUL-terminated) */
 } aml_name_t;
 
+/** @brief state of the AML parser */
 typedef struct {
-  const uint8_t *base;
-  uint32_t       len;
-  acpi_ns_t     *ns;
-  strmap_t      *methods;     /* last NameSeg -> (argc + 1) */
-  const char    *table;
-  int            pass;
-  int            depth;
+  const uint8_t *base;  /**< table start */
+  uint32_t       len;  /**< table length */
+  acpi_ns_t     *ns;  /**< device list */
+  strmap_t      *methods;     /**< last NameSeg -> (argc + 1) */
+  const char    *table;  /**< table file name */
+  int            pass;  /**< 1: collect methods, 2: devices */
+  int            depth;  /**< recursion depth */
 } pctx_t;
 
 /* ======================================================================== */
 /* helpers                                                                  */
 /* ======================================================================== */
 
+/**
+ * @brief Checks for a valid first character of an AML NameSeg.
+ *
+ * @param c  byte
+ * @return true for 'A'-'Z' or '_'
+ */
 static bool is_lead_char(uint8_t c) { return (c >= 'A' && c <= 'Z') || c == '_'; }
+/**
+ * @brief Checks for a valid character of an AML NameSeg.
+ *
+ * @param c  byte
+ * @return true for 'A'-'Z', '0'-'9' or '_'
+ */
 static bool is_name_char(uint8_t c) { return is_lead_char(c) || (c >= '0' && c <= '9'); }
 
+/**
+ * @brief Decodes an AML PkgLength.
+ *
+ * @param pp       read position (advanced behind the PkgLength)
+ * @param end      end of the enclosing data
+ * @param pkg_end  receives the end of the package
+ * @return true if valid
+ */
 static bool parse_pkglen(const uint8_t **pp, const uint8_t *end, const uint8_t **pkg_end)
 {
   const uint8_t *p = *pp;
@@ -76,6 +100,14 @@ static bool parse_pkglen(const uint8_t **pp, const uint8_t *end, const uint8_t *
   return true;
 }
 
+/**
+ * @brief Reads a 4-character NameSeg.
+ *
+ * @param pp   read position (advanced)
+ * @param end  end of data
+ * @param out  receives the segment
+ * @return true if valid
+ */
 static bool parse_nameseg(const uint8_t **pp, const uint8_t *end, char out[5])
 {
   const uint8_t *p = *pp;
@@ -92,11 +124,25 @@ static bool parse_nameseg(const uint8_t **pp, const uint8_t *end, char out[5])
   return true;
 }
 
+/**
+ * @brief Checks whether a byte can start an AML NameString.
+ *
+ * @param c  byte
+ * @return true for '\\', '^', prefixes and lead characters
+ */
 static bool is_namestring_start(uint8_t c)
 {
   return c == 0x5C || c == 0x5E || c == 0x2E || c == 0x2F || is_lead_char(c);
 }
 
+/**
+ * @brief Decodes an AML NameString.
+ *
+ * @param pp   read position (advanced)
+ * @param end  end of data
+ * @param n    receives root flag, parent prefixes and segments
+ * @return true if valid
+ */
 static bool parse_namestring(const uint8_t **pp, const uint8_t *end, aml_name_t *n)
 {
   const uint8_t *p = *pp;
@@ -144,6 +190,12 @@ static bool parse_namestring(const uint8_t **pp, const uint8_t *end, aml_name_t 
   return true;
 }
 
+/**
+ * @brief Copies a NameSeg without trailing '_' padding.
+ *
+ * @param seg  4-character segment
+ * @param out  output (at least 5 bytes)
+ */
 static void seg_strip(const char *seg, char *out)
 {
   int n = 4;
@@ -153,7 +205,14 @@ static void seg_strip(const char *seg, char *out)
   out[n] = 0;
 }
 
-/* scope is a canonical path ("\" or "\_SB.I2C1") */
+/**
+ * @brief Resolves a NameString relative to a scope to a canonical path.
+ *
+ * @param scope  current scope path
+ * @param n      decoded name
+ * @param out    output buffer
+ * @param cap    size of the output buffer
+ */
 static void resolve_name(const char *scope, const aml_name_t *n, char *out, size_t cap)
 {
   char segs[64][5];
@@ -234,6 +293,12 @@ void aml_canon_path(const char *in, char *out, size_t cap)
   sb_free(&sb);
 }
 
+/**
+ * @brief Decodes a compressed EISA ID (EisaId()) to its 7-character form.
+ *
+ * @param v    32-bit value as stored in AML
+ * @param out  output buffer (16 bytes)
+ */
 static void eisa_decode(uint32_t v, char out[16])
 {
   uint32_t s = ((v & 0xFF) << 24) | ((v & 0xFF00) << 8) | ((v >> 8) & 0xFF00) | (v >> 24);
@@ -241,6 +306,12 @@ static void eisa_decode(uint32_t v, char out[16])
            (char)(((s >> 16) & 0x1F) + 0x40), (unsigned)(s & 0xFFFF));
 }
 
+/**
+ * @brief Plausibility check for a hardware ID string.
+ *
+ * @param s  candidate string
+ * @return true for 7-9 characters [A-Z0-9_] with at least one digit
+ */
 static bool looks_like_hid(const char *s)
 {
   size_t n = strlen(s);
@@ -260,10 +331,16 @@ static bool looks_like_hid(const char *s)
 /* term skipping                                                            */
 /* ======================================================================== */
 
+/** argument strings of one-byte AML opcodes */
 static const char *g_op1[256];
+/** argument strings of extended (0x5B) AML opcodes */
 static const char *g_op2[256];
+/** opcode tables initialized */
 static bool        g_ops_init = false;
 
+/**
+ * @brief Fills the opcode argument tables used to skip AML terms.
+ */
 static void init_ops(void)
 {
   static const struct { int op; const char *a; } t1[] = {
@@ -293,6 +370,14 @@ static void init_ops(void)
 
 static bool skip_term(pctx_t *c, const uint8_t **pp, const uint8_t *end);
 
+/**
+ * @brief Skips a SuperName / Target argument.
+ *
+ * @param c    parser context
+ * @param pp   read position (advanced)
+ * @param end  end of data
+ * @return true on success
+ */
 static bool skip_supername(pctx_t *c, const uint8_t **pp, const uint8_t *end)
 {
   const uint8_t *p = *pp;
@@ -315,6 +400,15 @@ static bool skip_supername(pctx_t *c, const uint8_t **pp, const uint8_t *end)
   return skip_term(c, pp, end);
 }
 
+/**
+ * @brief Skips the arguments of an opcode as described by an argument string.
+ *
+ * @param c     parser context
+ * @param args  argument types (T term, S supername, N name, B/W/D/Q constants)
+ * @param pp    read position (advanced)
+ * @param end   end of data
+ * @return true on success
+ */
 static bool skip_args(pctx_t *c, const char *args, const uint8_t **pp, const uint8_t *end)
 {
   const uint8_t *p = *pp;
@@ -340,6 +434,14 @@ static bool skip_args(pctx_t *c, const char *args, const uint8_t **pp, const uin
   return true;
 }
 
+/**
+ * @brief Skips one AML term (opcode with all arguments).
+ *
+ * @param c    parser context
+ * @param pp   read position (advanced)
+ * @param end  end of data
+ * @return true if the term was skipped
+ */
 static bool skip_term(pctx_t *c, const uint8_t **pp, const uint8_t *end)
 {
   const uint8_t *p = *pp;
@@ -424,19 +526,30 @@ static bool skip_term(pctx_t *c, const uint8_t **pp, const uint8_t *end)
 /* constant data objects                                                    */
 /* ======================================================================== */
 
+/** @brief type of a constant AML data object */
 typedef enum { V_NONE, V_INT, V_STR, V_BUF, V_PKG } vtype_t;
 
+/** @brief value of a constant AML data object */
 typedef struct {
-  vtype_t        type;
-  uint64_t       i;
-  char           s[256];
-  const uint8_t *buf;
-  uint32_t       blen;
-  const uint8_t *pkg;      /* first element */
-  const uint8_t *pkg_end;
-  int            pkg_count;
+  vtype_t        type;  /**< value type */
+  uint64_t       i;  /**< V_INT: value */
+  char           s[256];  /**< V_STR: value */
+  const uint8_t *buf;  /**< V_BUF: buffer bytes */
+  uint32_t       blen;  /**< V_BUF: buffer length */
+  const uint8_t *pkg;      /**< first element */
+  const uint8_t *pkg_end;  /**< V_PKG: end of the package */
+  int            pkg_count;  /**< V_PKG: number of elements */
 } aml_val_t;
 
+/**
+ * @brief Evaluates a constant data object (integer, string, buffer, package).
+ *
+ * @param c    parser context
+ * @param pp   read position (advanced)
+ * @param end  end of data
+ * @param v    receives the value (V_NONE if not constant)
+ * @return false only on malformed AML
+ */
 static bool eval_const(pctx_t *c, const uint8_t **pp, const uint8_t *end, aml_val_t *v)
 {
   const uint8_t *p = *pp;
@@ -530,6 +643,15 @@ static bool eval_const(pctx_t *c, const uint8_t **pp, const uint8_t *end, aml_va
 /* resource templates                                                       */
 /* ======================================================================== */
 
+/**
+ * @brief Copies the ResourceSource string of a descriptor.
+ *
+ * @param desc  descriptor start
+ * @param dlen  descriptor length
+ * @param off   offset of the string
+ * @param out   output buffer
+ * @param cap   size of the output buffer
+ */
 static void res_source(const uint8_t *desc, uint32_t dlen, uint32_t off, char *out, size_t cap)
 {
   size_t n = 0;
@@ -544,11 +666,39 @@ static void res_source(const uint8_t *desc, uint32_t dlen, uint32_t off, char *o
   out[n] = 0;
 }
 
+/**
+ * @brief Reads a little-endian 16-bit value.
+ *
+ * @param p  data
+ * @return value
+ */
 static uint16_t rd16(const uint8_t *p) { return (uint16_t)(p[0] | (p[1] << 8)); }
+/**
+ * @brief Reads a little-endian 32-bit value.
+ *
+ * @param p  data
+ * @return value
+ */
 static uint32_t rd32(const uint8_t *p) { return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24); }
+/**
+ * @brief Reads a little-endian 64-bit value.
+ *
+ * @param p  data
+ * @return value
+ */
 static uint64_t rd64(const uint8_t *p) { return (uint64_t)rd32(p) | ((uint64_t)rd32(p + 4) << 32); }
 
-/* decodes a resource template; returns number of resources or -1 if invalid */
+/**
+ * @brief Decodes a resource template (ResourceTemplate) into resources.
+ *
+ * @param b     template bytes
+ * @param len   template length
+ * @param out   resource array (grown)
+ * @param nout  resource count (updated)
+ * @param cap   capacity of the array (updated)
+ * @param alt   alternative index stored in each resource
+ * @return number of resources, -1 if the buffer is no valid template
+ */
 static int decode_template(const uint8_t *b, uint32_t len, acpi_res_t **out, int *nout, int *cap, int alt)
 {
   uint32_t off = 0;
@@ -815,6 +965,16 @@ bad:
   return -1;
 }
 
+/**
+ * @brief Compares two resource ranges of a device ignoring the alternative index.
+ *
+ * @param d        device
+ * @param start_a  start of the first range
+ * @param na       length of the first range
+ * @param start_b  start of the second range
+ * @param nb       length of the second range
+ * @return true if equal
+ */
 static bool templates_equal(const acpi_dev_t *d, int start_a, int na, int start_b, int nb)
 {
   if (na != nb)
@@ -829,6 +989,13 @@ static bool templates_equal(const acpi_dev_t *d, int start_a, int na, int start_
   return true;
 }
 
+/**
+ * @brief Adds a _CRS resource template as new alternative unless it equals an existing one.
+ *
+ * @param d    device
+ * @param buf  template bytes
+ * @param len  template length
+ */
 static void add_template(acpi_dev_t *d, const uint8_t *buf, uint32_t len)
 {
   int start = d->nres;
@@ -854,7 +1021,14 @@ static void add_template(acpi_dev_t *d, const uint8_t *buf, uint32_t len)
   d->crs_alternatives++;
 }
 
-/* GPIO references outside _CRS (_AEI, field connections) */
+/**
+ * @brief Adds the GPIO descriptors of an _AEI buffer or a field connection.
+ *
+ * @param d       device
+ * @param buf     template bytes
+ * @param len     template length
+ * @param origin  RES_ORIGIN_AEI or RES_ORIGIN_FIELD
+ */
 static void add_extra_template(acpi_dev_t *d, const uint8_t *buf, uint32_t len, int origin)
 {
   int start = d->nres;
@@ -876,6 +1050,15 @@ static void add_extra_template(acpi_dev_t *d, const uint8_t *buf, uint32_t len, 
   }
 }
 
+/**
+ * @brief Scans AML for Buffer objects that are resource templates and adds their GPIOs.
+ *
+ * @param c       parser context
+ * @param d       device
+ * @param body    start of the AML range
+ * @param end     end of the AML range
+ * @param origin  RES_ORIGIN_* for the found resources
+ */
 static void scan_buffers(pctx_t *c, acpi_dev_t *d, const uint8_t *body, const uint8_t *end, int origin)
 {
   for (const uint8_t *p = body; p < end; p++)
@@ -900,6 +1083,12 @@ static void scan_buffers(pctx_t *c, acpi_dev_t *d, const uint8_t *body, const ui
 /* device objects                                                           */
 /* ======================================================================== */
 
+/**
+ * @brief Adds a string or EISA ID value to an ID list.
+ *
+ * @param sl  ID list
+ * @param v   constant value
+ */
 static void add_id(strlist_t *sl, const aml_val_t *v)
 {
   if (v->type == V_STR)
@@ -912,6 +1101,13 @@ static void add_id(strlist_t *sl, const aml_val_t *v)
   }
 }
 
+/**
+ * @brief Decodes a Unicode() buffer (UTF-16) or string to ASCII.
+ *
+ * @param v    value
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void decode_unicode(const aml_val_t *v, char *out, size_t cap)
 {
   size_t n = 0;
@@ -932,6 +1128,15 @@ static void decode_unicode(const aml_val_t *v, char *out, size_t cap)
   out[n] = 0;
 }
 
+/**
+ * @brief Evaluates a Name() object of a device (_HID, _CID, _UID, _ADR, _STR, _STA, _CRS, _DEP, ...).
+ *
+ * @param c    parser context
+ * @param d    device
+ * @param seg  name segment
+ * @param pp   read position of the data object (advanced)
+ * @param end  end of data
+ */
 static void handle_name(pctx_t *c, acpi_dev_t *d, const char *seg, const uint8_t **pp, const uint8_t *end)
 {
   aml_val_t v;
@@ -998,9 +1203,17 @@ static void handle_name(pctx_t *c, acpi_dev_t *d, const char *seg, const uint8_t
   }
 }
 
+/** _DSM UUID of HID-over-I2C (3cdff6f7-4267-4555-ad05-b30a3d8938de) in AML byte order */
 static const uint8_t g_hid_i2c_uuid[16] = { 0xF7, 0xF6, 0xDF, 0x3C, 0x67, 0x42, 0x55, 0x45,
                                            0xAD, 0x05, 0xB3, 0x0A, 0x3D, 0x89, 0x38, 0xDE };
 
+/**
+ * @brief Collects HID-like strings and EISA IDs returned by a method.
+ *
+ * @param p    start of the method body
+ * @param end  end of the method body
+ * @param sl   ID list
+ */
 static void scan_strings(const uint8_t *p, const uint8_t *end, strlist_t *sl)
 {
   for (; p < end; p++)
@@ -1027,6 +1240,15 @@ static void scan_strings(const uint8_t *p, const uint8_t *end, strlist_t *sl)
   }
 }
 
+/**
+ * @brief Checks whether a method body is exactly "Return (constant)".
+ *
+ * @param c    parser context
+ * @param p    method body
+ * @param end  end of the body
+ * @param out  receives the constant
+ * @return true if the body has that form
+ */
 static bool return_const(pctx_t *c, const uint8_t *p, const uint8_t *end, uint64_t *out)
 {
   aml_val_t v;
@@ -1039,6 +1261,15 @@ static bool return_const(pctx_t *c, const uint8_t *p, const uint8_t *end, uint64
   return p == end;
 }
 
+/**
+ * @brief Evaluates a Method() of a device heuristically (_HID, _CID, _CRS, _AEI, _STA, _UID, _ADR, _DSM, _ROM).
+ *
+ * @param c     parser context
+ * @param d     device
+ * @param seg   method name segment
+ * @param body  method body
+ * @param end   end of the body
+ */
 static void handle_method(pctx_t *c, acpi_dev_t *d, const char *seg, const uint8_t *body, const uint8_t *end)
 {
   if (!strcmp(seg, "_HID"))
@@ -1129,6 +1360,14 @@ static void handle_method(pctx_t *c, acpi_dev_t *d, const char *seg, const uint8
     d->has_dsd = true;
 }
 
+/**
+ * @brief Creates a device entry (or returns the existing one).
+ *
+ * @param c       parser context
+ * @param path    canonical path
+ * @param parent  index of the enclosing device or -1
+ * @return index of the device
+ */
 static int create_device(pctx_t *c, const char *path, int parent)
 {
   acpi_dev_t d;
@@ -1150,6 +1389,15 @@ static int create_device(pctx_t *c, const char *path, int parent)
 /* namespace walk                                                           */
 /* ======================================================================== */
 
+/**
+ * @brief Walks an AML term list: scopes, devices, methods, names, fields, If/Else/While.
+ *
+ * @param c      parser context
+ * @param p      start of the term list
+ * @param end    end of the term list
+ * @param scope  canonical scope path
+ * @param dev    index of the current device or -1
+ */
 static void walk(pctx_t *c, const uint8_t *p, const uint8_t *end, const char *scope, int dev)
 {
   while (p < end)
@@ -1267,6 +1515,11 @@ error:
   }
 }
 
+/**
+ * @brief Canonicalizes the ResourceSource paths of all resources.
+ *
+ * @param ns  device list
+ */
 static void resolve_sources(acpi_ns_t *ns)
 {
   for (int i = 0; i < ns->count; i++)
@@ -1344,7 +1597,14 @@ void aml_free(acpi_ns_t *ns)
 /* Qualcomm GPU _ROM panel configuration                                    */
 /* ======================================================================== */
 
-/* "Store (<seg>, Local2)" = 0x70 NameSeg 0x62 */
+/**
+ * @brief Checks for "Store (\<NameSeg\>, Local2)".
+ *
+ * @param p    position in AML
+ * @param end  end of AML
+ * @param seg  receives the name segment
+ * @return true if the pattern matches
+ */
 static bool store_to_local2(const uint8_t *p, const uint8_t *end, char seg[5])
 {
   const uint8_t *q = p + 1;
@@ -1482,6 +1742,12 @@ const char *aml_res_kind_name(acpi_res_kind_t k)
   }
 }
 
+/**
+ * @brief Returns the ASL name of a GPIO pull configuration.
+ *
+ * @param p  GPIO_PULL_* value
+ * @return name, e.g. "PullUp"
+ */
 static const char *pull_name(int p)
 {
   switch (p)

@@ -1,0 +1,40 @@
+# Doxyfile for acpi2dt (own sources only; third_party/ is excluded)
+#
+#   cd acpi2dt && doxygen Doxyfile      -> doxygen/html/index.html
+
+PROJECT_NAME           = acpi2dt
+PROJECT_BRIEF          = "Drafts Linux device trees for Windows-on-ARM notebooks from ACPI, Device Manager and DriverStore"
+PROJECT_NUMBER         = v0.3
+OUTPUT_DIRECTORY       = doxygen
+INPUT                  = README.md inc src
+FILE_PATTERNS          = *.c *.h
+RECURSIVE              = NO
+EXCLUDE                = third_party
+EXCLUDE_SYMBOLS        = NEEDS_ARG
+USE_MDFILE_AS_MAINPAGE = README.md
+
+OPTIMIZE_OUTPUT_FOR_C  = YES
+JAVADOC_AUTOBRIEF      = YES
+EXTRACT_ALL            = NO
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+TYPEDEF_HIDES_STRUCT   = YES
+SOURCE_BROWSER         = YES
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = "__declspec(x)="
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HAVE_DOT               = NO
+
+QUIET                  = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+WARN_LOGFILE           = doxygen/warnings.log

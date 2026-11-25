@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   main.c
  * @author Ingo A. Kubbilun
@@ -5,7 +6,7 @@
  *
  * This program runs on MS Windows 11 on ARM64. It pulls in all available
  * hardware sources:
- * (a) Windows driver store inside C:\Windows\System32; driver inf files,
+ * (a) Windows driver store inside C:\\Windows\\System32; driver inf files,
  *     binary firmwares, etc.
  * (b) Windows device manager information
  * (c) optionally, one or more existing device trees of 'similar' ARM64 notebooks
@@ -47,7 +48,13 @@
 #include "devmgr_explorer.h"
 #include "inf_firmware_scanner.h"
 #include "dts_merger.h"
+#include "acpica_host.h"
 
+/**
+ * @brief Prints the usage.
+ *
+ * @param progname  program name
+ */
 static void ShowHelp(const char *progname)
 {
   FPRINTF(stdout, CTRL_YELLOW "usage:" CTRL_RESET " %s [options] <output dts file> <output firmware folder> <input linux kernel dts folder>\n", progname);
@@ -64,9 +71,11 @@ static void ShowHelp(const char *progname)
   FPRINTF(stdout, CTRL_YELLOW "options:" CTRL_RESET "\n");
   FPRINTF(stdout, "  --work-dir <dir>      intermediate files (default: <output dts>.acpi2dt)\n");
   FPRINTF(stdout, "  --acpi-dir <dir>      read ACPI tables from a dump folder instead of this machine\n");
-  FPRINTF(stdout, "  --iasl <exe>          ACPICA iasl / AslCompiler.exe for .dsl disassembly\n");
-  FPRINTF(stdout, "                        (default: next to acpi2dt.exe or in PATH)\n");
+  FPRINTF(stdout, "  --iasl <exe>          use an external iasl / AslCompiler.exe for the .dsl files\n");
+  FPRINTF(stdout, "                        (default: embedded ACPICA disassembler)\n");
   FPRINTF(stdout, "  --no-iasl             do not disassemble the ACPI tables\n");
+  FPRINTF(stdout, "  --no-acpica           no embedded AML interpreter (static AML analysis only)\n");
+  FPRINTF(stdout, "  --no-dtc              do not compile the draft to a DTB (embedded dtc)\n");
   FPRINTF(stdout, "  --soc <name>          override SoC detection, e.g. x1p42100, x1e80100\n");
   FPRINTF(stdout, "  --model <string>      override root 'model'\n");
   FPRINTF(stdout, "  --compatible <str>    override board compatible, e.g. asus,vivobook-s16-s3607qa\n");
@@ -83,6 +92,14 @@ static void ShowHelp(const char *progname)
   FPRINTF(stdout, "  %s s16-draft.dts fw D:\\linux\\arch\\arm64\\boot\\dts x1e80100-asus-vivobook-s15.dts x1p42100-asus-zenbook-a14.dts\n\n", progname);
 }
 
+/**
+ * @brief Parses the command line.
+ *
+ * @param argc  argument count
+ * @param argv  argument vector
+ * @param cfg   receives the configuration
+ * @return false if the usage is to be shown
+ */
 static bool parse_args(int argc, char *argv[], a2d_config_t *cfg)
 {
   const char **pos = calloc((size_t)argc + 1, sizeof(char *));
@@ -93,6 +110,7 @@ static bool parse_args(int argc, char *argv[], a2d_config_t *cfg)
   for (int i = 1; i < argc; i++)
   {
     const char *a = argv[i];
+/** fails parse_args() if option a has no argument */
 #define NEEDS_ARG()                                                          \
   if (i + 1 >= argc)                                                         \
   {                                                                          \
@@ -111,6 +129,8 @@ static bool parse_args(int argc, char *argv[], a2d_config_t *cfg)
     else if (!strcmp(a, "--acpi-dir"))       { NEEDS_ARG(); cfg->acpi_dir = argv[++i]; }
     else if (!strcmp(a, "--iasl"))           { NEEDS_ARG(); cfg->iasl_exe = argv[++i]; }
     else if (!strcmp(a, "--no-iasl"))        cfg->no_iasl = true;
+    else if (!strcmp(a, "--no-acpica"))      cfg->no_acpica = true;
+    else if (!strcmp(a, "--no-dtc"))         cfg->no_dtc = true;
     else if (!strcmp(a, "--soc"))            { NEEDS_ARG(); cfg->soc = argv[++i]; }
     else if (!strcmp(a, "--model"))          { NEEDS_ARG(); cfg->model = argv[++i]; }
     else if (!strcmp(a, "--compatible"))     { NEEDS_ARG(); cfg->compatible = argv[++i]; }
@@ -153,6 +173,13 @@ static bool parse_args(int argc, char *argv[], a2d_config_t *cfg)
   return true;
 }
 
+/**
+ * @brief acpi2dt entry point: collects all sources, drafts the DTS, copies firmware, prints a summary.
+ *
+ * @param argc  argument count
+ * @param argv  argument vector
+ * @return 0 on success, 1 on error
+ */
 int main(int argc, char *argv[])
 {
   int               rc = 1;
@@ -235,6 +262,33 @@ int main(int argc, char *argv[])
       log_warn("%d AML block(s) could not be parsed completely (use -v)", ns.parse_errors);
   }
 
+  /* 3b. embedded ACPICA: exact evaluation where possible, .dsl output */
+  if (!cfg.no_acpica && tables.count)
+  {
+    char log[A2D_MAX_PATH], dsl_dir[A2D_MAX_PATH];
+    log_step("evaluating AML with the embedded ACPICA %s (simulated hardware)", acpica_version());
+    path_join(log, sizeof(log), cfg.work_dir, "acpica.log");
+    if (acpica_load(&tables, log))
+    {
+      acpica_stats_t as;
+      acpica_evaluate(&ns, &as);
+      log_info("%d devices: %d objects evaluated exactly, %d depend on firmware data, %d failed", as.devices,
+               as.exact, as.firmware, as.failed);
+      log_info("_HID determined for %d devices, _CRS replaced by the evaluated result for %d", as.hid_updated,
+               as.crs_updated);
+      if (!cfg.no_iasl && !cfg.iasl_exe)
+      {
+        int n;
+        path_join(dsl_dir, sizeof(dsl_dir), cfg.work_dir, "acpi");
+        n = acpica_disassemble(&tables, dsl_dir);
+        log_info("disassembled %d DSDT/SSDT table(s) to %s\\*.dsl", n, dsl_dir);
+      }
+    }
+    else
+      log_warn("ACPICA could not load the tables (see %s) - static analysis only", log);
+    acpica_shutdown();
+  }
+
   /* 4. Device Manager */
   if (!cfg.no_devmgr)
   {
@@ -304,6 +358,11 @@ int main(int argc, char *argv[])
   log_info("added from similar DTS   : %d", st.added_similar);
   log_info("commented suggestions    : %d", st.commented);
   log_info("firmware-name resolved   : %d", st.firmware);
+  if (st.dtb_built)
+    log_ok("DTB compiled (embedded dtc): " CTRL_GREEN "%s" CTRL_RESET " (%d dtc warnings)", st.dtb_path,
+           st.dtb_warnings);
+  else if (!cfg.no_dtc)
+    log_warn("DTB NOT compiled: %d error(s) - see %s\\dtc.log", st.dtb_errors, cfg.work_dir);
   log_info("intermediate files       : %s", cfg.work_dir);
   FPRINTF(stdout, "\n" CTRL_YELLOW "Review the draft carefully - search for WARNING, CHECK and TODO." CTRL_RESET "\n");
 

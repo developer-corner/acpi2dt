@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   dts_parser.c
  * @author Ingo A. Kubbilun
@@ -5,8 +6,8 @@
  *         property values; merged tree builder (includes + overrides)
  *
  * The parser does not run the C preprocessor: macros inside property values
- * stay untouched (raw text), #include "..." of .dtsi files is followed by the
- * tree builder, #include <dt-bindings/...> is ignored.
+ * stay untouched (raw text), \#include "..." of .dtsi files is followed by the
+ * tree builder, \#include <dt-bindings/...> is ignored.
  *
  * [MIT license] - see main.c
  */
@@ -17,17 +18,31 @@
 /* lexer                                                                    */
 /* ======================================================================== */
 
+/** @brief state of the DTS lexer */
 typedef struct {
-  const char *s;
-  size_t      pos;
-  size_t      len;
-  int         line;
-  const char *path;
-  int         errors;
+  const char *s;  /**< source text */
+  size_t      pos;  /**< current position */
+  size_t      len;  /**< text length */
+  int         line;  /**< current line */
+  const char *path;  /**< file name for messages */
+  int         errors;  /**< number of parse problems */
 } lex_t;
 
+/**
+ * @brief Peeks at a character ahead.
+ *
+ * @param lx  lexer
+ * @param o   offset from the current position
+ * @return character or 0 at the end
+ */
 static int lpeek(lex_t *lx, size_t o) { return lx->pos + o < lx->len ? (unsigned char)lx->s[lx->pos + o] : 0; }
 
+/**
+ * @brief Advances the lexer, counting lines.
+ *
+ * @param lx  lexer
+ * @param n   number of characters
+ */
 static void ladv(lex_t *lx, size_t n)
 {
   while (n-- && lx->pos < lx->len)
@@ -38,6 +53,12 @@ static void ladv(lex_t *lx, size_t n)
   }
 }
 
+/**
+ * @brief Checks whether only blanks precede the current position on its line.
+ *
+ * @param lx  lexer
+ * @return true at the start of a line
+ */
 static bool at_line_start(lex_t *lx)
 {
   size_t p = lx->pos;
@@ -46,6 +67,12 @@ static bool at_line_start(lex_t *lx)
   return p == 0 || lx->s[p - 1] == '\n';
 }
 
+/**
+ * @brief Checks for a preprocessor directive ('#' + keyword at line start).
+ *
+ * @param lx  lexer
+ * @return true for \#include, \#define, \#if, ...
+ */
 static bool is_preproc(lex_t *lx)
 {
   static const char *kw[] = { "include", "define", "if", "ifdef", "ifndef", "else", "elif", "endif", "undef",
@@ -65,8 +92,13 @@ static bool is_preproc(lex_t *lx)
   return false;
 }
 
-/* skips whitespace and comments; comments are appended to cm (one per line);
-   *blank becomes true if an empty line precedes the next token */
+/**
+ * @brief Skips whitespace and collects comments.
+ *
+ * @param lx     lexer
+ * @param cm     receives the comments (may be NULL)
+ * @param blank  set if an empty line precedes the next token (may be NULL)
+ */
 static void skip_ws(lex_t *lx, strbuf_t *cm, bool *blank)
 {
   int nl = 0;
@@ -119,12 +151,24 @@ static void skip_ws(lex_t *lx, strbuf_t *cm, bool *blank)
   }
 }
 
+/**
+ * @brief Checks for a character of a DT node/property name or label.
+ *
+ * @param c  character
+ * @return true if valid
+ */
 static bool is_name_ch(int c)
 {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == ',' || c == '.' ||
          c == '_' || c == '+' || c == '*' || c == '#' || c == '?' || c == '@' || c == '-';
 }
 
+/**
+ * @brief Reads a node/property name or label.
+ *
+ * @param lx  lexer
+ * @return newly allocated name or NULL
+ */
 static char *read_name(lex_t *lx)
 {
   size_t st = lx->pos;
@@ -135,7 +179,12 @@ static char *read_name(lex_t *lx)
   return xstrndup(lx->s + st, lx->pos - st);
 }
 
-/* reads "&label" or "&{/path}" */
+/**
+ * @brief Reads "&label" or "&{/path}".
+ *
+ * @param lx  lexer
+ * @return newly allocated reference or NULL
+ */
 static char *read_ref(lex_t *lx)
 {
   size_t st = lx->pos;
@@ -154,7 +203,12 @@ static char *read_ref(lex_t *lx)
   return xstrndup(lx->s + st, lx->pos - st);
 }
 
-/* raw text up to (excluding) ';' at top nesting level; consumes ';' */
+/**
+ * @brief Reads a raw property value up to ';' (strings and comments respected).
+ *
+ * @param lx  lexer
+ * @return newly allocated, trimmed value
+ */
 static char *read_value(lex_t *lx)
 {
   size_t st = lx->pos, en;
@@ -201,6 +255,12 @@ static char *read_value(lex_t *lx)
   }
 }
 
+/**
+ * @brief Reads the rest of a line including backslash continuations.
+ *
+ * @param lx  lexer
+ * @return newly allocated line
+ */
 static char *read_line_raw(lex_t *lx)
 {
   size_t st = lx->pos;
@@ -224,6 +284,13 @@ static char *read_line_raw(lex_t *lx)
   }
 }
 
+/**
+ * @brief Consumes a keyword if it follows.
+ *
+ * @param lx  lexer
+ * @param kw  keyword
+ * @return true if consumed
+ */
 static bool lmatch(lex_t *lx, const char *kw)
 {
   size_t n = strlen(kw);
@@ -235,6 +302,12 @@ static bool lmatch(lex_t *lx, const char *kw)
   return false;
 }
 
+/**
+ * @brief Counts a parse problem and skips to the next ';' or '}'.
+ *
+ * @param lx    lexer
+ * @param what  description
+ */
 static void lerror(lex_t *lx, const char *what)
 {
   lx->errors++;
@@ -258,6 +331,13 @@ dt_node_t *dt_node_new(const char *name)
   return n;
 }
 
+/**
+ * @brief Appends a property to a node's list.
+ *
+ * @param n  node
+ * @param p  property
+ * @return p
+ */
 static dt_prop_t *append_prop(dt_node_t *n, dt_prop_t *p)
 {
   if (n->props_tail)
@@ -316,6 +396,13 @@ dt_node_t *dt_node_clone(const dt_node_t *n)
 /* parser                                                                   */
 /* ======================================================================== */
 
+/**
+ * @brief Parses the body of a node up to its closing brace.
+ *
+ * @param lx     lexer
+ * @param node   node
+ * @param depth  nesting depth
+ */
 static void parse_body(lex_t *lx, dt_node_t *node, int depth)
 {
   for (;;)
@@ -450,6 +537,12 @@ static void parse_body(lex_t *lx, dt_node_t *node, int depth)
   }
 }
 
+/**
+ * @brief Appends a top-level item to a file.
+ *
+ * @param f  file
+ * @param t  item
+ */
 static void add_top(dt_file_t *f, dt_top_t *t)
 {
   if (f->tail)
@@ -459,6 +552,11 @@ static void add_top(dt_file_t *f, dt_top_t *t)
   f->tail = t;
 }
 
+/**
+ * @brief Extracts the file name of an include directive.
+ *
+ * @param t  include item (include, sys_include updated)
+ */
 static void parse_include_target(dt_top_t *t)
 {
   const char *s = t->text;
@@ -643,12 +741,24 @@ void dt_tree_init(dt_tree_t *t)
   t->root = dt_node_new("/");
 }
 
+/**
+ * @brief Registers the labels of a node in the tree's label map.
+ *
+ * @param t  tree
+ * @param n  node
+ */
 static void register_labels(dt_tree_t *t, dt_node_t *n)
 {
   for (int i = 0; i < n->labels.count; i++)
     sm_put(&t->labels, n->labels.v[i], n);
 }
 
+/**
+ * @brief Removes a child from its parent and marks it deleted.
+ *
+ * @param parent  parent
+ * @param child   child
+ */
 static void unlink_child(dt_node_t *parent, dt_node_t *child)
 {
   dt_node_t *prev = NULL;
@@ -668,6 +778,12 @@ static void unlink_child(dt_node_t *parent, dt_node_t *child)
   }
 }
 
+/**
+ * @brief Removes a property by name.
+ *
+ * @param n     node
+ * @param name  property name
+ */
 static void remove_prop(dt_node_t *n, const char *name)
 {
   dt_prop_t *prev = NULL;
@@ -686,6 +802,13 @@ static void remove_prop(dt_node_t *n, const char *name)
   }
 }
 
+/**
+ * @brief Merges a parsed node into a tree node (properties, directives, children, labels).
+ *
+ * @param t    tree
+ * @param dst  destination node
+ * @param src  parsed source node
+ */
 static void merge_into(dt_tree_t *t, dt_node_t *dst, const dt_node_t *src)
 {
   for (int i = 0; i < src->labels.count; i++)
@@ -762,6 +885,16 @@ bool dt_resolve_include(const char *name, const char *from_file, const char **di
   return false;
 }
 
+/**
+ * @brief Worker of dt_tree_add_parsed() with include depth.
+ *
+ * @param t       tree
+ * @param f       parsed file
+ * @param dirs    search directories
+ * @param ndirs   number of directories
+ * @param follow  follow includes
+ * @param depth   include depth
+ */
 static void tree_add_parsed_depth(dt_tree_t *t, const dt_file_t *f, const char **dirs, int ndirs, bool follow,
                                   int depth)
 {
@@ -832,6 +965,12 @@ bool dt_tree_add_file(dt_tree_t *t, const char *path, const char **dirs, int ndi
 /* queries                                                                  */
 /* ======================================================================== */
 
+/**
+ * @brief Checks that neither a node nor one of its parents is deleted.
+ *
+ * @param n  node
+ * @return true if live
+ */
 static bool is_live(const dt_node_t *n)
 {
   for (; n; n = n->parent)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM64">
@@ -19,6 +19,9 @@
     <ClCompile Include="src\dts_parser.c" />
     <ClCompile Include="src\inf_firmware_scanner.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\dts_cpp.c" />
+    <ClCompile Include="src\dtc_bridge.c" />
+    <ClCompile Include="src\pdc_maps.c" />
     <ClCompile Include="src\util.c" />
   </ItemGroup>
   <ItemGroup>
@@ -29,7 +32,1556 @@
     <ClInclude Include="inc\devmgr_explorer.h" />
     <ClInclude Include="inc\dts_merger.h" />
     <ClInclude Include="inc\dts_parser.h" />
+    <ClInclude Include="inc\dts_cpp.h" />
+    <ClInclude Include="inc\dtc_bridge.h" />
+    <ClInclude Include="inc\acpica_host.h" />
+    <ClInclude Include="inc\pdc_maps.h" />
     <ClInclude Include="inc\inf_firmware_scanner.h" />
+  </ItemGroup>
+  <ItemGroup Label="acpica">
+    <ClCompile Include="third_party\acpica\source\common\acfileio.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\ahids.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\ahuuids.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\cmfsize.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbcmds.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbconvert.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbdisply.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbexec.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbfileio.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbhistry.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbinput.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbmethod.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbnames.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbobject.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbstats.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbtest.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmbuffer.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmcstyle.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmdeferred.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmnames.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmopcode.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcl.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcl2.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcs.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmwalk.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsargs.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dscontrol.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsdebug.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsfield.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsinit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsmethod.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsmthdat.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsobject.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsopcode.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dspkginit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswexec.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswload.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswload2.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswscope.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswstate.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evevent.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evglock.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpe.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeblk.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeinit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeutil.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evhandler.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evmisc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evregion.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evrgnini.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evsci.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfevnt.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfgpe.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfregn.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconcat.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconfig.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconvrt.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\excreate.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exdebug.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exdump.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exfield.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exfldio.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exmisc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exmutex.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exnames.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg1.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg2.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg3.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg6.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exprep.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exregion.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresnte.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresolv.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresop.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exserial.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstore.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstoren.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstorob.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exsystem.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\extrace.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwacpi.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwesleep.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwgpe.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwpci.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwregs.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwsleep.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwtimer.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwvalid.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwxfsleep.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsaccess.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsalloc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsarguments.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsconvert.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsdump.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsdumpdv.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nseval.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsinit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsload.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsnames.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsobject.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsparse.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nspredef.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsprepkg.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsrepair.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsrepair2.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nssearch.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nswalk.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfeval.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfname.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfobj.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psargs.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psloop.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psobject.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psopcode.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psopinfo.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psparse.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psscope.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\pstree.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\pswalk.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsaddr.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rscalc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rscreate.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsdump.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsdumpinfo.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsinfo.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsio.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsirq.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rslist.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsmemory.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsmisc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsserial.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbdata.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbfadt.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbfind.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbinstal.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbprint.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbutils.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxfload.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxfroot.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utaddress.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utalloc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utascii.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utbuffer.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcache.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcksum.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcopy.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdebug.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdecode.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdelete.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uterror.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uteval.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utexcep.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utglobal.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uthex.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utids.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utinit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utlock.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmath.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmisc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmutex.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utnonansi.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utobject.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utosi.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utownerid.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utpredef.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utresdecode.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utresrc.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstate.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstring.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstrsuppt.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstrtoul64.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uttrack.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utuuid.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxface.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxferror.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxfinit.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxfmutex.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\osgendbg.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\oswindir.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\oswinxf.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)acpica\</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup Label="acpica host">
+    <ClCompile Include="src\acpica_host.c">
+      <AdditionalIncludeDirectories>third_party\acpica\source\include;third_party\acpica\source\include\platform;third_party\acpica\source\tools\acpiexec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;__STDC__;_CONSOLE;ACPI_EXEC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)acpi2dt\</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup Label="dtc">
+    <ClCompile Include="third_party\dtc\checks.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\data.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc-lexer.lex.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc-parser.tab.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\flattree.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\fstree.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\getopt.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\livetree.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\srcpos.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\treesource.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\util.c">
+      <AdditionalIncludeDirectories>third_party\dtc;third_party\dtc\libfdt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NO_YAML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>dtc_port.h</ForcedIncludeFiles>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ObjectFileName>$(IntDir)dtc\</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup Label="acpica headers">
+    <ClInclude Include="third_party\acpica\source\include\acapps.h" />
+    <ClInclude Include="third_party\acpica\source\include\acbuffer.h" />
+    <ClInclude Include="third_party\acpica\source\include\acclib.h" />
+    <ClInclude Include="third_party\acpica\source\include\accommon.h" />
+    <ClInclude Include="third_party\acpica\source\include\acconfig.h" />
+    <ClInclude Include="third_party\acpica\source\include\acconvert.h" />
+    <ClInclude Include="third_party\acpica\source\include\acdebug.h" />
+    <ClInclude Include="third_party\acpica\source\include\acdisasm.h" />
+    <ClInclude Include="third_party\acpica\source\include\acdispat.h" />
+    <ClInclude Include="third_party\acpica\source\include\acevents.h" />
+    <ClInclude Include="third_party\acpica\source\include\acexcep.h" />
+    <ClInclude Include="third_party\acpica\source\include\acglobal.h" />
+    <ClInclude Include="third_party\acpica\source\include\achware.h" />
+    <ClInclude Include="third_party\acpica\source\include\acinterp.h" />
+    <ClInclude Include="third_party\acpica\source\include\aclocal.h" />
+    <ClInclude Include="third_party\acpica\source\include\acmacros.h" />
+    <ClInclude Include="third_party\acpica\source\include\acnames.h" />
+    <ClInclude Include="third_party\acpica\source\include\acnamesp.h" />
+    <ClInclude Include="third_party\acpica\source\include\acobject.h" />
+    <ClInclude Include="third_party\acpica\source\include\acopcode.h" />
+    <ClInclude Include="third_party\acpica\source\include\acoutput.h" />
+    <ClInclude Include="third_party\acpica\source\include\acparser.h" />
+    <ClInclude Include="third_party\acpica\source\include\acpi.h" />
+    <ClInclude Include="third_party\acpica\source\include\acpiosxf.h" />
+    <ClInclude Include="third_party\acpica\source\include\acpixf.h" />
+    <ClInclude Include="third_party\acpica\source\include\acpredef.h" />
+    <ClInclude Include="third_party\acpica\source\include\acresrc.h" />
+    <ClInclude Include="third_party\acpica\source\include\acrestyp.h" />
+    <ClInclude Include="third_party\acpica\source\include\acstruct.h" />
+    <ClInclude Include="third_party\acpica\source\include\actables.h" />
+    <ClInclude Include="third_party\acpica\source\include\actbinfo.h" />
+    <ClInclude Include="third_party\acpica\source\include\actbl.h" />
+    <ClInclude Include="third_party\acpica\source\include\actbl1.h" />
+    <ClInclude Include="third_party\acpica\source\include\actbl2.h" />
+    <ClInclude Include="third_party\acpica\source\include\actbl3.h" />
+    <ClInclude Include="third_party\acpica\source\include\actypes.h" />
+    <ClInclude Include="third_party\acpica\source\include\acutils.h" />
+    <ClInclude Include="third_party\acpica\source\include\acuuid.h" />
+    <ClInclude Include="third_party\acpica\source\include\amlcode.h" />
+    <ClInclude Include="third_party\acpica\source\include\amlresrc.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\accygwin.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acdragonfly.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acdragonflyex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acefi.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acefiex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acenv.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acenvex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acfreebsd.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acgcc.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acgccex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\achaiku.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acintel.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\aclinux.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\aclinuxex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acmacosx.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acmsvc.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acmsvcex.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acnetbsd.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acos2.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acqnx.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acwin.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\acwin64.h" />
+    <ClInclude Include="third_party\acpica\source\include\platform\aczephyr.h" />
+    <ClInclude Include="third_party\acpica\source\tools\acpiexec\aecommon.h" />
+  </ItemGroup>
+  <ItemGroup Label="dtc headers">
+    <ClInclude Include="third_party\dtc\dtc-parser.tab.h" />
+    <ClInclude Include="third_party\dtc\dtc.h" />
+    <ClInclude Include="third_party\dtc\dtc_port.h" />
+    <ClInclude Include="third_party\dtc\getopt.h" />
+    <ClInclude Include="third_party\dtc\libfdt\fdt.h" />
+    <ClInclude Include="third_party\dtc\libfdt\libfdt.h" />
+    <ClInclude Include="third_party\dtc\libfdt\libfdt_env.h" />
+    <ClInclude Include="third_party\dtc\libfdt\libfdt_internal.h" />
+    <ClInclude Include="third_party\dtc\srcpos.h" />
+    <ClInclude Include="third_party\dtc\unistd.h" />
+    <ClInclude Include="third_party\dtc\util.h" />
+    <ClInclude Include="third_party\dtc\version_gen.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -72,6 +1624,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>.;inc</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -94,6 +1647,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>.;inc</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

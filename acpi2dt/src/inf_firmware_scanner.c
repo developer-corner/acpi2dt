@@ -1,7 +1,8 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   inf_firmware_scanner.c
  * @author Ingo A. Kubbilun
- * @brief  scans the driver packages (DriverStore\FileRepository) used by the
+ * @brief  scans the driver packages (DriverStore\\FileRepository) used by the
  *         present devices: INF metadata and firmware blobs (.mbn, .elf, ...);
  *         resolves firmware names wanted by a DTS and copies them into a
  *         /lib/firmware-like folder structure (+ SHA-256 manifest)
@@ -15,6 +16,12 @@
 /* firmware classification                                                  */
 /* ======================================================================== */
 
+/**
+ * @brief Checks a file name for firmware extensions (.mbn, .mdt, .bNN, .elf, .bin, ...).
+ *
+ * @param name  file name
+ * @return true for firmware-like files
+ */
 static bool is_firmware_name(const char *name)
 {
   static const char *exts[] = { ".mbn", ".mdt", ".elf", ".bin", ".tlv", ".jsn", ".fw", ".dtb", ".nvm" };
@@ -32,6 +39,14 @@ static bool is_firmware_name(const char *name)
   return false;
 }
 
+/**
+ * @brief Detects ELF (with machine), MBN or FDT format of a firmware file.
+ *
+ * @param path  file path
+ * @param name  file name
+ * @param out   output buffer
+ * @param cap   size of the output buffer
+ */
 static void detect_format(const char *path, const char *name, char *out, size_t cap)
 {
   uint8_t hdr[64];
@@ -62,6 +77,12 @@ static void detect_format(const char *path, const char *name, char *out, size_t 
 /* INF parsing                                                              */
 /* ======================================================================== */
 
+/**
+ * @brief Reads an INF file as UTF-8 (UTF-16 and BOMs handled).
+ *
+ * @param path  INF path
+ * @return newly allocated text or NULL
+ */
 static char *load_inf_text(const char *path)
 {
   size_t   len;
@@ -81,6 +102,14 @@ static char *load_inf_text(const char *path)
   return (char *)raw;
 }
 
+/**
+ * @brief Expands a %string% token of an INF and removes quotes.
+ *
+ * @param strings  [Strings] map (lower-case keys)
+ * @param in       raw value
+ * @param out      output buffer
+ * @param cap      size of the output buffer
+ */
 static void inf_expand(const strmap_t *strings, const char *in, char *out, size_t cap)
 {
   char tmp[256];
@@ -108,6 +137,12 @@ static void inf_expand(const strmap_t *strings, const char *in, char *out, size_
   }
 }
 
+/**
+ * @brief Reads Provider, Class, DriverVer and the firmware files of an INF.
+ *
+ * @param pkg       package (updated)
+ * @param inf_path  INF path
+ */
 static void parse_inf(drv_pkg_t *pkg, const char *inf_path)
 {
   char     *txt = load_inf_text(inf_path);
@@ -220,12 +255,20 @@ static void parse_inf(drv_pkg_t *pkg, const char *inf_path)
 /* scanning                                                                 */
 /* ======================================================================== */
 
+/** @brief context of a firmware scan walk */
 typedef struct {
-  drv_db_t   *db;
-  const char *pkg;
-  bool        present;
+  drv_db_t   *db;  /**< database */
+  const char *pkg;  /**< package name (NULL: derive from path) */
+  bool        present;  /**< package of a present device */
 } scan_ctx_t;
 
+/**
+ * @brief Checks and records whether a path is already indexed.
+ *
+ * @param db    database
+ * @param path  file path
+ * @return true if it was already indexed
+ */
 static bool fw_known(drv_db_t *db, const char *path)
 {
   char key[A2D_MAX_PATH];
@@ -237,6 +280,15 @@ static bool fw_known(drv_db_t *db, const char *path)
   return false;
 }
 
+/**
+ * @brief walk_dir() callback indexing firmware-like files.
+ *
+ * @param full    full path
+ * @param name    file name
+ * @param is_dir  true for a directory
+ * @param vctx    scan_ctx_t
+ * @return always true
+ */
 static bool scan_cb(const char *full, const char *name, bool is_dir, void *vctx)
 {
   scan_ctx_t *ctx = vctx;
@@ -275,6 +327,11 @@ static bool scan_cb(const char *full, const char *name, bool is_dir, void *vctx)
   return true;
 }
 
+/**
+ * @brief Indexes the firmware files of the complete DriverStore (once).
+ *
+ * @param db  database
+ */
 static void full_index(drv_db_t *db)
 {
   char       repo[A2D_MAX_PATH];
@@ -294,6 +351,12 @@ static void full_index(drv_db_t *db)
   log_info("DriverStore index: %d additional firmware-like files", db->nf - before);
 }
 
+/**
+ * @brief Writes firmware_scan.json (packages and firmware files) to the work folder.
+ *
+ * @param cfg  configuration
+ * @param db   database
+ */
 static void write_json(const a2d_config_t *cfg, const drv_db_t *db)
 {
   char     path[A2D_MAX_PATH];
@@ -420,6 +483,13 @@ const drv_pkg_t *drivers_pkg_by_dir(const drv_db_t *db, const char *dir)
 /* firmware resolution                                                      */
 /* ======================================================================== */
 
+/**
+ * @brief Finds a firmware file by exact name, preferring packages of present devices.
+ *
+ * @param db    database
+ * @param name  file name
+ * @return file or NULL
+ */
 static const fw_file_t *find_exact(const drv_db_t *db, const char *name)
 {
   const fw_file_t *best = NULL;
@@ -441,6 +511,12 @@ int fw_find_all(drv_db_t *db, const char *prefix, const char *suffix, const fw_f
   return n;
 }
 
+/**
+ * @brief Returns the name token that marks SoC-specific firmware variants.
+ *
+ * @param soc  SoC name
+ * @return token, e.g. "purwa" or "8380"
+ */
 static const char *soc_alias(const char *soc)
 {
   if (!soc)

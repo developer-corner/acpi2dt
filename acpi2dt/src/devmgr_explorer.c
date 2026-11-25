@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   devmgr_explorer.c
  * @author Ingo A. Kubbilun
@@ -17,6 +18,16 @@
 #include <devguid.h>
 #include <math.h>
 
+/**
+ * @brief Reads a string device property.
+ *
+ * @param devs       device information set
+ * @param info       device
+ * @param key        property key
+ * @param out        output buffer
+ * @param cap_bytes  size of the output buffer in bytes
+ * @return true for a string or string-list property
+ */
 static bool query_prop(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, wchar_t *out, DWORD cap_bytes)
 {
   DEVPROPTYPE ptype = 0;
@@ -27,6 +38,15 @@ static bool query_prop(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *k
   return ptype == DEVPROP_TYPE_STRING || ptype == DEVPROP_TYPE_STRING_LIST;
 }
 
+/**
+ * @brief Reads a string device property as UTF-8.
+ *
+ * @param devs  device information set
+ * @param info  device
+ * @param key   property key
+ * @param out   output buffer
+ * @param cap   size of the output buffer
+ */
 static void prop_utf8(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, char *out, size_t cap)
 {
   wchar_t w[1024];
@@ -35,6 +55,14 @@ static void prop_utf8(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *ke
     wide_to_utf8_buf(w, out, cap);
 }
 
+/**
+ * @brief Reads a string-list device property into a string list.
+ *
+ * @param devs  device information set
+ * @param info  device
+ * @param key   property key
+ * @param sl    string list
+ */
 static void prop_multi(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *key, strlist_t *sl)
 {
   wchar_t w[4096];
@@ -48,6 +76,12 @@ static void prop_multi(HDEVINFO devs, SP_DEVINFO_DATA *info, const DEVPROPKEY *k
   }
 }
 
+/**
+ * @brief Reads the allocated (or boot) MMIO and IRQ resources of a device.
+ *
+ * @param d     device (resources updated)
+ * @param inst  device instance
+ */
 static void collect_resources(dm_dev_t *d, DEVINST inst)
 {
   LOG_CONF   lc = 0;
@@ -98,7 +132,13 @@ static void collect_resources(dm_dev_t *d, DEVINST inst)
   CM_Free_Log_Conf_Handle(lc);
 }
 
-/* Device Parameters\Resources: BinaryPath / ScfgBinaryPath (Qualcomm drivers) */
+/**
+ * @brief Reads BinaryPath and ScfgBinaryPath from Device Parameters\\Resources.
+ *
+ * @param devs  device information set
+ * @param info  device
+ * @param d     device entry (res_bin, scfg_bin updated)
+ */
 static void read_resource_binaries(HDEVINFO devs, SP_DEVINFO_DATA *info, dm_dev_t *d)
 {
   HKEY key = SetupDiOpenDevRegKey(devs, info, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
@@ -126,6 +166,11 @@ static void read_resource_binaries(HDEVINFO devs, SP_DEVINFO_DATA *info, dm_dev_
   RegCloseKey(key);
 }
 
+/**
+ * @brief Determines the DriverStore folder of the device's driver package.
+ *
+ * @param d  device (driver_store_dir updated)
+ */
 static void find_driver_store_dir(dm_dev_t *d)
 {
   wchar_t  inf_path[MAX_PATH], ret[A2D_MAX_PATH];
@@ -152,7 +197,13 @@ static void find_driver_store_dir(dm_dev_t *d)
 /* monitors / EDID                                                          */
 /* ======================================================================== */
 
-/* text of an EDID display descriptor; empty if it holds binary data (some vendors do) */
+/**
+ * @brief Copies the text of an EDID display descriptor; binary content yields "".
+ *
+ * @param d    descriptor (18 bytes)
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void edid_text(const uint8_t *d, char *out, size_t cap)
 {
   size_t n = 0;
@@ -172,6 +223,14 @@ static void edid_text(const uint8_t *d, char *out, size_t cap)
   out[n] = 0;
 }
 
+/**
+ * @brief Decodes manufacturer, product, size, interface and names of an EDID; classifies internal panels.
+ *
+ * @param e    EDID bytes
+ * @param len  EDID length
+ * @param m    receives the monitor data
+ * @return false if the data is no EDID
+ */
 static bool decode_edid(const uint8_t *e, size_t len, dm_monitor_t *m)
 {
   static const uint8_t hdr[8] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
@@ -213,6 +272,11 @@ static bool decode_edid(const uint8_t *e, size_t len, dm_monitor_t *m)
   return true;
 }
 
+/**
+ * @brief Reads the EDID of all monitors known to Windows (also non-present ones).
+ *
+ * @param set  Device Manager data (monitor list updated)
+ */
 static void collect_monitors(dm_set_t *set)
 {
   HDEVINFO        devs = SetupDiGetClassDevsW(&GUID_DEVCLASS_MONITOR, NULL, NULL, 0); /* also non-present */
@@ -276,6 +340,12 @@ const dm_dev_t *devmgr_find_pci(const dm_set_t *set, uint16_t ven, uint16_t dev)
   return NULL;
 }
 
+/**
+ * @brief Writes hardware_inventory.json (devices and monitors) to the work folder.
+ *
+ * @param cfg  configuration
+ * @param set  Device Manager data
+ */
 static void write_json(const a2d_config_t *cfg, const dm_set_t *set)
 {
   char  path[A2D_MAX_PATH];

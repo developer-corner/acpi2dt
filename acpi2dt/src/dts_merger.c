@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   dts_merger.c
  * @author Ingo A. Kubbilun
@@ -11,7 +12,7 @@
  *    the same SoC (majority vote).
  * 2. A "base tree" is built from the SoC/PMIC include files. Every ACPI device
  *    with an MMIO resource is matched against the DT nodes by unit address
- *    (ACPI \_SB.I2C1 @ 0xb80000  <->  i2c0: i2c@b80000).
+ *    (ACPI \\_SB.I2C1 @ 0xb80000  <->  i2c0: i2c\@b80000).
  * 3. The primary similar DTS is the template. It is re-emitted node by node
  *    (comments, labels, raw values preserved) and annotated:
  *      - controllers: matched ACPI device + Device Manager state
@@ -39,38 +40,22 @@
 #include "dts_merger.h"
 #include "dts_parser.h"
 #include "camera.h"
+#include "dtc_bridge.h"
+#include "pdc_maps.h"
 #include <time.h>
 
 /* ======================================================================== */
 /* static knowledge                                                         */
 /* ======================================================================== */
 
+/** @brief SoC name -> include codename and legacy .dtsi name */
 typedef struct {
-  uint16_t gpio;
-  uint16_t pdc;
-} wake_map_t;
-
-/* drivers/pinctrl/qcom/pinctrl-x1e80100.c: x1e80100_pdc_map[] (also used by
-   purwa / X1P42100, which reuses "qcom,x1e80100-tlmm") */
-static const wake_map_t g_x1e80100_wake[] = {
-  {0, 72}, {2, 70}, {3, 71}, {6, 123}, {7, 67}, {11, 85}, {13, 86}, {15, 68}, {18, 122}, {19, 69}, {21, 158},
-  {23, 143}, {24, 126}, {26, 129}, {27, 144}, {28, 77}, {29, 78}, {30, 92}, {31, 159}, {32, 145}, {33, 115},
-  {34, 130}, {35, 146}, {36, 147}, {38, 113}, {39, 80}, {43, 148}, {47, 149}, {51, 79}, {53, 89}, {55, 81},
-  {59, 87}, {64, 90}, {65, 106}, {66, 142}, {67, 88}, {68, 151}, {71, 91}, {75, 152}, {79, 153}, {80, 125},
-  {81, 128}, {83, 154}, {84, 137}, {85, 155}, {87, 156}, {91, 157}, {92, 138}, {93, 139}, {94, 140}, {95, 141},
-  {113, 84}, {121, 73}, {123, 74}, {125, 75}, {129, 76}, {131, 82}, {134, 83}, {141, 93}, {144, 94}, {145, 95},
-  {147, 96}, {148, 97}, {150, 102}, {151, 103}, {153, 104}, {154, 100}, {156, 105}, {157, 107}, {163, 98},
-  {166, 112}, {172, 99}, {175, 114}, {181, 101}, {184, 116}, {193, 117}, {196, 108}, {203, 133}, {208, 134},
-  {212, 120}, {213, 150}, {214, 121}, {215, 118}, {217, 109}, {219, 119}, {220, 110}, {221, 111}, {222, 124},
-  {224, 131}, {225, 132}, {228, 135}, {230, 136}, {232, 162},
-};
-
-typedef struct {
-  const char *soc;
-  const char *codename;
-  const char *legacy_dtsi;   /* SoC dtsi name in older kernels */
+  const char *soc;  /**< SoC name */
+  const char *codename;  /**< include codename (hamoa, purwa) */
+  const char *legacy_dtsi;   /**< SoC dtsi name in older kernels */
 } soc_family_t;
 
+/** SoC -> include codename and legacy .dtsi */
 static const soc_family_t g_soc_families[] = {
   { "x1e80100", "hamoa", "x1e80100.dtsi" },
   { "x1e78100", "hamoa", "x1e80100.dtsi" },
@@ -83,22 +68,25 @@ static const soc_family_t g_soc_families[] = {
   { "sc8280xp", "sc8280xp", "sc8280xp.dtsi" },
 };
 
+/** @brief ACPI ID -> DT compatible for devices with a generic binding */
 typedef struct {
-  const char *id;
-  const char *compatible;
+  const char *id;  /**< ACPI _HID/_CID */
+  const char *compatible;  /**< DT compatible */
 } hid_compat_t;
 
+/** ACPI IDs with a generic DT binding */
 static const hid_compat_t g_hid_compat[] = {
   { "PNP0C50",  "hid-over-i2c" },
   { "ACPI0C50", "hid-over-i2c" },
 };
 
-/* firmware wanted by well-known nodes (used without template) */
+/** @brief firmware files of well-known nodes (used without template) */
 typedef struct {
-  const char *label;
-  const char *files[2];
+  const char *label;  /**< DT label of the node */
+  const char *files[2];  /**< firmware files (NULL-terminated) */
 } fw_hint_t;
 
+/** firmware of well-known nodes (used without template) */
 static const fw_hint_t g_fw_hints[] = {
   { "remoteproc_adsp", { "qcadsp8380.mbn", "adsp_dtbs.elf" } },
   { "remoteproc_cdsp", { "qccdsp8380.mbn", "cdsp_dtbs.elf" } },
@@ -109,98 +97,110 @@ static const fw_hint_t g_fw_hints[] = {
 /* generator state                                                          */
 /* ======================================================================== */
 
+/** @brief a top-level item of a flattened DTS (board includes inlined) */
 typedef struct {
-  dt_top_t   *t;
-  const char *file;
-  int         marker;      /* 0 item, 1 begin-inline, 2 end-inline */
-  const char *inc_name;
-  bool        replaced_soc;
+  dt_top_t   *t;  /**< top-level item */
+  const char *file;  /**< file the item comes from */
+  int         marker;      /**< 0 item, 1 begin-inline, 2 end-inline */
+  const char *inc_name;  /**< include name (markers) */
+  bool        replaced_soc;  /**< SoC include to be replaced by the machine's SoC include */
 } flat_t;
 
+/** @brief flattened DTS file */
 typedef struct {
-  flat_t *v;
-  int     count, cap;
+  flat_t *v;  /**< items */
+  int count;  /**< number of items */
+  int cap;  /**< capacity of v */
 } flatlist_t;
 
+/** @brief a DT node with its unit address (MMIO matching) */
 typedef struct {
-  uint64_t   addr;
-  dt_node_t *node;
+  uint64_t   addr;  /**< unit address */
+  dt_node_t *node;  /**< node */
 } unit_t;
 
-/* panel configuration of the Qualcomm GPU (_ROM XML), selected by EDID */
+/** @brief panel configuration of the Qualcomm GPU driver (_ROM XML) */
 typedef struct {
-  bool        found;
-  bool        is_default;      /* panel ID not listed: default branch       */
-  uint32_t    panel_id;
-  char        buf[5];          /* AML buffer name, e.g. "PCE5"              */
-  const char *dev;             /* ACPI GPU device path                      */
-  char       *xml;             /* NUL-terminated copy                       */
-  int         bl_type;         /* BacklightType: 1 = PMIC PWM, 5 = eDP AUX  */
-  int         pmic_ctrl, pmic_id, pwm_bits, pwm_hz;
-  int         dpcd_rev, link_rate_code, lanes;
-  int         psr;
-  char        pwm_ref[64];     /* "&pmk8550_pwm"                            */
+  bool        found;  /**< a panel configuration was found */
+  bool        is_default;      /**< panel ID not listed: default branch */
+  uint32_t    panel_id;  /**< panel ID derived from the EDID */
+  char        buf[5];          /**< AML buffer name, e.g. "PCE5" */
+  const char *dev;             /**< ACPI GPU device path */
+  char       *xml;             /**< NUL-terminated copy */
+  int         bl_type;         /**< BacklightType: 1 = PMIC PWM, 5 = eDP AUX */
+  int pmic_ctrl;  /**< BacklightPmicControlType */
+  int pmic_id;  /**< BacklightPmicId (PMIC SID) */
+  int pwm_bits;  /**< BacklightPmicPWMSizeinBits */
+  int pwm_hz;  /**< BacklightPMICPWMFrequency */
+  int dpcd_rev;  /**< DPCD revision of the eDP override */
+  int link_rate_code;  /**< DPCD MAX_LINK_RATE code */
+  int lanes;  /**< DPCD lane count */
+  int         psr;  /**< EDPMaxPsrVersion */
+  char        pwm_ref[64];     /**< "&pmk8550_pwm" */
 } panel_cfg_t;
 
+/** @brief state of the DTS generator */
 typedef struct {
-  a2d_ctx_t   *x;
-  dts_stats_t *st;
-  panel_cfg_t  panel;
-  const char  *soc;
-  char         dirbuf[3][A2D_MAX_PATH];
-  const char  *dirs[3];
-  int          ndirs;
-  char         qcom_dir[A2D_MAX_PATH];
-  char         soc_dtsi[64];
-  char         pmics_dtsi[64];
-  strlist_t    soc_deletes;
-  int          soc_boards;
+  a2d_ctx_t   *x;  /**< information sources */
+  dts_stats_t *st;  /**< statistics */
+  panel_cfg_t  panel;  /**< panel configuration */
+  const char  *soc;  /**< SoC name */
+  char         dirbuf[3][A2D_MAX_PATH];  /**< storage of dirs */
+  const char  *dirs[3];  /**< include search directories */
+  int          ndirs;  /**< number of directories */
+  char         qcom_dir[A2D_MAX_PATH];  /**< kernel dts/qcom folder */
+  char         soc_dtsi[64];  /**< SoC include, e.g. purwa.dtsi */
+  char         pmics_dtsi[64];  /**< PMIC include */
+  strlist_t    soc_deletes;  /**< learned SoC-specific /delete-node/ references */
+  int          soc_boards;  /**< kernel boards of this SoC */
 
-  dt_file_t   *tmpl;
-  flatlist_t   tflat;
-  char         tmpl_soc[32];
-  dt_file_t   *sec[16];
-  flatlist_t   sflat[16];
-  int          nsec;
+  dt_file_t   *tmpl;  /**< template (primary similar DTS) */
+  flatlist_t   tflat;  /**< flattened template */
+  char         tmpl_soc[32];  /**< SoC of the template */
+  dt_file_t   *sec[16];  /**< secondary similar DTS files */
+  flatlist_t   sflat[16];  /**< flattened secondary files */
+  int          nsec;  /**< number of secondary files */
 
-  dt_tree_t    base;
-  dt_tree_t    full;
-  unit_t      *units;
-  int          nunits, capunits;
+  dt_tree_t    base;  /**< tree of the SoC/PMIC includes */
+  dt_tree_t    full;  /**< base tree plus template board nodes */
+  unit_t      *units;  /**< nodes with unit address */
+  int nunits;  /**< number of entries in units */
+  int capunits;  /**< capacity of units */
 
   /* GPIO decoding */
-  acpi_dev_t  *gio;
-  int          ngpios;
-  uint32_t     pdc[32][3];
-  int          npdc;
-  const wake_map_t *wm;
-  int          nwm;
-  strlist_t    tlmm_users[512];
+  acpi_dev_t  *gio;  /**< ACPI TLMM GPIO controller */
+  int          ngpios;  /**< number of TLMM GPIOs */
+  uint32_t     pdc[32][3];  /**< qcom,pdc-ranges triples */
+  int          npdc;  /**< number of PDC ranges */
+  const wake_map_t *wm;  /**< TLMM PDC wake map */
+  int          nwm;  /**< entries of the wake map */
+  strlist_t    tlmm_users[512];  /**< ACPI users per TLMM pin */
 
   /* ACPI <-> DT */
-  dt_node_t  **acpi_node;    /* per ACPI device */
-  bool        *covered;      /* consumer emitted somewhere */
-  uint8_t     *src_kind;     /* per ACPI device: bit0 I2C src, bit1 SPI src, bit2 UART src */
+  dt_node_t  **acpi_node;    /**< per ACPI device */
+  bool        *covered;      /**< consumer emitted somewhere */
+  uint8_t     *src_kind;     /**< per ACPI device: bit0 I2C src, bit1 SPI src, bit2 UART src */
 
-  strlist_t    top_refs;     /* top-level refs present in the draft */
-  strlist_t    notes;        /* summary notes */
-  strbuf_t     out;
+  strlist_t    top_refs;     /**< top-level refs present in the draft */
+  strlist_t    notes;        /**< summary notes */
+  strbuf_t     out;  /**< draft text */
 } gen_t;
 
+/** @brief emission context of a node (target in the base tree, ACPI matches, secondary counterparts) */
 typedef struct {
-  dt_node_t       *target;      /* node in base tree (may be NULL) */
-  acpi_dev_t      *acpi;        /* ACPI device matched by MMIO     */
-  acpi_dev_t      *consumer;    /* ACPI consumer (bus child)       */
-  acpi_dev_t      *bus_ctrl;    /* ACPI controller of this bus node */
-  acpi_res_kind_t  bus_kind;
-  bool             bus_child;   /* parent is a bus with ACPI ctrl  */
-  acpi_dev_t      *parent_ctrl;
-  acpi_res_kind_t  parent_kind;
-  bool             in_tlmm;
-  bool             is_root;
-  bool             missing_ref;
-  const dt_node_t *sec[16];     /* counterparts in secondary files */
-  const char      *origin;      /* e.g. "[SIMILAR2] taken over from x.dts" */
+  dt_node_t       *target;      /**< node in base tree (may be NULL) */
+  acpi_dev_t      *acpi;        /**< ACPI device matched by MMIO */
+  acpi_dev_t      *consumer;    /**< ACPI consumer (bus child) */
+  acpi_dev_t      *bus_ctrl;    /**< ACPI controller of this bus node */
+  acpi_res_kind_t  bus_kind;  /**< bus kind of this node */
+  bool             bus_child;   /**< parent is a bus with ACPI ctrl */
+  acpi_dev_t      *parent_ctrl;  /**< ACPI controller of the parent bus */
+  acpi_res_kind_t  parent_kind;  /**< bus kind of the parent */
+  bool             in_tlmm;  /**< inside the &tlmm block (pinctrl states) */
+  bool             is_root;  /**< the root node */
+  bool             missing_ref;  /**< the reference is not defined */
+  const dt_node_t *sec[16];     /**< counterparts in secondary files */
+  const char      *origin;      /**< e.g. "[SIMILAR2] taken over from x.dts" */
 } ectx_t;
 
 static void emit_node(gen_t *g, strbuf_t *sb, const dt_node_t *n, int depth, ectx_t *ec);
@@ -209,6 +209,12 @@ static void emit_node(gen_t *g, strbuf_t *sb, const dt_node_t *n, int depth, ect
 /* small helpers                                                            */
 /* ======================================================================== */
 
+/**
+ * @brief Looks up the SoC family entry (codename, legacy dtsi) of a SoC.
+ *
+ * @param soc  SoC name, e.g. "x1p42100"
+ * @return entry or NULL
+ */
 static const soc_family_t *soc_family(const char *soc)
 {
   for (size_t i = 0; i < sizeof(g_soc_families) / sizeof(g_soc_families[0]); i++)
@@ -217,6 +223,12 @@ static const soc_family_t *soc_family(const char *soc)
   return NULL;
 }
 
+/**
+ * @brief Checks whether an include is a SoC .dtsi (hamoa.dtsi, purwa.dtsi, x1e80100.dtsi, ...).
+ *
+ * @param name  include name
+ * @return true for a SoC include
+ */
 static bool is_soc_dtsi_name(const char *name)
 {
   char base[64];
@@ -236,7 +248,12 @@ static bool is_soc_dtsi_name(const char *name)
   return false;
 }
 
-/* board-family include of another board, e.g. "x1-asus-zenbook-a14.dtsi" */
+/**
+ * @brief Checks whether an include is a board-family .dtsi of another board (e.g. x1-asus-zenbook-a14.dtsi).
+ *
+ * @param name  include name
+ * @return true for a board include that should be inlined
+ */
 static bool is_board_family_dtsi(const char *name)
 {
   const char *b = path_basename(name);
@@ -255,6 +272,13 @@ static bool is_board_family_dtsi(const char *name)
   return false;
 }
 
+/**
+ * @brief Writes comment lines as one-line or multi-line block comment.
+ *
+ * @param sb     output
+ * @param depth  indentation depth
+ * @param lines  lines
+ */
 static void emit_lines_comment(strbuf_t *sb, int depth, const strlist_t *lines)
 {
   if (!lines->count)
@@ -280,6 +304,13 @@ static void emit_lines_comment(strbuf_t *sb, int depth, const strlist_t *lines)
   sb_puts(sb, " */\n");
 }
 
+/**
+ * @brief Adds a printf-formatted line to a string list.
+ *
+ * @param sl   string list
+ * @param fmt  printf format
+ * @param ...  format arguments
+ */
 static void addf(strlist_t *sl, const char *fmt, ...)
 {
   char    buf[1024];
@@ -290,6 +321,13 @@ static void addf(strlist_t *sl, const char *fmt, ...)
   sl_add(sl, buf);
 }
 
+/**
+ * @brief Writes an original comment of the template at the given indentation.
+ *
+ * @param sb     output
+ * @param depth  indentation depth
+ * @param c      comment text (NULL: nothing)
+ */
 static void emit_raw_comment(strbuf_t *sb, int depth, const char *c)
 {
   if (!c)
@@ -299,7 +337,13 @@ static void emit_raw_comment(strbuf_t *sb, int depth, const char *c)
   sb_putc(sb, '\n');
 }
 
-/* prefixes every line of src with indentation + "// " */
+/**
+ * @brief Writes text with every line prefixed by "// ".
+ *
+ * @param dst    output
+ * @param src    text to comment out
+ * @param depth  indentation depth
+ */
 static void comment_out(strbuf_t *dst, const char *src, int depth)
 {
   const char *p = src;
@@ -321,11 +365,24 @@ static void comment_out(strbuf_t *dst, const char *src, int depth)
   }
 }
 
+/**
+ * @brief Returns the reference or name of a node for messages.
+ *
+ * @param n  node
+ * @return "&label", node name or "?"
+ */
 static const char *node_title(const dt_node_t *n)
 {
   return n->ref ? n->ref : (n->name ? n->name : "?");
 }
 
+/**
+ * @brief Returns a DT reference for a node: "&label" or "&{/path}".
+ *
+ * @param n    node
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void base_ref(const dt_node_t *n, char *out, size_t cap)
 {
   if (n->labels.count)
@@ -338,11 +395,24 @@ static void base_ref(const dt_node_t *n, char *out, size_t cap)
   }
 }
 
+/**
+ * @brief Returns the Device Manager device of an ACPI device.
+ *
+ * @param g  generator state
+ * @param a  ACPI device (may be NULL)
+ * @return device or NULL
+ */
 static const dm_dev_t *dm_for(gen_t *g, const acpi_dev_t *a)
 {
   return a ? devmgr_find_by_acpi_path(g->x->dm, a->path) : NULL;
 }
 
+/**
+ * @brief Maps ACPI interrupt attributes to an IRQ_TYPE_* macro.
+ *
+ * @param r  GpioInt resource
+ * @return macro name
+ */
 static const char *irq_type_name(const acpi_res_t *r)
 {
   if (r->edge)
@@ -354,12 +424,21 @@ static const char *irq_type_name(const acpi_res_t *r)
 /* kernel folder: SoC include, learned delete-nodes                         */
 /* ======================================================================== */
 
+/** @brief state of the /delete-node/ harvest over the kernel boards */
 typedef struct {
-  gen_t    *g;
-  strmap_t  counts;
-  strlist_t keys;
+  gen_t    *g;  /**< generator state */
+  strmap_t  counts;  /**< reference -> number of boards */
+  strlist_t keys;  /**< references in first-seen order */
 } harvest_t;
 
+/**
+ * @brief Collects the top-level /delete-node/ statements of a board file (and its board includes).
+ *
+ * @param h      harvest state
+ * @param path   file path
+ * @param seen   receives the deleted references
+ * @param depth  include depth
+ */
 static void harvest_file(harvest_t *h, const char *path, strlist_t *seen, int depth)
 {
   dt_file_t *f = dt_parse_file(path);
@@ -379,6 +458,15 @@ static void harvest_file(harvest_t *h, const char *path, strlist_t *seen, int de
   }
 }
 
+/**
+ * @brief walk_dir() callback: counts /delete-node/ statements of the kernel's boards of this SoC.
+ *
+ * @param full    full path
+ * @param name    file name
+ * @param is_dir  true for a directory
+ * @param vctx    harvest_t
+ * @return false for directories, true otherwise
+ */
 static bool harvest_cb(const char *full, const char *name, bool is_dir, void *vctx)
 {
   harvest_t *h = vctx;
@@ -404,6 +492,11 @@ static bool harvest_cb(const char *full, const char *name, bool is_dir, void *vc
   return true;
 }
 
+/**
+ * @brief Determines search directories, SoC and PMIC includes and learns SoC-specific /delete-node/ statements.
+ *
+ * @param g  generator state
+ */
 static void setup_kernel(gen_t *g)
 {
   const char         *k = g->x->cfg->kernel_dts_dir;
@@ -496,6 +589,14 @@ static void setup_kernel(gen_t *g)
 /* template flattening                                                      */
 /* ======================================================================== */
 
+/**
+ * @brief Flattens a DTS file: board-family includes are inlined, SoC includes marked for replacement.
+ *
+ * @param g      generator state
+ * @param f      parsed file
+ * @param fl     receives the items
+ * @param depth  include depth
+ */
 static void flatten(gen_t *g, dt_file_t *f, flatlist_t *fl, int depth)
 {
   for (dt_top_t *t = f->items; t; t = t->next)
@@ -535,6 +636,14 @@ static void flatten(gen_t *g, dt_file_t *f, flatlist_t *fl, int depth)
   }
 }
 
+/**
+ * @brief Returns the SoC of a template (last "qcom,..." root compatible).
+ *
+ * @param fl   flattened template
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ * @return out (empty if unknown)
+ */
 static const char *template_soc(const flatlist_t *fl, char *out, size_t cap)
 {
   out[0] = 0;
@@ -557,6 +666,13 @@ static const char *template_soc(const flatlist_t *fl, char *out, size_t cap)
   return out;
 }
 
+/**
+ * @brief Finds a top-level override block by reference in a flattened file.
+ *
+ * @param fl   flattened file
+ * @param ref  reference, e.g. "&i2c0"
+ * @return node or NULL
+ */
 static dt_node_t *flat_find_ref(const flatlist_t *fl, const char *ref)
 {
   for (int i = 0; i < fl->count; i++)
@@ -568,6 +684,12 @@ static dt_node_t *flat_find_ref(const flatlist_t *fl, const char *ref)
   return NULL;
 }
 
+/**
+ * @brief Finds the root node block of a flattened file.
+ *
+ * @param fl  flattened file
+ * @return node or NULL
+ */
 static dt_node_t *flat_root(const flatlist_t *fl)
 {
   for (int i = 0; i < fl->count; i++)
@@ -583,6 +705,11 @@ static dt_node_t *flat_root(const flatlist_t *fl)
 /* trees and matching                                                       */
 /* ======================================================================== */
 
+/**
+ * @brief Builds the base tree (SoC/PMIC includes) and the full tree (plus template board nodes).
+ *
+ * @param g  generator state
+ */
 static void build_trees(gen_t *g)
 {
   strlist_t incs;
@@ -656,6 +783,12 @@ static void build_trees(gen_t *g)
   sl_free(&incs);
 }
 
+/**
+ * @brief Indexes all nodes with a unit address >= 0x10000 for MMIO matching.
+ *
+ * @param g  generator state
+ * @param n  subtree root
+ */
 static void index_units(gen_t *g, dt_node_t *n)
 {
   uint64_t a;
@@ -670,11 +803,23 @@ static void index_units(gen_t *g, dt_node_t *n)
   }
 }
 
+/**
+ * @brief Returns the DT node base name of a bus kind.
+ *
+ * @param k  RES_I2C, RES_SPI or RES_UART
+ * @return "i2c", "spi", "serial" or NULL
+ */
 static const char *kind_basename(acpi_res_kind_t k)
 {
   return k == RES_I2C ? "i2c" : k == RES_SPI ? "spi" : k == RES_UART ? "serial" : NULL;
 }
 
+/**
+ * @brief Returns the bus kind of a DT node from its base name.
+ *
+ * @param n  node (may be NULL)
+ * @return RES_I2C, RES_SPI, RES_UART or 0
+ */
 static acpi_res_kind_t node_bus_kind(const dt_node_t *n)
 {
   char b[64];
@@ -690,6 +835,11 @@ static acpi_res_kind_t node_bus_kind(const dt_node_t *n)
   return 0;
 }
 
+/**
+ * @brief Matches ACPI devices to SoC DT nodes by MMIO base (bus kind and labels decide ties).
+ *
+ * @param g  generator state
+ */
 static void match_acpi(gen_t *g)
 {
   acpi_ns_t *ns = g->x->ns;
@@ -764,6 +914,13 @@ static void match_acpi(gen_t *g)
   }
 }
 
+/**
+ * @brief Returns the ACPI device matched to a DT node.
+ *
+ * @param g  generator state
+ * @param n  node of the base tree (may be NULL)
+ * @return ACPI device or NULL
+ */
 static acpi_dev_t *acpi_for_node(gen_t *g, const dt_node_t *n)
 {
   if (!n)
@@ -774,6 +931,14 @@ static acpi_dev_t *acpi_for_node(gen_t *g, const dt_node_t *n)
   return NULL;
 }
 
+/**
+ * @brief Returns the first bus resource of a kind (optionally on a given controller).
+ *
+ * @param d     ACPI device
+ * @param kind  resource kind
+ * @param src   controller path or NULL for any
+ * @return resource or NULL
+ */
 static const acpi_res_t *dev_bus_res(const acpi_dev_t *d, acpi_res_kind_t kind, const char *src)
 {
   for (int r = 0; r < d->nres; r++)
@@ -782,6 +947,16 @@ static const acpi_res_t *dev_bus_res(const acpi_dev_t *d, acpi_res_kind_t kind, 
   return NULL;
 }
 
+/**
+ * @brief Finds the ACPI device using a bus address on a controller.
+ *
+ * @param g         generator state
+ * @param ctrl      ACPI bus controller
+ * @param kind      bus kind
+ * @param addr      I2C address / SPI chip select
+ * @param any_addr  accept any address (UART)
+ * @return consumer or NULL
+ */
 static acpi_dev_t *consumer_at(gen_t *g, const acpi_dev_t *ctrl, acpi_res_kind_t kind, uint32_t addr,
                                bool any_addr)
 {
@@ -800,6 +975,11 @@ static acpi_dev_t *consumer_at(gen_t *g, const acpi_dev_t *ctrl, acpi_res_kind_t
 /* GPIO decoding                                                            */
 /* ======================================================================== */
 
+/**
+ * @brief Prepares TLMM decoding: ACPI GPIO controller, GPIO count, PDC ranges, wake map.
+ *
+ * @param g  generator state
+ */
 static void setup_gpio(gen_t *g)
 {
   dt_node_t *tlmm = dt_tree_label(&g->base, "tlmm");
@@ -815,11 +995,7 @@ static void setup_gpio(gen_t *g)
     if (dt_value_cells(dt_prop_value(tlmm, "gpio-ranges"), &cells) >= 4)
       g->ngpios = atoi(cells.v[3]);
     sl_free(&cells);
-    if (str_contains_ci(dt_prop_value(tlmm, "compatible"), "x1e80100-tlmm"))
-    {
-      g->wm = g_x1e80100_wake;
-      g->nwm = (int)(sizeof(g_x1e80100_wake) / sizeof(g_x1e80100_wake[0]));
-    }
+    g->wm = pdc_wake_map(dt_prop_value(tlmm, "compatible"), &g->nwm);
   }
   if (pdc)
   {
@@ -840,7 +1016,16 @@ static void setup_gpio(gen_t *g)
     log_warn("TLMM GPIO controller not found in ACPI - GPIO numbers cannot be verified");
 }
 
-/* returns the TLMM pin of an ACPI GPIO pin, -1 if not decodable */
+/**
+ * @brief Decodes an ACPI GPIO pin (direct or Qualcomm virtual pin) to a TLMM pin.
+ *
+ * @param g       generator state
+ * @param source  GPIO controller path of the resource
+ * @param pin     ACPI pin number
+ * @param how     receives an explanation (may be NULL)
+ * @param cap     size of how
+ * @return TLMM pin or -1
+ */
 static int tlmm_decode(gen_t *g, const char *source, uint16_t pin, char *how, size_t cap)
 {
   int limit = g->ngpios ? g->ngpios : 200;
@@ -899,6 +1084,11 @@ static int tlmm_decode(gen_t *g, const char *source, uint16_t pin, char *how, si
   return -1;
 }
 
+/**
+ * @brief Builds the list of ACPI users per TLMM pin.
+ *
+ * @param g  generator state
+ */
 static void build_tlmm_users(gen_t *g)
 {
   for (int i = 0; i < g->x->ns->count; i++)
@@ -925,6 +1115,14 @@ static void build_tlmm_users(gen_t *g)
   }
 }
 
+/**
+ * @brief Extracts the pins of "&tlmm N" references in a property value.
+ *
+ * @param raw   raw property value
+ * @param pins  receives the pins
+ * @param max   capacity of pins
+ * @return number of pins
+ */
 static int tlmm_pins_in_value(const char *raw, int *pins, int max)
 {
   strlist_t cells;
@@ -947,6 +1145,14 @@ static int tlmm_pins_in_value(const char *raw, int *pins, int max)
 /* descriptions                                                             */
 /* ======================================================================== */
 
+/**
+ * @brief Describes an ACPI device: IDs, status, resources, ACPICA results, Device Manager and INF data.
+ *
+ * @param g               generator state
+ * @param d               ACPI device
+ * @param lines           receives the lines
+ * @param with_resources  include the decoded resources
+ */
 static void describe_acpi(gen_t *g, const acpi_dev_t *d, strlist_t *lines, bool with_resources)
 {
   strbuf_t sb;
@@ -1002,6 +1208,16 @@ static void describe_acpi(gen_t *g, const acpi_dev_t *d, strlist_t *lines, bool 
       addf(lines, "[ACPI]   NOTE: _CRS is a method with %d alternative resource templates", d->crs_alternatives);
     if (d->hid_descr_addr >= 0)
       addf(lines, "[ACPI]   _DSM HID descriptor address: 0x%x", d->hid_descr_addr);
+    if (d->eval_hid == A2D_EVAL_EXACT && d->hid_is_method)
+      addf(lines, "[ACPICA] _HID method evaluated exactly: %s", d->hid_eval);
+    else if (d->eval_hid == A2D_EVAL_FIRMWARE)
+      addf(lines, "[ACPICA] _HID depends on firmware data (simulated result %s) - see Device Manager", d->hid_eval);
+    if (d->eval_crs == A2D_EVAL_EXACT && d->crs_is_method)
+      sl_add(lines, "[ACPICA] _CRS method evaluated exactly (resources above)");
+    else if (d->eval_crs == A2D_EVAL_FIRMWARE)
+      sl_add(lines, "[ACPICA] _CRS depends on firmware data - statically decoded templates shown");
+    if (d->eval_sta == A2D_EVAL_FIRMWARE)
+      sl_add(lines, "[ACPICA] _STA depends on firmware data");
     if (d->deps.count)
     {
       sb_clear(&sb);
@@ -1048,6 +1264,15 @@ static void describe_acpi(gen_t *g, const acpi_dev_t *d, strlist_t *lines, bool 
 /* annotations                                                              */
 /* ======================================================================== */
 
+/**
+ * @brief Cross-checks interrupt, GPIO and hid-descr-addr properties of a bus child against ACPI.
+ *
+ * @param g         generator state
+ * @param n         template node
+ * @param c         ACPI consumer
+ * @param lines     receives OK/CHECK/WARNING lines
+ * @param mismatch  set on a mismatch
+ */
 static void check_consumer_props(gen_t *g, const dt_node_t *n, const acpi_dev_t *c, strlist_t *lines, bool *mismatch)
 {
   int             irq_tlmm = -1;
@@ -1133,6 +1358,14 @@ static void check_consumer_props(gen_t *g, const dt_node_t *n, const acpi_dev_t 
   }
 }
 
+/**
+ * @brief Builds the annotation comment of a node (controller, bus child, pinctrl state).
+ *
+ * @param g      generator state
+ * @param n      node
+ * @param ec     emission context
+ * @param lines  receives the lines
+ */
 static void annotate_node(gen_t *g, const dt_node_t *n, ectx_t *ec, strlist_t *lines)
 {
   if (ec->origin)
@@ -1229,6 +1462,16 @@ static void annotate_node(gen_t *g, const dt_node_t *n, ectx_t *ec, strlist_t *l
 /* firmware-name                                                            */
 /* ======================================================================== */
 
+/**
+ * @brief Resolves the files of a firmware-name property, plans their copy and rewrites the paths.
+ *
+ * @param g      generator state
+ * @param n      node
+ * @param value  raw property value
+ * @param depth  indentation depth
+ * @param lines  receives [FW] lines
+ * @return new value (caller frees) or NULL to keep the original
+ */
 static char *rewrite_firmware(gen_t *g, const dt_node_t *n, const char *value, int depth, strlist_t *lines)
 {
   strlist_t   names;
@@ -1277,6 +1520,12 @@ static char *rewrite_firmware(gen_t *g, const dt_node_t *n, const char *value, i
 /* label resolution checks for taken-over nodes                             */
 /* ======================================================================== */
 
+/**
+ * @brief Collects the labels defined in a subtree.
+ *
+ * @param n    subtree root
+ * @param out  string list
+ */
 static void collect_labels_defined(const dt_node_t *n, strlist_t *out)
 {
   for (int i = 0; i < n->labels.count; i++)
@@ -1285,6 +1534,12 @@ static void collect_labels_defined(const dt_node_t *n, strlist_t *out)
     collect_labels_defined(c, out);
 }
 
+/**
+ * @brief Collects the "&label" references used in a subtree.
+ *
+ * @param n    subtree root
+ * @param out  string list
+ */
 static void collect_refs_used(const dt_node_t *n, strlist_t *out)
 {
   for (const dt_prop_t *p = n->props; p; p = p->next)
@@ -1310,6 +1565,14 @@ static void collect_refs_used(const dt_node_t *n, strlist_t *out)
     collect_refs_used(c, out);
 }
 
+/**
+ * @brief Checks whether all references of a subtree resolve in the draft.
+ *
+ * @param g        generator state
+ * @param n        subtree root
+ * @param missing  receives the unresolved references (may be NULL)
+ * @return true if all resolve
+ */
 static bool refs_resolvable(gen_t *g, const dt_node_t *n, strbuf_t *missing)
 {
   strlist_t def, used;
@@ -1335,6 +1598,12 @@ static bool refs_resolvable(gen_t *g, const dt_node_t *n, strbuf_t *missing)
 /* ACPI-derived candidate nodes                                             */
 /* ======================================================================== */
 
+/**
+ * @brief Returns a DT compatible for an ACPI ID with a generic binding (HID-over-I2C).
+ *
+ * @param d  ACPI device
+ * @return compatible or NULL
+ */
 static const char *compat_for(const acpi_dev_t *d)
 {
   for (size_t i = 0; i < sizeof(g_hid_compat) / sizeof(g_hid_compat[0]); i++)
@@ -1343,6 +1612,14 @@ static const char *compat_for(const acpi_dev_t *d)
   return NULL;
 }
 
+/**
+ * @brief Chooses a node name for an ACPI-only device (touchpad, keyboard, ...).
+ *
+ * @param g    generator state
+ * @param d    ACPI device
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void candidate_name(gen_t *g, const acpi_dev_t *d, char *out, size_t cap)
 {
   const dm_dev_t *m = dm_for(g, d);
@@ -1365,6 +1642,16 @@ static void candidate_name(gen_t *g, const acpi_dev_t *d, char *out, size_t cap)
   }
 }
 
+/**
+ * @brief Emits a node for an ACPI-only bus device (real for HID-over-I2C, otherwise commented out).
+ *
+ * @param g      generator state
+ * @param sb     output
+ * @param depth  indentation depth
+ * @param d      ACPI device
+ * @param ctrl   bus controller
+ * @param kind   bus kind
+ */
 static void emit_candidate(gen_t *g, strbuf_t *sb, int depth, acpi_dev_t *d, acpi_dev_t *ctrl, acpi_res_kind_t kind)
 {
   const acpi_res_t *bus = dev_bus_res(d, kind, ctrl->path);
@@ -1480,7 +1767,15 @@ static void emit_candidate(gen_t *g, strbuf_t *sb, int depth, acpi_dev_t *d, acp
   sb_free(&node);
 }
 
-/* emits all not yet covered consumers of ctrl */
+/**
+ * @brief Emits all not yet covered ACPI consumers of a bus controller.
+ *
+ * @param g      generator state
+ * @param sb     output
+ * @param depth  indentation depth
+ * @param ctrl   bus controller
+ * @param kind   bus kind
+ */
 static void emit_candidates_for(gen_t *g, strbuf_t *sb, int depth, acpi_dev_t *ctrl, acpi_res_kind_t kind)
 {
   for (int i = 0; i < g->x->ns->count; i++)
@@ -1497,6 +1792,14 @@ static void emit_candidates_for(gen_t *g, strbuf_t *sb, int depth, acpi_dev_t *c
 /* node emission                                                            */
 /* ======================================================================== */
 
+/**
+ * @brief Derives the emission context of a child node.
+ *
+ * @param g   generator state
+ * @param pc  parent context
+ * @param c   child node
+ * @param cc  receives the child context
+ */
 static void child_ctx(gen_t *g, const ectx_t *pc, const dt_node_t *c, ectx_t *cc)
 {
   memset(cc, 0, sizeof(*cc));
@@ -1528,6 +1831,13 @@ static void child_ctx(gen_t *g, const ectx_t *pc, const dt_node_t *c, ectx_t *cc
   }
 }
 
+/**
+ * @brief Marks the ACPI consumers described by a subtree as covered.
+ *
+ * @param g   generator state
+ * @param n   subtree root
+ * @param ec  context of the subtree root
+ */
 static void mark_covered_tree(gen_t *g, const dt_node_t *n, const ectx_t *ec)
 {
   if (ec->consumer)
@@ -1540,6 +1850,15 @@ static void mark_covered_tree(gen_t *g, const dt_node_t *n, const ectx_t *ec)
   }
 }
 
+/**
+ * @brief Emits nodes and properties of secondary DTS files that the template lacks.
+ *
+ * @param g      generator state
+ * @param sb     output
+ * @param n      template node
+ * @param depth  indentation depth
+ * @param ec     context with the secondary counterparts
+ */
 static void emit_secondary_extras(gen_t *g, strbuf_t *sb, const dt_node_t *n, int depth, ectx_t *ec)
 {
   strlist_t done;
@@ -1645,6 +1964,15 @@ static void emit_secondary_extras(gen_t *g, strbuf_t *sb, const dt_node_t *n, in
 /* panel configuration from the GPU's _ROM (Qualcomm)                       */
 /* ======================================================================== */
 
+/**
+ * @brief Returns the text of the first \<tag\>...\</tag\> in an XML text.
+ *
+ * @param xml  XML text
+ * @param tag  tag name
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ * @return true if found
+ */
 static bool xml_tag(const char *xml, const char *tag, char *out, size_t cap)
 {
   char        open[64];
@@ -1668,6 +1996,14 @@ static bool xml_tag(const char *xml, const char *tag, char *out, size_t cap)
   return true;
 }
 
+/**
+ * @brief Returns the integer value of an XML tag.
+ *
+ * @param xml  XML text
+ * @param tag  tag name
+ * @param def  default value
+ * @return value or def
+ */
 static int xml_int(const char *xml, const char *tag, int def)
 {
   char v[64];
@@ -1676,7 +2012,13 @@ static int xml_int(const char *xml, const char *tag, int def)
   return (int)strtol(v, NULL, 0);
 }
 
-/* PWM node of PMIC <sid>: a "...-pwm" compatible below "pmic@<sid>" */
+/**
+ * @brief Finds the labeled PWM node of the PMIC with a given SPMI SID.
+ *
+ * @param n    subtree root
+ * @param sid  PMIC SID
+ * @return node or NULL
+ */
 static dt_node_t *find_pmic_pwm(dt_node_t *n, int sid)
 {
   for (dt_node_t *c = n->children; c; c = c->next)
@@ -1695,6 +2037,11 @@ static dt_node_t *find_pmic_pwm(dt_node_t *n, int sid)
   return NULL;
 }
 
+/**
+ * @brief Selects the GPU panel configuration (_ROM XML) for the internal panel's EDID and decodes it.
+ *
+ * @param g  generator state
+ */
 static void setup_panel(gen_t *g)
 {
   const dm_monitor_t *m = devmgr_internal_panel(g->x->dm);
@@ -1762,11 +2109,23 @@ static void setup_panel(gen_t *g)
            pc->bl_type == 1 ? " (PMIC PWM)" : pc->bl_type == 5 ? " (eDP AUX)" : "");
 }
 
+/**
+ * @brief Converts a DPCD MAX_LINK_RATE code to Gbit/s per lane.
+ *
+ * @param code  MAX_LINK_RATE code
+ * @return rate in Gbit/s
+ */
 static double link_rate_gbps(int code)
 {
   return code * 0.27; /* DPCD MAX_LINK_RATE in units of 0.27 Gbit/s */
 }
 
+/**
+ * @brief Describes the panel configuration in annotation lines.
+ *
+ * @param g      generator state
+ * @param lines  receives the lines
+ */
 static void panel_lines(gen_t *g, strlist_t *lines)
 {
   const panel_cfg_t *pc = &g->panel;
@@ -1788,17 +2147,26 @@ static void panel_lines(gen_t *g, strlist_t *lines)
 /* compatible cross-checks: PCI IDs, Qualcomm WCN chips, panel vs. EDID     */
 /* ======================================================================== */
 
+/** @brief Qualcomm Wi-Fi/BT PCI device ID -> chip name */
 typedef struct {
-  uint16_t    dev;
-  const char *chip;
+  uint16_t    dev;  /**< PCI device ID (vendor 0x17cb) */
+  const char *chip;  /**< chip name */
 } wcn_pci_t;
 
+/** Qualcomm Wi-Fi/BT PCI IDs */
 static const wcn_pci_t g_wcn_pci[] = {
   { 0x1101, "qca6390" },
   { 0x1103, "wcn6855" },
   { 0x1107, "wcn7850" },
 };
 
+/**
+ * @brief Copies the alphanumeric characters of a string in lower case.
+ *
+ * @param in   input
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void alnum_lower(const char *in, char *out, size_t cap)
 {
   size_t n = 0;
@@ -1813,6 +2181,13 @@ static void alnum_lower(const char *in, char *out, size_t cap)
   out[n] = 0;
 }
 
+/**
+ * @brief Returns the Qualcomm Wi-Fi/BT chip present on this machine.
+ *
+ * @param g        generator state
+ * @param dev_out  receives the PCI device (may be NULL)
+ * @return chip name, e.g. "wcn6855", or NULL
+ */
 static const char *present_wcn(gen_t *g, const dm_dev_t **dev_out)
 {
   for (size_t i = 0; i < sizeof(g_wcn_pci) / sizeof(g_wcn_pci[0]); i++)
@@ -1828,6 +2203,14 @@ static const char *present_wcn(gen_t *g, const dm_dev_t **dev_out)
   return NULL;
 }
 
+/**
+ * @brief Cross-checks compatibles: PCI IDs, WCN chip, pwm-backlight and panel against this machine.
+ *
+ * @param g      generator state
+ * @param n      node
+ * @param value  raw compatible value
+ * @param lines  receives OK/WARNING lines
+ */
 static void check_compatible(gen_t *g, const dt_node_t *n, const char *value, strlist_t *lines)
 {
   strlist_t compats;
@@ -1979,6 +2362,16 @@ static void check_compatible(gen_t *g, const dt_node_t *n, const char *value, st
   sl_free(&compats);
 }
 
+/**
+ * @brief Emits one property with annotations (model, compatible, firmware-name, gpios, data-lanes ...).
+ *
+ * @param g      generator state
+ * @param sb     output
+ * @param n      node
+ * @param p      property
+ * @param depth  indentation depth
+ * @param ec     emission context
+ */
 static void emit_prop(gen_t *g, strbuf_t *sb, const dt_node_t *n, const dt_prop_t *p, int depth, ectx_t *ec)
 {
   strlist_t lines;
@@ -2058,6 +2451,15 @@ static void emit_prop(gen_t *g, strbuf_t *sb, const dt_node_t *n, const dt_prop_
   free(newval);
 }
 
+/**
+ * @brief Emits a node with its comments, annotations, properties, children and additions.
+ *
+ * @param g      generator state
+ * @param sb     output
+ * @param n      node
+ * @param depth  indentation depth
+ * @param ec     emission context
+ */
 static void emit_node(gen_t *g, strbuf_t *sb, const dt_node_t *n, int depth, ectx_t *ec)
 {
   strlist_t lines;
@@ -2114,7 +2516,13 @@ static void emit_node(gen_t *g, strbuf_t *sb, const dt_node_t *n, int depth, ect
   sb_puts(sb, "};\n");
 }
 
-/* top-level node of the template (root or &ref) */
+/**
+ * @brief Derives the emission context of a top-level node (root or override block).
+ *
+ * @param g   generator state
+ * @param n   node
+ * @param ec  receives the context
+ */
 static void top_ctx(gen_t *g, const dt_node_t *n, ectx_t *ec)
 {
   memset(ec, 0, sizeof(*ec));
@@ -2147,6 +2555,11 @@ static void top_ctx(gen_t *g, const dt_node_t *n, ectx_t *ec)
 /* header, appendix                                                         */
 /* ======================================================================== */
 
+/**
+ * @brief Writes the header comment (machine, sources, legend).
+ *
+ * @param g  generator state
+ */
 static void emit_header(gen_t *g)
 {
   strbuf_t        *sb = &g->out;
@@ -2193,11 +2606,23 @@ static void emit_header(gen_t *g)
   sb_puts(sb, "\n */\n");
 }
 
+/**
+ * @brief Checks whether a comment starts with an SPDX line.
+ *
+ * @param c  comment text
+ * @return true if it does
+ */
 static bool is_spdx_comment_line(const char *c)
 {
   return str_starts_with(c, "// SPDX");
 }
 
+/**
+ * @brief Writes the template's file comment without its SPDX line.
+ *
+ * @param sb  output
+ * @param c   comment text
+ */
 static void emit_template_comment(strbuf_t *sb, const char *c)
 {
   /* drop the SPDX line of the template (our header has one) */
@@ -2217,6 +2642,11 @@ static void emit_template_comment(strbuf_t *sb, const char *c)
   }
 }
 
+/**
+ * @brief Writes the appendix: disabled SoC nodes, ACPI devices, PCI/problem devices, monitors, firmware, panel, notes.
+ *
+ * @param g  generator state
+ */
 static void emit_appendix(gen_t *g)
 {
   strbuf_t   *sb = &g->out;
@@ -2365,6 +2795,12 @@ static void emit_appendix(gen_t *g)
 /* sections                                                                 */
 /* ======================================================================== */
 
+/**
+ * @brief Writes the learned SoC-specific /delete-node/ statements not already in the template.
+ *
+ * @param g        generator state
+ * @param already  references already deleted by the template
+ */
 static void emit_soc_deletes(gen_t *g, const strlist_t *already)
 {
   bool any = false;
@@ -2382,6 +2818,11 @@ static void emit_soc_deletes(gen_t *g, const strlist_t *already)
   }
 }
 
+/**
+ * @brief Re-emits the template with SoC include replacement and annotations.
+ *
+ * @param g  generator state
+ */
 static void emit_template(gen_t *g)
 {
   strlist_t deletes;
@@ -2478,6 +2919,11 @@ static void emit_template(gen_t *g)
   sl_free(&deletes);
 }
 
+/**
+ * @brief Emits top-level blocks that only secondary DTS files have (taken over or commented).
+ *
+ * @param g  generator state
+ */
 static void emit_secondary_top(gen_t *g)
 {
   bool header = false;
@@ -2549,6 +2995,11 @@ static void emit_secondary_top(gen_t *g)
   }
 }
 
+/**
+ * @brief Emits bus controllers with ACPI devices that no DTS describes.
+ *
+ * @param g  generator state
+ */
 static void emit_acpi_buses(gen_t *g)
 {
   acpi_ns_t *ns = g->x->ns;
@@ -2627,7 +3078,11 @@ static void emit_acpi_buses(gen_t *g)
   }
 }
 
-/* without template: skeleton built from SoC include, ACPI and DriverStore */
+/**
+ * @brief Writes the draft without template: includes, root node, firmware, enabled SoC nodes.
+ *
+ * @param g  generator state
+ */
 static void emit_skeleton(gen_t *g)
 {
   strbuf_t        *sb = &g->out;
@@ -2732,6 +3187,13 @@ static void emit_skeleton(gen_t *g)
   }
 }
 
+/**
+ * @brief Checks whether a subtree contains a compatible substring.
+ *
+ * @param n       subtree root
+ * @param compat  compatible substring
+ * @return true if found
+ */
 static bool subtree_has_compat(const dt_node_t *n, const char *compat)
 {
   const char *c = dt_prop_value(n, "compatible");
@@ -2743,7 +3205,11 @@ static bool subtree_has_compat(const dt_node_t *n, const char *compat)
   return false;
 }
 
-/* PMIC PWM backlight from the GPU panel config, if the draft has none */
+/**
+ * @brief Suggests a pwm-backlight node from the panel configuration if the draft has none.
+ *
+ * @param g  generator state
+ */
 static void emit_backlight_suggestion(gen_t *g)
 {
   const panel_cfg_t *pc = &g->panel;
@@ -2782,7 +3248,14 @@ static void emit_backlight_suggestion(gen_t *g)
 /* camera sensors (Windows camera driver configuration)                     */
 /* ======================================================================== */
 
-/* kernel source root above the DTS folder (contains drivers/media/i2c) */
+/**
+ * @brief Finds the kernel source root above the DTS folder (contains drivers/media/i2c).
+ *
+ * @param g    generator state
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ * @return true if found
+ */
 static bool kernel_root(gen_t *g, char *out, size_t cap)
 {
   char cur[A2D_MAX_PATH], probe[A2D_MAX_PATH];
@@ -2806,7 +3279,13 @@ static bool kernel_root(gen_t *g, char *out, size_t cap)
   return false;
 }
 
-/* pinctrl driver source of the TLMM (e.g. pinctrl-x1e80100.c), NULL if unavailable */
+/**
+ * @brief Loads the pinctrl driver source of the TLMM (e.g. pinctrl-x1e80100.c).
+ *
+ * @param g     generator state
+ * @param root  kernel source root (may be NULL)
+ * @return source text (caller frees) or NULL
+ */
 static char *load_pinctrl_source(gen_t *g, const char *root)
 {
   dt_node_t *tlmm = dt_tree_label(&g->base, "tlmm");
@@ -2831,7 +3310,16 @@ static char *load_pinctrl_source(gen_t *g, const char *root)
   return src;
 }
 
-/* name of function <idx> (1-based, 0 = gpio) of TLMM pin <pin> */
+/**
+ * @brief Returns the name of function idx of a TLMM pin from the pinctrl source.
+ *
+ * @param src  pinctrl source
+ * @param pin  TLMM pin
+ * @param idx  function index (1-based)
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ * @return true if the function exists
+ */
 static bool pin_function(const char *src, int pin, int idx, char *out, size_t cap)
 {
   char        key[48];
@@ -2866,7 +3354,15 @@ static bool pin_function(const char *src, int pin, int idx, char *out, size_t ca
   return false;
 }
 
-/* TLMM pin carrying camera MCLK <n>: cam_mclk_groups[n], beyond that the "cam_aon" pin */
+/**
+ * @brief Returns the TLMM pin of camera MCLK n (cam_mclk groups, then cam_aon).
+ *
+ * @param src   pinctrl source
+ * @param n     MCLK index
+ * @param func  receives the function name
+ * @param cap   size of func
+ * @return TLMM pin or -1
+ */
 static int mclk_pin(const char *src, int n, char *func, size_t cap)
 {
   const char *p;
@@ -2893,6 +3389,14 @@ static int mclk_pin(const char *src, int n, char *func, size_t cap)
   return -1;
 }
 
+/**
+ * @brief Finds the board regulator label of a PMIC LDO (vreg_l\<n\>\<pmic\>_...).
+ *
+ * @param g    generator state
+ * @param v    regulator
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ */
 static void find_vreg_label(gen_t *g, const cam_vreg_t *v, char *out, size_t cap)
 {
   char prefix[32];
@@ -2907,6 +3411,13 @@ static void find_vreg_label(gen_t *g, const cam_vreg_t *v, char *out, size_t cap
   snprintf(out, cap, "&%sTODO", prefix);
 }
 
+/**
+ * @brief Checks whether a subtree has a compatible containing a substring.
+ *
+ * @param n       subtree root
+ * @param suffix  substring, e.g. "-camss"
+ * @return true if found
+ */
 static bool tree_has_compat_suffix(const dt_node_t *n, const char *suffix)
 {
   const char *c = dt_prop_value(n, "compatible");
@@ -2918,6 +3429,11 @@ static bool tree_has_compat_suffix(const dt_node_t *n, const char *suffix)
   return false;
 }
 
+/**
+ * @brief Emits a commented camera node per sensor of the Windows camera configuration.
+ *
+ * @param g  generator state
+ */
 static void emit_cameras(gen_t *g)
 {
   cam_set_t cams;
@@ -3053,6 +3569,11 @@ static void emit_cameras(gen_t *g)
 /* Wi-Fi board file and other extras                                        */
 /* ======================================================================== */
 
+/**
+ * @brief Plans Wi-Fi board data and video firmware copies.
+ *
+ * @param g  generator state
+ */
 static void plan_extra_firmware(gen_t *g)
 {
   const sysinfo_t *si = g->x->si;
@@ -3108,6 +3629,62 @@ static void plan_extra_firmware(gen_t *g)
         break;
       }
   }
+}
+
+/* ======================================================================== */
+/* DTB compilation (embedded dtc)                                           */
+/* ======================================================================== */
+
+/**
+ * @brief Preprocesses and compiles the written draft to \<output\>.dtb with the embedded dtc.
+ *
+ * @param g  generator state
+ */
+static void compile_draft(gen_t *g)
+{
+  const a2d_config_t *cfg = g->x->cfg;
+  char                root[A2D_MAX_PATH], inc[A2D_MAX_PATH], pfx[A2D_MAX_PATH];
+  char                pre[A2D_MAX_PATH], log[A2D_MAX_PATH], dtb[A2D_MAX_PATH], *dot;
+  const char         *dirs[4];
+  int                 nd = 0;
+  dtc_result_t        res;
+
+  dirs[nd++] = g->qcom_dir;
+  dirs[nd++] = cfg->kernel_dts_dir;
+  if (kernel_root(g, root, sizeof(root)))
+  {
+    path_join(inc, sizeof(inc), root, "include");
+    path_join(pfx, sizeof(pfx), root, "scripts\\dtc\\include-prefixes");
+    dirs[nd++] = inc;
+    dirs[nd++] = pfx;
+  }
+  else
+    log_warn("kernel include/ folder not found above %s - dt-bindings headers may be missing", cfg->kernel_dts_dir);
+
+  str_copy(dtb, sizeof(dtb), cfg->output_dts);
+  dot = strrchr(dtb, '.');
+  if (dot && !strpbrk(dot, "\\/"))
+    *dot = 0;
+  strncat(dtb, ".dtb", sizeof(dtb) - strlen(dtb) - 1);
+  path_join(pre, sizeof(pre), cfg->work_dir, "draft.preprocessed.dts");
+  path_join(log, sizeof(log), cfg->work_dir, "dtc.log");
+
+  dtc_compile(cfg->output_dts, dirs, nd, pre, dtb, log, &res);
+  g->st->dtb_built = res.compiled;
+  g->st->dtb_warnings = res.warnings;
+  g->st->dtb_errors = res.errors;
+  str_copy(g->st->dtb_path, sizeof(g->st->dtb_path), dtb);
+  if (!res.compiled)
+  {
+    int shown = 0;
+    for (int i = 0; i < res.messages.count && shown < 8; i++)
+      if (!strstr(res.messages.v[i], "Warning"))
+      {
+        log_err("%s", res.messages.v[i]);
+        shown++;
+      }
+  }
+  dtc_result_free(&res);
 }
 
 /* ======================================================================== */
@@ -3210,9 +3787,11 @@ int dts_generate(a2d_ctx_t *x, dts_stats_t *stats)
     dt_file_t *chk = dt_parse_text(x->cfg->output_dts, g.out.buf);
     if (chk->errors)
       log_warn("the draft has %d syntax problem(s) - please report", chk->errors);
-    else
-      log_ok("draft re-parsed without syntax problems");
   }
   sb_free(&g.out);
+
+  /* compile the draft with the embedded dtc */
+  if (!x->cfg->no_dtc)
+    compile_draft(&g);
   return 0;
 }

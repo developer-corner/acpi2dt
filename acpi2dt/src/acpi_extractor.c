@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   acpi_extractor.c
  * @author Ingo A. Kubbilun
@@ -7,7 +8,7 @@
  * Sources of ACPI tables (in this order):
  *   1. a dump folder given by --acpi-dir (offline mode, e.g. acpidump output)
  *   2. EnumSystemFirmwareTables / GetSystemFirmwareTable('ACPI')
- *   3. HKLM\HARDWARE\ACPI\<SIG>\<OEM>\<TABLE>\<REV> (adds SSDT instances the
+ *   3. HKLM\\HARDWARE\\ACPI\\<SIG\>\\<OEM\>\\<TABLE\>\\<REV\> (adds SSDT instances the
  *      firmware table API cannot return)
  *
  * [MIT license] - see main.c
@@ -16,16 +17,17 @@
 #include "acpi_extractor.h"
 
 #pragma pack(push, 1)
+/** @brief common header of ACPI system description tables */
 typedef struct {
-  char     signature[4];
-  uint32_t length;
-  uint8_t  revision;
-  uint8_t  checksum;
-  char     oem_id[6];
-  char     oem_table_id[8];
-  uint32_t oem_revision;
-  char     creator_id[4];
-  uint32_t creator_revision;
+  char     signature[4];  /**< table signature */
+  uint32_t length;  /**< table length incl. header */
+  uint8_t  revision;  /**< table revision */
+  uint8_t  checksum;  /**< checksum byte */
+  char     oem_id[6];  /**< OEM ID */
+  char     oem_table_id[8];  /**< OEM table ID */
+  uint32_t oem_revision;  /**< OEM revision */
+  char     creator_id[4];  /**< ASL compiler vendor ID */
+  uint32_t creator_revision;  /**< ASL compiler revision */
 } acpi_sdt_header_t;
 #pragma pack(pop)
 
@@ -33,6 +35,12 @@ typedef struct {
 /* table set                                                                */
 /* ======================================================================== */
 
+/**
+ * @brief Checks whether 4 bytes form a plausible ACPI signature.
+ *
+ * @param s  signature
+ * @return true if all characters are alphanumeric or '_'
+ */
 static bool sig_valid(const char *s)
 {
   for (int i = 0; i < 4; i++)
@@ -42,6 +50,14 @@ static bool sig_valid(const char *s)
   return true;
 }
 
+/**
+ * @brief Checks whether an identical table is already in the set.
+ *
+ * @param set  table set
+ * @param buf  table bytes
+ * @param len  table length
+ * @return true for a duplicate
+ */
 static bool table_is_duplicate(const acpi_table_set_t *set, const uint8_t *buf, uint32_t len)
 {
   for (int i = 0; i < set->count; i++)
@@ -50,6 +66,15 @@ static bool table_is_duplicate(const acpi_table_set_t *set, const uint8_t *buf, 
   return false;
 }
 
+/**
+ * @brief Validates a table and adds a copy to the set (duplicates are ignored).
+ *
+ * @param set     table set
+ * @param buf     table bytes
+ * @param len     length of the buffer
+ * @param origin  description of the source
+ * @return true if the table was added
+ */
 static bool add_table(acpi_table_set_t *set, const uint8_t *buf, uint32_t len, const char *origin)
 {
   const acpi_sdt_header_t *hdr = (const acpi_sdt_header_t *)buf;
@@ -119,6 +144,11 @@ void acpi_free_tables(acpi_table_set_t *set)
 /* acquisition                                                              */
 /* ======================================================================== */
 
+/**
+ * @brief Reads all tables offered by EnumSystemFirmwareTables('ACPI').
+ *
+ * @param set  table set
+ */
 static void collect_from_firmware_api(acpi_table_set_t *set)
 {
   UINT   needed = EnumSystemFirmwareTables('ACPI', NULL, 0);
@@ -146,6 +176,13 @@ static void collect_from_firmware_api(acpi_table_set_t *set)
   free(ids);
 }
 
+/**
+ * @brief Adds REG_BINARY tables below a registry key (recursive).
+ *
+ * @param set    table set
+ * @param key    registry key
+ * @param depth  recursion depth
+ */
 static void collect_registry_values(acpi_table_set_t *set, HKEY key, int depth)
 {
   wchar_t name[256];
@@ -183,6 +220,11 @@ static void collect_registry_values(acpi_table_set_t *set, HKEY key, int depth)
   }
 }
 
+/**
+ * @brief Adds the tables stored below HKLM\\HARDWARE\\ACPI (additional SSDTs).
+ *
+ * @param set  table set
+ */
 static void collect_from_registry(acpi_table_set_t *set)
 {
   HKEY key;
@@ -193,10 +235,20 @@ static void collect_from_registry(acpi_table_set_t *set)
   }
 }
 
+/** @brief context of the dump folder walk */
 typedef struct {
-  acpi_table_set_t *set;
+  acpi_table_set_t *set;  /**< receives the tables */
 } folder_ctx_t;
 
+/**
+ * @brief walk_dir() callback adding every table file of a dump folder.
+ *
+ * @param full    full path
+ * @param name    file name
+ * @param is_dir  true for a directory
+ * @param vctx    folder_ctx_t
+ * @return false for directories (no recursion), true otherwise
+ */
 static bool folder_cb(const char *full, const char *name, bool is_dir, void *vctx)
 {
   folder_ctx_t *ctx = vctx;
@@ -219,12 +271,16 @@ static bool folder_cb(const char *full, const char *name, bool is_dir, void *vct
   return true;
 }
 
+/**
+ * @brief Returns the external iasl given by --iasl.
+ *
+ * @param cfg  configuration
+ * @param out  output buffer
+ * @param cap  size of the output buffer
+ * @return out, or NULL if no external iasl is to be used
+ */
 static const char *find_iasl(const a2d_config_t *cfg, char *out, size_t cap)
 {
-  static const char *names[] = { "iasl.exe", "AslCompiler.exe" };
-  wchar_t            wexe[A2D_MAX_PATH];
-  char               exe_dir[A2D_MAX_PATH], exe[A2D_MAX_PATH];
-
   if (cfg->no_iasl)
     return NULL;
   if (cfg->iasl_exe)
@@ -237,27 +293,7 @@ static const char *find_iasl(const a2d_config_t *cfg, char *out, size_t cap)
     log_warn("--iasl %s does not exist", cfg->iasl_exe);
     return NULL;
   }
-  GetModuleFileNameW(NULL, wexe, A2D_MAX_PATH);
-  wide_to_utf8_buf(wexe, exe, sizeof(exe));
-  path_dirname(exe, exe_dir, sizeof(exe_dir));
-  for (int i = 0; i < 2; i++)
-  {
-    path_join(out, cap, exe_dir, names[i]);
-    if (file_exists(out))
-      return out;
-  }
-  for (int i = 0; i < 2; i++)
-  {
-    wchar_t *wn = utf8_to_wide(names[i]);
-    wchar_t  found[A2D_MAX_PATH];
-    DWORD    n = SearchPathW(NULL, wn, NULL, A2D_MAX_PATH, found, NULL);
-    free(wn);
-    if (n > 0 && n < A2D_MAX_PATH)
-    {
-      wide_to_utf8_buf(found, out, cap);
-      return out;
-    }
-  }
+  /* without --iasl the embedded ACPICA disassembler is used (acpica_host.c) */
   return NULL;
 }
 
@@ -331,6 +367,14 @@ int acpi_collect_tables(const a2d_config_t *cfg, acpi_table_set_t *set)
 /* SMBIOS                                                                   */
 /* ======================================================================== */
 
+/**
+ * @brief Returns string number idx of an SMBIOS structure.
+ *
+ * @param s    start of the string set
+ * @param end  end of the SMBIOS data
+ * @param idx  1-based string index (0: none)
+ * @return pointer to a static buffer (8 rotating buffers)
+ */
 static const char *smbios_string(const uint8_t *s, const uint8_t *end, uint8_t idx)
 {
   static char out[8][192];
@@ -358,6 +402,11 @@ static const char *smbios_string(const uint8_t *s, const uint8_t *end, uint8_t i
   return o;
 }
 
+/**
+ * @brief Reads SMBIOS types 0, 1 and 2 (BIOS, system, board).
+ *
+ * @param si  receives the strings
+ */
 static void parse_smbios(sysinfo_t *si)
 {
   UINT     sz = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
@@ -427,6 +476,12 @@ static void parse_smbios(sysinfo_t *si)
 /* MADT / CPU / SoC                                                         */
 /* ======================================================================== */
 
+/**
+ * @brief Counts the GIC CPU interfaces of the MADT.
+ *
+ * @param set  ACPI tables
+ * @param si   receives total and enabled counts
+ */
 static void parse_madt(const acpi_table_set_t *set, sysinfo_t *si)
 {
   const acpi_table_t *t = acpi_find_table(set, "APIC", 0);
@@ -451,6 +506,11 @@ static void parse_madt(const acpi_table_set_t *set, sysinfo_t *si)
   }
 }
 
+/**
+ * @brief Reads ProcessorNameString of CPU 0 from the registry.
+ *
+ * @param si  receives the CPU name
+ */
 static void read_cpu_name(sysinfo_t *si)
 {
   HKEY    key;
@@ -471,11 +531,13 @@ static void read_cpu_name(sysinfo_t *si)
   }
 }
 
+/** @brief CPU name token -> SoC name */
 typedef struct {
-  const char *token;   /* normalized (upper-case alnum) substring of the CPU name */
-  const char *soc;
+  const char *token;   /**< normalized (upper-case alnum) substring of the CPU name */
+  const char *soc;  /**< SoC name */
 } soc_map_t;
 
+/** CPU name tokens -> SoC */
 static const soc_map_t g_soc_map[] = {
   { "X1E84100", "x1e84100" },
   { "X1E80100", "x1e80100" },
@@ -495,6 +557,12 @@ static const soc_map_t g_soc_map[] = {
   { "7CXGEN3",  "sc8280xp" },
 };
 
+/**
+ * @brief Determines the SoC from the CPU name, falling back to the MADT core count.
+ *
+ * @param cfg  configuration (--soc)
+ * @param si   system information (soc, soc_reason updated)
+ */
 static void detect_soc(const a2d_config_t *cfg, sysinfo_t *si)
 {
   char norm[128];
@@ -542,12 +610,14 @@ static void detect_soc(const a2d_config_t *cfg, sysinfo_t *si)
 /* board identity                                                           */
 /* ======================================================================== */
 
+/** @brief SMBIOS manufacturer -> DT vendor prefix and firmware directory */
 typedef struct {
-  const char *match;   /* case-insensitive prefix of SMBIOS manufacturer */
-  const char *prefix;  /* DT vendor prefix                               */
-  const char *dir;     /* firmware vendor directory as used upstream     */
+  const char *match;   /**< case-insensitive prefix of SMBIOS manufacturer */
+  const char *prefix;  /**< DT vendor prefix */
+  const char *dir;     /**< firmware vendor directory as used upstream */
 } vendor_map_t;
 
+/** SMBIOS manufacturers -> DT vendor prefix / firmware directory */
 static const vendor_map_t g_vendors[] = {
   { "ASUS",      "asus",      "ASUSTeK"   },
   { "LENOVO",    "lenovo",    "LENOVO"    },
@@ -563,6 +633,12 @@ static const vendor_map_t g_vendors[] = {
   { "Qualcomm",  "qcom",      "qcom"      },
 };
 
+/**
+ * @brief Checks whether a string consists of decimal digits only.
+ *
+ * @param s  string
+ * @return true for a non-empty decimal number
+ */
 static bool is_number(const char *s)
 {
   if (!*s)
@@ -573,6 +649,12 @@ static bool is_number(const char *s)
   return true;
 }
 
+/**
+ * @brief Derives DT vendor prefix, firmware directories, model and compatible from SMBIOS.
+ *
+ * @param cfg  configuration (overrides)
+ * @param si   system information (updated)
+ */
 static void derive_identity(const a2d_config_t *cfg, sysinfo_t *si)
 {
   char        first_word[64] = "";

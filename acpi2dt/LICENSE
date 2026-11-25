@@ -1,0 +1,50 @@
+acpi2dt - licensing
+===================
+
+acpi2dt combines its own source code with third-party code. Every source
+file carries an SPDX-License-Identifier; the full license texts are in
+LICENSES/.
+
+Source code
+-----------
+
+  acpi2dt/src, acpi2dt/inc            MIT (LICENSES/MIT)
+    except acpi2dt/src/pdc_maps.c     GPL-2.0-only (LICENSES/GPL-2.0)
+                                      - data taken from the Linux kernel
+                                        (drivers/pinctrl/qcom/pinctrl-x1e80100.c)
+
+  acpi2dt/third_party/acpica          BSD-3-Clause OR GPL-2.0-only
+                                      (Intel ACPICA, LICENSES/BSD-3-Clause,
+                                      LICENSES/GPL-2.0)
+  acpi2dt/third_party/dtc             GPL-2.0-or-later (dtc compiler)
+    libfdt/ headers                   GPL-2.0-or-later OR BSD-2-Clause
+    getopt.c / getopt.h               MIT (musl libc)
+    unistd.h, dtc_port.h              MIT (Windows port glue)
+
+  See third_party/README.md for origin, versions and local modifications.
+
+The acpi2dt.exe binary
+----------------------
+
+acpi2dt.exe links the embedded dtc compiler (GPL-2.0-or-later) and
+pdc_maps.c (GPL-2.0-only). The binary as a whole is therefore distributed
+under the terms of the GNU General Public License, version 2 only
+(GPL-2.0-only); ACPICA is used under its GPL-2.0-only option (or its
+GPL-compatible BSD-3-Clause option) and the MIT parts are GPL-compatible.
+Whoever distributes the binary must offer the corresponding source code
+(this repository) under GPL-2.0.
+
+The MIT licensed files remain usable under MIT on their own.
+
+Other projects of the solution
+------------------------------
+
+acpica/, dtc/ and libyaml/ next to acpi2dt/ are separate projects and keep
+their own licenses (ACPICA: BSD-3-Clause OR GPL-2.0-only, dtc:
+GPL-2.0-or-later, libyaml: MIT).
+
+Firmware
+--------
+
+Firmware files that acpi2dt copies from the Windows DriverStore are not part
+of acpi2dt and are usually not redistributable.

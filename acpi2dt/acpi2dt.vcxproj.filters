@@ -69,4 +69,950 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\pdc_maps.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClInclude Include="inc\pdc_maps.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup Label="third_party">
+    <Filter Include="third_party">
+      <UniqueIdentifier>{a1b3f033-a2d0-4000-8000-173265986364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica">
+      <UniqueIdentifier>{18d190ae-a2d0-4000-8000-323900445791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source">
+      <UniqueIdentifier>{2d919b7d-a2d0-4000-8000-250358057831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\common">
+      <UniqueIdentifier>{17f0bfd7-a2d0-4000-8000-245873296955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components">
+      <UniqueIdentifier>{9ea4b77d-a2d0-4000-8000-276496726308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\debugger">
+      <UniqueIdentifier>{bbb7950a-a2d0-4000-8000-038168478898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\disassembler">
+      <UniqueIdentifier>{75a1a297-a2d0-4000-8000-293547846256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\dispatcher">
+      <UniqueIdentifier>{fc92b6d4-a2d0-4000-8000-611279743180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\events">
+      <UniqueIdentifier>{3e5111ee-a2d0-4000-8000-985785089036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\executer">
+      <UniqueIdentifier>{6cbfab40-a2d0-4000-8000-622200095199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\hardware">
+      <UniqueIdentifier>{e36bb906-a2d0-4000-8000-340559018092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\namespace">
+      <UniqueIdentifier>{68b8e3a2-a2d0-4000-8000-177079484078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\parser">
+      <UniqueIdentifier>{6f4a2d8a-a2d0-4000-8000-564603287995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\resources">
+      <UniqueIdentifier>{0e2e98b6-a2d0-4000-8000-983634684024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\tables">
+      <UniqueIdentifier>{608f2ec1-a2d0-4000-8000-925278271794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\components\utilities">
+      <UniqueIdentifier>{bee0c44b-a2d0-4000-8000-557953321223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\include">
+      <UniqueIdentifier>{b9a1b3a9-a2d0-4000-8000-090245710632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\include\platform">
+      <UniqueIdentifier>{abe49475-a2d0-4000-8000-875056869456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\os_specific">
+      <UniqueIdentifier>{b7243e66-a2d0-4000-8000-875079930661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\os_specific\service_layers">
+      <UniqueIdentifier>{9bf65726-a2d0-4000-8000-062380302580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\tools">
+      <UniqueIdentifier>{03ff3f4e-a2d0-4000-8000-098668844374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\acpica\source\tools\acpiexec">
+      <UniqueIdentifier>{997163c1-a2d0-4000-8000-030885815150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\dtc">
+      <UniqueIdentifier>{c9fc11fe-a2d0-4000-8000-452762602799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\dtc\libfdt">
+      <UniqueIdentifier>{23340d24-a2d0-4000-8000-545442558398}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="third_party\acpica\source\common\acfileio.c">
+      <Filter>third_party\acpica\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\ahids.c">
+      <Filter>third_party\acpica\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\ahuuids.c">
+      <Filter>third_party\acpica\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\common\cmfsize.c">
+      <Filter>third_party\acpica\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbcmds.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbconvert.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbdisply.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbexec.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbfileio.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbhistry.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbinput.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbmethod.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbnames.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbobject.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbstats.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbtest.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbutils.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\debugger\dbxface.c">
+      <Filter>third_party\acpica\source\components\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmbuffer.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmcstyle.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmdeferred.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmnames.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmopcode.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrc.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcl.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcl2.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmresrcs.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmutils.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\disassembler\dmwalk.c">
+      <Filter>third_party\acpica\source\components\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsargs.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dscontrol.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsdebug.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsfield.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsinit.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsmethod.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsmthdat.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsobject.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsopcode.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dspkginit.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dsutils.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswexec.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswload.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswload2.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswscope.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\dispatcher\dswstate.c">
+      <Filter>third_party\acpica\source\components\dispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evevent.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evglock.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpe.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeblk.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeinit.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evgpeutil.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evhandler.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evmisc.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evregion.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evrgnini.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evsci.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxface.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfevnt.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfgpe.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\events\evxfregn.c">
+      <Filter>third_party\acpica\source\components\events</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconcat.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconfig.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exconvrt.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\excreate.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exdebug.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exdump.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exfield.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exfldio.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exmisc.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exmutex.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exnames.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg1.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg2.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg3.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exoparg6.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exprep.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exregion.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresnte.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresolv.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exresop.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exserial.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstore.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstoren.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exstorob.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exsystem.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\extrace.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\executer\exutils.c">
+      <Filter>third_party\acpica\source\components\executer</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwacpi.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwesleep.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwgpe.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwpci.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwregs.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwsleep.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwtimer.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwvalid.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwxface.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\hardware\hwxfsleep.c">
+      <Filter>third_party\acpica\source\components\hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsaccess.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsalloc.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsarguments.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsconvert.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsdump.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsdumpdv.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nseval.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsinit.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsload.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsnames.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsobject.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsparse.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nspredef.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsprepkg.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsrepair.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsrepair2.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nssearch.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsutils.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nswalk.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfeval.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfname.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\namespace\nsxfobj.c">
+      <Filter>third_party\acpica\source\components\namespace</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psargs.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psloop.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psobject.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psopcode.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psopinfo.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psparse.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psscope.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\pstree.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psutils.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\pswalk.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\parser\psxface.c">
+      <Filter>third_party\acpica\source\components\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsaddr.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rscalc.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rscreate.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsdump.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsdumpinfo.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsinfo.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsio.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsirq.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rslist.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsmemory.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsmisc.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsserial.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsutils.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\resources\rsxface.c">
+      <Filter>third_party\acpica\source\components\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbdata.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbfadt.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbfind.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbinstal.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbprint.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbutils.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxface.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxfload.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\tables\tbxfroot.c">
+      <Filter>third_party\acpica\source\components\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utaddress.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utalloc.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utascii.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utbuffer.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcache.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcksum.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utcopy.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdebug.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdecode.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utdelete.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uterror.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uteval.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utexcep.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utglobal.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uthex.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utids.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utinit.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utlock.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmath.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmisc.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utmutex.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utnonansi.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utobject.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utosi.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utownerid.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utpredef.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utresdecode.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utresrc.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstate.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstring.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstrsuppt.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utstrtoul64.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\uttrack.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utuuid.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxface.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxferror.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxfinit.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\components\utilities\utxfmutex.c">
+      <Filter>third_party\acpica\source\components\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\osgendbg.c">
+      <Filter>third_party\acpica\source\os_specific\service_layers</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\oswindir.c">
+      <Filter>third_party\acpica\source\os_specific\service_layers</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\acpica\source\os_specific\service_layers\oswinxf.c">
+      <Filter>third_party\acpica\source\os_specific\service_layers</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\checks.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\data.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc-lexer.lex.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc-parser.tab.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\dtc.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\flattree.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\fstree.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\getopt.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\livetree.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\srcpos.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\treesource.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\dtc\util.c">
+      <Filter>third_party\dtc</Filter>
+    </ClCompile>
+    <ClInclude Include="third_party\acpica\source\include\acapps.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acbuffer.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acclib.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\accommon.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acconfig.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acconvert.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acdebug.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acdisasm.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acdispat.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acevents.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acexcep.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acglobal.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\achware.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acinterp.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\aclocal.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acmacros.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acnames.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acnamesp.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acobject.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acopcode.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acoutput.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acparser.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acpi.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acpiosxf.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acpixf.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acpredef.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acresrc.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acrestyp.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acstruct.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actables.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actbinfo.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actbl.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actbl1.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actbl2.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actbl3.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\actypes.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acutils.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\acuuid.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\amlcode.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\amlresrc.h">
+      <Filter>third_party\acpica\source\include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\accygwin.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acdragonfly.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acdragonflyex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acefi.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acefiex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acenv.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acenvex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acfreebsd.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acgcc.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acgccex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\achaiku.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acintel.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\aclinux.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\aclinuxex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acmacosx.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acmsvc.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acmsvcex.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acnetbsd.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acos2.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acqnx.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acwin.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\acwin64.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\include\platform\aczephyr.h">
+      <Filter>third_party\acpica\source\include\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\acpica\source\tools\acpiexec\aecommon.h">
+      <Filter>third_party\acpica\source\tools\acpiexec</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\dtc-parser.tab.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\dtc.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\dtc_port.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\getopt.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\libfdt\fdt.h">
+      <Filter>third_party\dtc\libfdt</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\libfdt\libfdt.h">
+      <Filter>third_party\dtc\libfdt</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\libfdt\libfdt_env.h">
+      <Filter>third_party\dtc\libfdt</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\libfdt\libfdt_internal.h">
+      <Filter>third_party\dtc\libfdt</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\srcpos.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\unistd.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\util.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\dtc\version_gen.h">
+      <Filter>third_party\dtc</Filter>
+    </ClInclude>
+    <ClCompile Include="src\dts_cpp.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dtc_bridge.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\acpica_host.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClInclude Include="inc\dts_cpp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dtc_bridge.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\acpica_host.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /**
  * @file   camera.c
  * @author Ingo A. Kubbilun
@@ -7,7 +8,7 @@
  * ...) are generic; the board-specific data lives in OEM extension packages
  * and is referenced per device in the registry:
  *
- *   ...\Enum\ACPI\<id>\<inst>\Device Parameters\Resources
+ *   ...\\Enum\\ACPI\\<id\>\\<inst\>\\Device Parameters\\Resources
  *       BinaryPath      CAMF_RES_*.bin   power sequence (regulators, MCLK, GPIOs)
  *       ScfgBinaryPath  SCFG_*.bin       sensor module, I2C address, chip ID
  *
@@ -20,17 +21,27 @@
 
 #include "camera.h"
 
+/** @brief one token of an AeoB file (integer or string) */
 typedef struct {
-  bool     is_str;
-  uint64_t v;
-  char     s[96];
+  bool     is_str;  /**< string token */
+  uint64_t v;  /**< integer value */
+  char     s[96];  /**< string value */
 } tok_t;
 
+/** @brief token list of an AeoB file */
 typedef struct {
-  tok_t *t;
-  int    count, cap;
+  tok_t *t;  /**< tokens */
+  int count;  /**< number of tokens */
+  int cap;  /**< capacity of t */
 } toklist_t;
 
+/**
+ * @brief Reads an AeoB file as flat token list (integers and strings).
+ *
+ * @param path  file path
+ * @param tl    receives the tokens
+ * @return false if the file is no AeoB file
+ */
 static bool aeob_tokens(const char *path, toklist_t *tl)
 {
   size_t   len;
@@ -78,6 +89,7 @@ static bool aeob_tokens(const char *path, toklist_t *tl)
   return true;
 }
 
+/** sensor name prefix -> DT vendor prefix */
 static const char *g_sensor_prefixes[][2] = {
   { "ov", "ovti" }, { "imx", "sony" }, { "hm", "himax" }, { "gc", "galaxycore" },
   { "s5k", "samsung" }, { "hi", "hynix" }, { "og", "ovti" }, { "sc", "smartsens" },
@@ -91,7 +103,13 @@ const char *camera_vendor_prefix(const char *sensor)
   return NULL;
 }
 
-/* "com.qti.sensormodule.Shinetech_ov08x_1.bin" -> "ov08x" */
+/**
+ * @brief Extracts the sensor name from a sensor module file name.
+ *
+ * @param module  module file name, e.g. "com.qti.sensormodule.ov02c10.bin"
+ * @param out     output buffer
+ * @param cap     size of the output buffer
+ */
 static void sensor_from_module(const char *module, char *out, size_t cap)
 {
   char        tmp[96], *tok, *ctx = NULL;
@@ -121,6 +139,11 @@ static void sensor_from_module(const char *module, char *out, size_t cap)
   str_lower(out);
 }
 
+/**
+ * @brief Decodes the sensor configuration: module, tuning file, I2C address, chip ID.
+ *
+ * @param s  sensor (scfg_file in, fields out)
+ */
 static void parse_scfg(cam_sensor_t *s)
 {
   toklist_t tl;
@@ -154,6 +177,12 @@ static void parse_scfg(cam_sensor_t *s)
   free(tl.t);
 }
 
+/**
+ * @brief Checks whether a token starts a new AeoB resource entry.
+ *
+ * @param t  token
+ * @return true for DEVICE, CLOCK, TLMMGPIO, PMICVREGVOTE, DELAY, ...
+ */
 static bool is_keyword(const tok_t *t)
 {
   static const char *kw[] = { "DEVICE", "COMPONENT", "FSTATE", "DSTATE", "NPARESOURCE", "CLOCK", "FOOTSWITCH",
@@ -167,6 +196,11 @@ static bool is_keyword(const tok_t *t)
   return false;
 }
 
+/**
+ * @brief Decodes the D0 power-on sequence: regulators, MCLK, TLMM GPIOs, delays; detects the reset GPIO.
+ *
+ * @param s  sensor (res_file in, fields out)
+ */
 static void parse_res(cam_sensor_t *s)
 {
   toklist_t tl;
