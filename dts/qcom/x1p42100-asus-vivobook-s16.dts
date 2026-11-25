@@ -2113,3 +2113,69 @@
 		};
 	};
 };
+
+/*
+ * Cameras - NOT enabled yet: Linux 7.4-rc4 has no CAMSS and no CCI nodes in
+ * hamoa.dtsi/purwa.dtsi (the camera clock controller &camcc exists).
+ *
+ * Data from the Windows camera driver configuration (acpi2dt, decoded from
+ * Device Parameters\Resources of the ACPI devices, "AeoB" binaries in the
+ * DriverStore extension packages):
+ *
+ * Front camera, ACPI \_SB.CAMF (SCFG_FRONT_D2L_QRD.bin, CAMF_RES_QRD.bin)
+ *   sensor   OmniVision OV02C10 (module "luxvision_ov02c10", M24C64 EEPROM)
+ *   I2C      0x36 (8-bit 0x6c), chip ID 0x5602 at register 0x300a
+ *   bus      CCI on the always-on pins TLMM 235/236 (function aon_cci)
+ *   MCLK     CAM_CC_MCLK4_CLK, 19.2 MHz, TLMM 100 (function cam_aon)
+ *   supplies LDO7_B 2.8 V (avdd), LDO3_M 1.8 V (dovdd)
+ *   reset    TLMM 237, active low; released after MCLK + supplies, followed by
+ *            "DELAY 5" (unit not stated)
+ *   driver   drivers/media/i2c/ov02c10.c ("ovti,ov02c10"), raw Bayer
+ *            output -> libcamera software ISP
+ *   unknown  CCI controller/bus, CSI PHY port, lane count ("D2L" in the
+ *            config name hints at 2 D-PHY lanes), link frequency
+ *
+ * IR camera (Windows Hello), ACPI \_SB.CAMI (SCFG_AUX_8340_QRD.bin,
+ * CAMI_RES_QRD.bin)
+ *   sensor   Himax HM1092 - no Linux driver
+ *   I2C      0x24 (8-bit 0x48)
+ *   MCLK     CAM_CC_MCLK0_CLK, 24 MHz, TLMM 96 (function cam_mclk)
+ *   supplies LDO4_M 1.808 V, LDO7_M 2.912 V
+ *   reset    TLMM 109, active low
+ *
+ * Sketch for the front camera once CAMSS/CCI exist (labels to be adapted):
+ *
+ * &cciN {
+ *	status = "okay";
+ *
+ *	i2c-bus@M {
+ *		camera@36 {
+ *			compatible = "ovti,ov02c10";
+ *			reg = <0x36>;
+ *
+ *			clocks = <&camcc CAM_CC_MCLK4_CLK>;
+ *			assigned-clocks = <&camcc CAM_CC_MCLK4_CLK>;
+ *			assigned-clock-rates = <19200000>;
+ *
+ *			reset-gpios = <&tlmm 237 GPIO_ACTIVE_LOW>;
+ *
+ *			avdd-supply = <&vreg_l7b_2p8>;
+ *			dovdd-supply = <&vreg_l3m_1p8>;
+ *
+ *			pinctrl-0 = <&cam_rgb_default>;
+ *			pinctrl-names = "default";
+ *
+ *			port {
+ *				ov02c10_ep: endpoint {
+ *					data-lanes = <1 2>;
+ *					link-frequencies = /bits/ 64 <...>;
+ *					remote-endpoint = <&camss_csiphyX_inep0>;
+ *				};
+ *			};
+ *		};
+ *	};
+ * };
+ *
+ * vreg_l7b_2p8 (PM8550 LDO7) and vreg_l3m_1p8 (PM8010 LDO3) are not defined
+ * in this file yet; they have to be added to the RPMh regulator nodes.
+ */
