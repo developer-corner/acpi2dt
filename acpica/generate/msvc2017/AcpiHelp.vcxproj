@@ -96,7 +96,6 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\AcpiHelpDebug\AcpiHelp.bsc</OutputFile>
-      <AdditionalOptions> /o"/acpica/generate/msvc2017/AcpiHelpDebug/AcpiHelp.bsc" </AdditionalOptions>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>

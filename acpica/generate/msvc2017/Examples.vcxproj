@@ -142,7 +142,6 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\ExamplesDebug\Examples.bsc</OutputFile>
-      <AdditionalOptions> /o"/acpica/generate/msvc2017/ExamplesDebug/Examples.bsc" </AdditionalOptions>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>

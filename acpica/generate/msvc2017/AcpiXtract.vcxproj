@@ -96,7 +96,6 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\AcpiXtractDebug\AcpiXtract.bsc</OutputFile>
-      <AdditionalOptions> /o"/acpica/generate/msvc2017/AcpiXtractDebug/AcpiXtract.bsc" </AdditionalOptions>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>

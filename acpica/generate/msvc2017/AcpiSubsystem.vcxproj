@@ -93,7 +93,6 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\AcpiSubsystemDebug\AcpiSubsystem.bsc</OutputFile>
-      <AdditionalOptions> /o"/acpica/generate/msvc2017/AcpiSubsystemDebug/AcpiSubsystem.bsc" </AdditionalOptions>
     </Bscmake>
     <Lib>
       <SuppressStartupBanner>true</SuppressStartupBanner>

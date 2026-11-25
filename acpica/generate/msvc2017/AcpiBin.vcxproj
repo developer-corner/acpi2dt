@@ -137,7 +137,6 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\AcpiBinDebug\AcpiBin.bsc</OutputFile>
-      <AdditionalOptions> /o"/acpica/generate/msvc2017/AcpiBinDebug/AcpiBin.bsc" </AdditionalOptions>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>

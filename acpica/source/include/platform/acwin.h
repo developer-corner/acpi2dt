@@ -51,7 +51,15 @@
 #pragma warning( disable: 4214)
 #pragma warning( push)
 
+/*
+ * 64-bit Windows targets (x64, ARM64) need a 64-bit ACPI_SIZE and 64-bit
+ * physical addresses; otherwise pointers above 4 GB are truncated.
+ */
+#if defined(_WIN64)
+#define ACPI_MACHINE_WIDTH      64
+#else
 #define ACPI_MACHINE_WIDTH      32
+#endif
 #define ACPI_USE_NATIVE_DIVIDE
 #define ACPI_USE_NATIVE_MATH64
 

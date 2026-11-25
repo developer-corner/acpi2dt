@@ -20,8 +20,8 @@ Local modification:
 * `source/include/platform/acwin.h`: `ACPI_MACHINE_WIDTH` is 64 for `_WIN64`
   targets (x64, ARM64). The original value 32 makes `ACPI_SIZE` and physical
   addresses 32 bits wide while pointers are 64 bits, which truncates heap and
-  table addresses above 4 GB. The standalone `../../acpica` projects of the
-  solution are built the same way and have the same latent problem.
+  table addresses above 4 GB. The same fix is applied to the standalone
+  `../../acpica` projects of the solution.
 
 ## dtc (`dtc/`)
 
